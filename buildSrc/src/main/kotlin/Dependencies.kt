@@ -18,7 +18,7 @@ object Versions {
 
 	const val springBoot = PluginVersions.springBoot
 	const val minio = "8.3.7"
-	const val ktor = "1.6.8"
+	const val ktor = "2.0.0"
 }
 
 object Repo {
@@ -49,8 +49,9 @@ object Dependencies {
 
 	fun ktor(scope: Scope) = scope.add(
 		"io.ktor:ktor-client-core:${Versions.ktor}",
+		"io.ktor:ktor-client-content-negotiation:${Versions.ktor}",
 		"io.ktor:ktor-client-cio:${Versions.ktor}",
-		"io.ktor:ktor-client-auth:${Versions.ktor}",
-		"io.ktor:ktor-client-jackson:${Versions.ktor}"
+		"io.ktor:ktor-serialization-kotlinx-json:${Versions.ktor}",
+		"io.ktor:ktor-serialization-jackson:${Versions.ktor}"
 	)
 }
