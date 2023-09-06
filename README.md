@@ -68,18 +68,18 @@ class FsConfig {
 
 | Endpoints | Associated role |
 | --- | --- |
-| fileGet | fs_read_file |
-| fileList | fs_read_file |
-| fileUpload | fs_write_file |
-| fileDelete | fs_write_file |
-| initPublicDirectory | fs_write_policy |
-| revokePublicDirectory | fs_write_policy |
+| fileGet | fs_file_read |
+| fileList | fs_file_read |
+| fileUpload | fs_file_write |
+| fileDelete | fs_file_write |
+| initPublicDirectory | fs_policy_write |
+| revokePublicDirectory | fs_policy_write |
 
 | Roles | Endpoints |
 | --- | --- |
-| fs_read_file | fileGet, fileList |
-| fs_write_file | fileUpload, fileDelete |
-| fs_write_policy | initPublicDirectory, revokePublicDirectory |
+| fs_file_read | fileGet, fileList |
+| fs_file_write | fileUpload, fileDelete |
+| fs_policy_write | initPublicDirectory, revokePublicDirectory |
 
 # Configuration
 
