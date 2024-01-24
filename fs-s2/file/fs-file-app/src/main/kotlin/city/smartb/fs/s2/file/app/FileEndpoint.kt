@@ -290,15 +290,15 @@ class FileEndpoint(
         }.mapAsync { obj ->
             val file = obj.get().toFile { it.buildUrl() }
             val metadata = s3Service.getObjectMetadata(file.pathStr)!!
-            val id = metadata["id"]!!
+            val id = metadata["id"]
 
             s3Service.removeObject(file.pathStr)
-            if (mustBeSavedToSsm(file.path.directory)) {
+            if (id != null && mustBeSavedToSsm(file.path.directory)) {
                 fileDeciderSourcingImpl.delete(FileDeleteByIdCommand(id = id))
             }
 
             FileDeletedEvent(
-                id = id,
+                id = id.orEmpty(),
                 path = file.path
             )
         }
