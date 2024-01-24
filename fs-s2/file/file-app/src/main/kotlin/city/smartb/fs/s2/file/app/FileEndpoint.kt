@@ -216,15 +216,15 @@ class FileEndpoint(
         val metadata = s3Service.getObjectMetadata(pathStr)
             ?: throw IllegalArgumentException("File not found at path [$pathStr]")
 
-        val id = metadata["id"]!!
+        val id = metadata["id"]
 
         s3Service.removeObject(pathStr)
-        if (mustBeSavedToSsm(cmd.directory)) {
+        if (id != null && mustBeSavedToSsm(cmd.directory)) {
             fileDeciderSourcingImpl.delete(FileDeleteByIdCommand(id = id))
         }
 
         FileDeletedEvent(
-            id = id,
+            id = id.orEmpty(),
             path = cmd
         )
     }
