@@ -1,9 +1,8 @@
-import city.smartb.gradle.dependencies.FixersDependencies
-import city.smartb.gradle.dependencies.FixersPluginVersions
-import city.smartb.gradle.dependencies.FixersVersions
-import city.smartb.gradle.dependencies.Scope
-import city.smartb.gradle.dependencies.add
-
+import io.komune.gradle.dependencies.FixersDependencies
+import io.komune.gradle.dependencies.FixersPluginVersions
+import io.komune.gradle.dependencies.FixersVersions
+import io.komune.gradle.dependencies.Scope
+import io.komune.gradle.dependencies.add
 
 object Framework {
 	val fixers = FixersPluginVersions.fixers
@@ -42,8 +41,8 @@ object Repo {
 object Dependencies {
 	object Fixers {
 		fun s2SourcingSsm(scope: Scope) = scope.add(
-			"city.smartb.s2:s2-spring-boot-starter-sourcing-ssm:${Versions.s2}",
-			"city.smartb.s2:s2-spring-boot-starter-utils-logger:${Versions.s2}"
+			"io.komune.s2:s2-spring-boot-starter-sourcing-ssm:${Versions.s2}",
+			"io.komune.s2:s2-spring-boot-starter-utils-logger:${Versions.s2}"
 		)
 	}
 
@@ -72,12 +71,12 @@ object Dependencies {
 
 	object Mpp {
 		fun f2(scope: Scope) = scope.add(
-			"city.smartb.f2:f2-dsl-function:${Versions.f2}",
-			"city.smartb.f2:f2-dsl-cqrs:${Versions.f2}"
+			"io.komune.f2:f2-dsl-function:${Versions.f2}",
+			"io.komune.f2:f2-dsl-cqrs:${Versions.f2}"
 		)
 
 		fun f2Client(scope: Scope) = scope.add(
-			"city.smartb.f2:f2-client-ktor:${Versions.f2}",
+			"io.komune.f2:f2-client-ktor:${Versions.f2}",
 		)
 
 		object Ktor {

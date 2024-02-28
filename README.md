@@ -40,12 +40,12 @@ Once it is up and running, you can start making requests via HTTP.
 
 ⚠️ **To run FS, you need to have a reachable MinIO instance, and a Redis and a SSM if you want to use S2.**
 
-If you are in a java environment, all the necessary models and commands can be found [here](https://mvnrepository.com/artifact/city.smartb.fs/file-domain).
-An SDK that sugarcoats the http requests is also available [here](https://mvnrepository.com/artifact/city.smartb.fs/file-client).
+If you are in a java environment, all the necessary models and commands can be found [here](https://mvnrepository.com/artifact/io.komune.fs/file-domain).
+An SDK that sugarcoats the http requests is also available [here](https://mvnrepository.com/artifact/io.komune.fs/file-client).
 
 ```kotlin
-implementation("city.smartb.fs:file-domain:${Versions.fs}")
-implementation("city.smartb.fs:file-client:${Versions.fs}")
+implementation("io.komune.fs:file-domain:${Versions.fs}")
+implementation("io.komune.fs:file-client:${Versions.fs}")
 ```
 
 The client provided in the SDK uses Ktor under the hood and should be a singleton in your application in order to prevent any memory leak. Ex:

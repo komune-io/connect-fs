@@ -7,14 +7,14 @@ plugins {
 	id("org.springframework.boot") version PluginVersions.springBoot apply false
 	id("org.graalvm.buildtools.native") version PluginVersions.graalvm apply false
 
-	id("city.smartb.fixers.gradle.config") version PluginVersions.fixers
-	id("city.smartb.fixers.gradle.sonar") version PluginVersions.fixers
-	id("city.smartb.fixers.gradle.d2") version PluginVersions.d2
+	id("io.komune.fixers.gradle.config") version PluginVersions.fixers
+//	id("io.komune.fixers.gradle.check") version PluginVersions.fixers
+	id("io.komune.fixers.gradle.d2") version PluginVersions.d2
 
 }
 
 allprojects {
-	group = "city.smartb.fs"
+	group = "io.komune.fs"
 	version = System.getenv("VERSION") ?: "latest"
 	repositories {
 		mavenLocal()
