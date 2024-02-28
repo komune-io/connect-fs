@@ -1,4 +1,4 @@
-rootProject.name = "fs"
+rootProject.name = "connect-fs"
 
 include(
 	"fs-api:api-config",
