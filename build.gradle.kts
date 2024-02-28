@@ -16,13 +16,6 @@ plugins {
 allprojects {
 	group = "io.komune.fs"
 	version = System.getenv("VERSION") ?: "latest"
-	repositories {
-		mavenLocal()
-		mavenCentral()
-		Repo.snapshot.forEach {
-			maven { url = uri(it) }
-		}
-	}
 }
 
 fixers {
