@@ -33,6 +33,6 @@ fixers {
 		id = "fs"
 		name = "Connect FileSystem"
 		description = "File manager"
-		url = "https://gitlab.smartb.city/connect/fs"
+		url = "https://github.com/komune-io/connect-fs"
 	}
 }

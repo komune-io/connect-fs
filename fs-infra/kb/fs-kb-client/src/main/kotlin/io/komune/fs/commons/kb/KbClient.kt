@@ -105,7 +105,7 @@ open class KbClient(val client: F2Client) {
 }
 
 
-//TODO PUT THAT in F2 https://smartbcity.atlassian.net/jira/software/projects/FX/boards/28?selectedIssue=FX-154
+//TODO PUT THAT in F2
 class FormDataBodyBuilder {
     private val formParts = mutableListOf<FormPart<*>>()
 

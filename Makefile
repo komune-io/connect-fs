@@ -1,9 +1,9 @@
-GATEWAY_NAME	   	:= smartbcity/fs-gateway
+GATEWAY_NAME	   	:= komune-io/fs-gateway
 GATEWAY_IMG	    	:= ${GATEWAY_NAME}:${VERSION}
 GATEWAY_PACKAGE	   	:= fs-api:api-gateway
 
 STORYBOOK_DOCKERFILE	:= infra/docker/storybook/Dockerfile
-STORYBOOK_NAME	   	 	:= smartbcity/fs-storybook
+STORYBOOK_NAME	   	 	:= komune-io/fs-storybook
 STORYBOOK_IMG	    	:= ${STORYBOOK_NAME}:${VERSION}
 
 libs: package-kotlin
