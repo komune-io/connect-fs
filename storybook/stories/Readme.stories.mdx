@@ -1,6 +1,5 @@
-import { Meta } from '@storybook/addon-docs/blocks';
-import Readme from '../README.md';
+import Readme from '../../README.md?raw';
+import { Markdown, Meta } from '@storybook/blocks';
 
-<Meta title="Getting started" parameters={{ previewTabs: { canvas: { hidden: true } } }} />
-
-<Readme />
+<Meta title="Getting started" />
+<Markdown>{Readme}</Markdown>
