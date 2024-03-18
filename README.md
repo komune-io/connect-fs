@@ -14,8 +14,6 @@ The communication with the S3 storage is done via a [MinIO](https://docs.min.io/
 
 The communication with the SSM is done with an event-sourcing S2 automate and uses Redis as a cache.
 
-<img src="https://docs.smartb.city/s3/docs/fs/diagrams/architecture.png" alt="drawing" width="300"/>
-
 # Getting Started
 
 FS is designed to be deployed as a standalone micro-service.

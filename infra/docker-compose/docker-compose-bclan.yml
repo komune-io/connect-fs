@@ -1,20 +1,24 @@
-version: '3.7'
+version: '3.8'
 
 services:
   ca.bc-coop.bclan:
-    container_name: verr-ca-bclan
-    image: smartbcity/commune-sandbox-ca:2.3.3-0.8.2-2
+    container_name: ca-bclan-${DOCKER_NETWORK}
+    image: ghcr.io/komune-io/c2-sandbox-ca:0.17.0-SNAPSHOT
+    ports:
+      - "7054:7054"
     networks:
       - net
 
   orderer.bclan:
-    container_name: verr-orderer
-    image: smartbcity/commune-sandbox-orderer:2.3.3-0.8.2-2
+    container_name: orderer-${DOCKER_NETWORK}
+    image: ghcr.io/komune-io/c2-sandbox-orderer:0.17.0-SNAPSHOT
+    ports:
+      - "7050:7050"
     networks:
       - net
 
   couchdb.bc-coop.bclan:
-    container_name: verr-couchdb
+    container_name: couchdb-bclan-network-it
     image: couchdb:3.1.2
     environment:
       - COUCHDB_USER=${BCLAN_COUCH_USER}
@@ -27,8 +31,8 @@ services:
       - orderer.bclan
 
   peer0.bc-coop.bclan:
-    container_name: verr-peer0-bclan
-    image: smartbcity/commune-sandbox-peer:2.3.3-0.8.2-2
+    container_name: peer0-bclan-${DOCKER_NETWORK}
+    image: ghcr.io/komune-io/c2-sandbox-peer:0.17.0-SNAPSHOT
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${DOCKER_NETWORK}
@@ -38,20 +42,14 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${BCLAN_COUCH_PASS}
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-    networks:
-      - net
-
-  coop-rest-java:
-    container_name: verr-coop-rest-bclan
-    image: smartbcity/commune-sandbox-ssm-rest:2.3.3-0.8.2-2
-    environment:
-      - i2_jwt-issuer-uri=
     ports:
-      - "9090:9090"
-    depends_on:
-      - peer0.bc-coop.bclan
+      - "7051:7051"
+      - "7053:7053"
     networks:
       - net
+    depends_on:
+      - orderer.bclan
+      - couchdb.bc-coop.bclan
 
 networks:
   net:
