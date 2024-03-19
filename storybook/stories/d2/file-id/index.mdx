@@ -1,0 +1,22 @@
+import { CodeHighlighter, SegmentedContainer } from '@komune-io/g2-documentation'
+import FileIdDesc from './desc.mdx'
+import FileIdVisualJson from './visualJson.json'
+
+<SegmentedContainer
+  leftElement={<FileIdDesc />}
+  leftContainerProps={{}}
+  rightElement={
+    <CodeHighlighter
+      object={FileIdVisualJson}
+      language={"json"}
+      title={"FileId"}
+    />
+  }
+  rightContainerProps={{}}
+/>
+
+<div
+  class={"spacer"}
+/>
+
+

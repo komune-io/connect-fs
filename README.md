@@ -14,19 +14,17 @@ The communication with the S3 storage is done via a [MinIO](https://docs.min.io/
 
 The communication with the SSM is done with an event-sourcing S2 automate and uses Redis as a cache.
 
-<img src="https://docs.smartb.city/s3/docs/fs/diagrams/architecture.png" alt="drawing" width="300"/>
-
 # Getting Started
 
 FS is designed to be deployed as a standalone micro-service.
-A docker image can be found [here](https://hub.docker.com/repository/docker/smartbcity/fs-gateway) and used in a docker-compose:
+A docker image can be found [here](https://hub.docker.com/repository/docker/komune-io/fs-gateway) and used in a docker-compose:
 
 ```yaml
 version: "3.7"
 services:
   fs-gateway:
     container_name: fs-gateway
-    image: smartbcity/fs-gateway:${VERSION}
+    image: komune-io/fs-gateway:${VERSION}
     environment:
       - fs_s3_internal-url=${INTERNAL_URL}
       - fs_s3_external-url=${EXTERNAL_URL}
@@ -40,12 +38,12 @@ Once it is up and running, you can start making requests via HTTP.
 
 ⚠️ **To run FS, you need to have a reachable MinIO instance, and a Redis and a SSM if you want to use S2.**
 
-If you are in a java environment, all the necessary models and commands can be found [here](https://mvnrepository.com/artifact/city.smartb.fs/file-domain).
-An SDK that sugarcoats the http requests is also available [here](https://mvnrepository.com/artifact/city.smartb.fs/file-client).
+If you are in a java environment, all the necessary models and commands can be found [here](https://mvnrepository.com/artifact/io.komune.fs/file-domain).
+An SDK that sugarcoats the http requests is also available [here](https://mvnrepository.com/artifact/io.komune.fs/file-client).
 
 ```kotlin
-implementation("city.smartb.fs:file-domain:${Versions.fs}")
-implementation("city.smartb.fs:file-client:${Versions.fs}")
+implementation("io.komune.fs:file-domain:${Versions.fs}")
+implementation("io.komune.fs:file-client:${Versions.fs}")
 ```
 
 The client provided in the SDK uses Ktor under the hood and should be a singleton in your application in order to prevent any memory leak. Ex:
@@ -87,15 +85,15 @@ class FsConfig {
 
 Properties prefix: `fs.s3`
 
-| Property | Description                                                                                                                                                                                              | Example | Default |
-| --- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| --- | --- |
-| internal-url | URL used by FS to communicate with the S3 server                                                                                                                                                         | http://minio:9000 | http://localhost:9000 |
-| external-url | URL used to build usable file URLs                                                                                                                                                                       | https://s3.smartb.city | http://localhost:9000 |
-| region | Name of the location of the server                                                                                                                                                                       | sbg | us-west-1 |
-| username | Login to S3                                                                                                                                                                                              | johndeuf | minio |
-| password | Login to S3                                                                                                                                                                                              | smartpassword | minio123 |
-| bucket | S3 bucket in which the files will be uploaded                                                                                                                                                            | bananas | fs-sample |
-| dns | Enable or disable virtual style endpoint i.e. if the bucket name is respectively part of : <br/> - the url domain (ex: https://bucket.s3.smartb.city) - the url path (ex: https://s3.smartb.city/bucket) | true | false |
+| Property | Description                                                                                                                                                                                            | Example              | Default |
+| --- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------| --- |
+| internal-url | URL used by FS to communicate with the S3 server                                                                                                                                                       | http://minio:9000    | http://localhost:9000 |
+| external-url | URL used to build usable file URLs                                                                                                                                                                     | https://s3.komune.io | http://localhost:9000 |
+| region | Name of the location of the server                                                                                                                                                                     | sbg                  | us-west-1 |
+| username | Login to S3                                                                                                                                                                                            | johndeuf             | minio |
+| password | Login to S3                                                                                                                                                                                            | smartpassword        | minio123 |
+| bucket | S3 bucket in which the files will be uploaded                                                                                                                                                          | bananas              | fs-sample |
+| dns | Enable or disable virtual style endpoint i.e. if the bucket name is respectively part of : <br/> - the url domain (ex: https://bucket.s3.komune.io) - the url path (ex: https://s3.komune.io/bucket)            | true                 | false |
 
 ## Blockchain
 
@@ -123,7 +121,7 @@ Properties prefix: `fs.ssm`
 
 | Property | Description | Example | Default |
 | --- | --- | --- | --- |
-| channel | Channel of the SSM to send to files to | smartbstuff | sandbox |
+| channel | Channel of the SSM to send to files to | stuff | sandbox |
 | chaincode | Chaincode of the SSM to send to files to | fs | ssm |
 | signerName | Name of the SSM user signing the transactions |  | ssm-admin |
 | signerKey | Path to a file containing the key of the signer |  | user/ssm-admin |

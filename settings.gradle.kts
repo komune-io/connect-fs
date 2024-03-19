@@ -1,13 +1,4 @@
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-		mavenCentral()
-		maven { url = uri("https://oss.sonatype.org/content/repositories/releases") }
-		maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-	}
-}
-
-rootProject.name = "fs"
+rootProject.name = "connect-fs"
 
 include(
 	"fs-api:api-config",

@@ -1,0 +1,16 @@
+import { CodeHighlighter, SegmentedContainer } from '@komune-io/g2-documentation'
+import FileUploadedEventDesc from './desc.mdx'
+import FileUploadedEventVisualJson from './visualJson.json'
+
+<SegmentedContainer
+  leftElement={<FileUploadedEventDesc />}
+  leftContainerProps={{}}
+  rightElement={
+    <CodeHighlighter
+      object={FileUploadedEventVisualJson}
+      language={"json"}
+      title={"Event"}
+    />
+  }
+  rightContainerProps={{}}
+/>

@@ -1,0 +1,16 @@
+import { CodeHighlighter, SegmentedContainer } from '@komune-io/g2-documentation'
+import VectorAskedEventDTODesc from './desc.mdx'
+import VectorAskedEventDTOVisualJson from './visualJson.json'
+
+<SegmentedContainer
+  leftElement={<VectorAskedEventDTODesc />}
+  leftContainerProps={{}}
+  rightElement={
+    <CodeHighlighter
+      object={VectorAskedEventDTOVisualJson}
+      language={"json"}
+      title={"Event"}
+    />
+  }
+  rightContainerProps={{}}
+/>

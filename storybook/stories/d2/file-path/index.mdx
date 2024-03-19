@@ -1,0 +1,22 @@
+import { CodeHighlighter, SegmentedContainer } from '@komune-io/g2-documentation'
+import FilePathDesc from './desc.mdx'
+import FilePathVisualJson from './visualJson.json'
+
+<SegmentedContainer
+  leftElement={<FilePathDesc />}
+  leftContainerProps={{}}
+  rightElement={
+    <CodeHighlighter
+      object={FilePathVisualJson}
+      language={"json"}
+      title={"FilePath"}
+    />
+  }
+  rightContainerProps={{}}
+/>
+
+<div
+  class={"spacer"}
+/>
+
+

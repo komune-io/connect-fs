@@ -1,2 +1,2 @@
 org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor=\
-city.smartb.fs.api.gateway.AotProcessor
+io.komune.fs.api.gateway.AotProcessor

@@ -1,9 +1,8 @@
-import city.smartb.gradle.dependencies.Scope
-import city.smartb.gradle.dependencies.add
+import io.komune.gradle.dependencies.Scope
+import io.komune.gradle.dependencies.add
 
 plugins {
-    id("city.smartb.fixers.gradle.kotlin.jvm")
-    id("city.smartb.fixers.gradle.publish")
+    id("io.komune.fixers.gradle.kotlin.jvm")
     kotlin("plugin.spring")
 }
 

@@ -1,0 +1,16 @@
+import { CodeHighlighter, SegmentedContainer } from '@komune-io/g2-documentation'
+import FileDownloadResultDesc from './desc.mdx'
+import FileDownloadResultVisualJson from './visualJson.json'
+
+<SegmentedContainer
+  leftElement={<FileDownloadResultDesc />}
+  leftContainerProps={{}}
+  rightElement={
+    <CodeHighlighter
+      object={FileDownloadResultVisualJson}
+      language={"json"}
+      title={"Result"}
+    />
+  }
+  rightContainerProps={{}}
+/>

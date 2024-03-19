@@ -1,0 +1,16 @@
+import { CodeHighlighter, SegmentedContainer } from '@komune-io/g2-documentation'
+import FileVectorizeCommandDesc from './desc.mdx'
+import FileVectorizeCommandVisualJson from './visualJson.json'
+
+<SegmentedContainer
+  leftElement={<FileVectorizeCommandDesc />}
+  leftContainerProps={{}}
+  rightElement={
+    <CodeHighlighter
+      object={FileVectorizeCommandVisualJson}
+      language={"json"}
+      title={"Command"}
+    />
+  }
+  rightContainerProps={{}}
+/>

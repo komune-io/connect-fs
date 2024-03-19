@@ -1,0 +1,16 @@
+import { CodeHighlighter, SegmentedContainer } from '@komune-io/g2-documentation'
+import FileRevokePublicDirectoryCommandDesc from './desc.mdx'
+import FileRevokePublicDirectoryCommandVisualJson from './visualJson.json'
+
+<SegmentedContainer
+  leftElement={<FileRevokePublicDirectoryCommandDesc />}
+  leftContainerProps={{}}
+  rightElement={
+    <CodeHighlighter
+      object={FileRevokePublicDirectoryCommandVisualJson}
+      language={"json"}
+      title={"Command"}
+    />
+  }
+  rightContainerProps={{}}
+/>

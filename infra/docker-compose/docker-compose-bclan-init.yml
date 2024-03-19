@@ -1,10 +1,11 @@
-version: '3.7'
+version: '3.8'
 
 services:
-  cli-init.bc-coop.bclan:
-    container_name: verr-cli-init-bclan
-    image: smartbcity/commune-sandbox-cli:2.3.3-0.8.2-2
-    command: /opt/commune-sandbox/util/init.sh
+
+  cli-init-ssm.bc-coop.bclan:
+    container_name: cli-init-ssm-bclan-${DOCKER_NETWORK}
+    image: ghcr.io/komune-io/c2-sandbox-cli:0.17.0-SNAPSHOT
+    command: /opt/c2-sandbox/chaincode/ssm/init.sh
     networks:
       - net
 

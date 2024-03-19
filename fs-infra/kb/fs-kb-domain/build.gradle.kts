@@ -1,5 +1,5 @@
 plugins {
-    id("city.smartb.fixers.gradle.kotlin.mpp")
+    id("io.komune.fixers.gradle.kotlin.mpp")
     kotlin("plugin.serialization")
 }
 
