@@ -1,3 +1,5 @@
+VERSION = $(shell cat VERSION)
+
 GATEWAY_NAME	   	:= komune-io/fs-gateway
 GATEWAY_IMG	    	:= ${GATEWAY_NAME}:${VERSION}
 GATEWAY_PACKAGE	   	:= fs-api:api-gateway
