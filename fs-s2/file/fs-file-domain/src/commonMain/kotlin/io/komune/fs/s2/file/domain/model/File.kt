@@ -31,7 +31,7 @@ data class File(
 
     /**
      * External URL to access the file
-     * @example "https://s3.myproject.smart-b.io/myBucket/MyAwesomeObject/91541047-5da8-4161-af79-3fd367fc014e/image/main.jpg"
+     * @example "https://s3.myproject.komune.io/myBucket/MyAwesomeObject/91541047-5da8-4161-af79-3fd367fc014e/image/main.jpg"
      */
     val url: String,
 

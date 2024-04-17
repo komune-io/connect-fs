@@ -20,7 +20,7 @@ object PluginVersions {
 object Versions {
 	val f2 = Framework.fixers
 	val s2 = Framework.fixers
-	val ssm = Framework.fixers
+	val c2 = Framework.fixers
 	const val springBoot = PluginVersions.springBoot
 	const val springFramework = FixersVersions.Spring.framework
 	const val springSecurity = "6.1.3"
@@ -42,7 +42,6 @@ object Dependencies {
 	object Fixers {
 		fun s2SourcingSsm(scope: Scope) = scope.add(
 			"io.komune.s2:s2-spring-boot-starter-sourcing-ssm:${Versions.s2}",
-			"io.komune.s2:s2-spring-boot-starter-utils-logger:${Versions.s2}"
 		)
 	}
 

@@ -7,7 +7,7 @@
       "directory" : "image",
       "name" : "main.jpg"
     },
-    "url" : "https://s3.myproject.smart-b.io/myBucket/myObjectType/ObjectId/mediaDirectory/FileName.jpg",
+    "url" : "https://s3.myproject.komune.io/myBucket/myObjectType/ObjectId/mediaDirectory/FileName.jpg",
     "metadata" : {
       "Pragma" : "no-cache",
       "Content-Type" : "image/jpeg",
