@@ -15,6 +15,4 @@ dependencies {
 
 }
 
-tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
-    imageName.set("${System.getenv("IMAGE_NAME")}:${this.project.version}")
-}
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {}
