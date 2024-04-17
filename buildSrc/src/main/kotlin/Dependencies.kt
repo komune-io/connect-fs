@@ -42,7 +42,6 @@ object Dependencies {
 	object Fixers {
 		fun s2SourcingSsm(scope: Scope) = scope.add(
 			"io.komune.s2:s2-spring-boot-starter-sourcing-ssm:${Versions.s2}",
-			"io.komune.s2:s2-spring-boot-starter-utils-logger:${Versions.s2}"
 		)
 	}
 

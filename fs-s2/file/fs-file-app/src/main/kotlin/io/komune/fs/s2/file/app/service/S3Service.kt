@@ -22,8 +22,8 @@ import io.minio.StatObjectArgs
 import io.minio.StatObjectResponse
 import io.minio.errors.ErrorResponseException
 import io.minio.messages.Item
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import s2.spring.utils.logger.Logger
 import java.net.URLConnection
 
 @Service
@@ -31,7 +31,7 @@ class S3Service(
     private val minioClient: MinioClient,
     private val s3BucketProvider: S3BucketProvider
 ) {
-    private val logger by Logger()
+    private val logger = LoggerFactory.getLogger(S3Service::class.java)
 
     suspend fun putObject(path: String, content: ByteArray, metadata: Map<String, String>) = withBucket { bucket ->
         val contentType = metadata.entries.firstOrNull { (key) -> key.lowercase() == "content-type" }

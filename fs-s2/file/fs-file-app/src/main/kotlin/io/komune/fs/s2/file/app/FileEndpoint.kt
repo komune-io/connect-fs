@@ -68,12 +68,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
-import s2.spring.utils.logger.Logger
 import java.io.InputStream
 import java.net.URLConnection
 import java.util.UUID
 import jakarta.annotation.security.RolesAllowed
 import io.komune.fs.s2.file.app.model.sanitizedMetadata
+import org.slf4j.LoggerFactory
 
 /**
  * @d2 service
@@ -90,7 +90,7 @@ class FileEndpoint(
     private val s3BucketProvider: S3BucketProvider,
     private val s3Service: S3Service,
 ) {
-    private val logger by Logger()
+    private val logger = LoggerFactory.getLogger(FileEndpoint::class.java)
 
     @Autowired(required = false)
     private lateinit var kbClient: KbClient
