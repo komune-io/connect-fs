@@ -1,10 +1,16 @@
 name: Dev
 
-on: [push]
+on:
+  pull_request:
+    types: [opened, synchronize, labeled]
+  push:
+    branches:
+      - main
+      - 'release/*'
 
 jobs:
   dev:
-    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@e969a95dd8dc2f7622cbda9669d375924bea1042
+    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@main
     permissions:
       contents: read
       packages: write
