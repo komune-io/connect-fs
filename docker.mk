@@ -22,7 +22,7 @@ docker-fs-api-build:
 
 docker-fs-api-publish:
 	@docker tag ${GATEWAY_IMG} ghcr.io/komune-io/${GATEWAY_IMG}
-	@docker push ghcr.io/komune-io/${CCCEV_APP_IMG}
+	@docker push ghcr.io/komune-io/${GATEWAY_IMG}
 
 docker-fs-api-promote:
 	@docker tag ${GATEWAY_IMG} ghcr.io/komune-io/${GATEWAY_IMG}
