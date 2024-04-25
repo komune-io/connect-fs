@@ -13,14 +13,17 @@ build: docker-fs-api-build
 test:
 	@echo 'No test'
 
-publish: docker-fs-api-push
+publish: docker-fs-api-publish
 
-promote:
-	@echo 'No promote'
+promote: docker-fs-api-promote
 
 docker-fs-api-build:
 	VERSION=${VERSION} ./gradlew build ${GATEWAY_PACKAGE}:bootBuildImage --imageName ${GATEWAY_IMG} -x test
 
-docker-fs-api-push:
-	@docker push ${GATEWAY_IMG}
+docker-fs-api-publish:
+	@docker tag ${GATEWAY_IMG} ghcr.io/komune-io/${GATEWAY_IMG}
+	@docker push ghcr.io/komune-io/${CCCEV_APP_IMG}
 
+docker-fs-api-promote:
+	@docker tag ${GATEWAY_IMG} ghcr.io/komune-io/${GATEWAY_IMG}
+	@docker push docker.io/komune/${GATEWAY_IMG}
