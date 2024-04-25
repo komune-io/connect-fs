@@ -25,5 +25,5 @@ docker-fs-api-publish:
 	@docker push ghcr.io/komune-io/${GATEWAY_IMG}
 
 docker-fs-api-promote:
-	@docker tag ${GATEWAY_IMG} ghcr.io/komune-io/${GATEWAY_IMG}
+	@docker tag ${GATEWAY_IMG} docker.io/komune-io/${GATEWAY_IMG}
 	@docker push docker.io/komune/${GATEWAY_IMG}
