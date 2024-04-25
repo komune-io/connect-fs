@@ -1,7 +1,7 @@
 VERSION = $(shell cat VERSION)
 DOCKER_REPOSITORY = ghcr.io/
 
-GATEWAY_NAME	   	:= ${DOCKER_REPOSITORY}komune-io/fs-gateway
+GATEWAY_NAME	   	:= fs-gateway
 GATEWAY_IMG	    	:= ${GATEWAY_NAME}:${VERSION}
 GATEWAY_PACKAGE	   	:= fs-api:api-gateway
 
