@@ -5,6 +5,7 @@ STORYBOOK_NAME	   	 	:= ${DOCKER_REPOSITORY}komune-io/fs-storybook
 STORYBOOK_IMG	    	:= ${STORYBOOK_NAME}:${VERSION}
 STORYBOOK_LATEST		:= ${STORYBOOK_NAME}:latest
 
+.PHONY: lint build test publish promote
 
 lint: lint-docker-storybook
 

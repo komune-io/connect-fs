@@ -1,5 +1,7 @@
 VERSION = $(shell cat VERSION)
 
+.PHONY: lint build test publish promote
+
 lint:
 	echo 'No Lint'
 	#./gradlew detekt

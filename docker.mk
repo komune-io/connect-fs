@@ -5,6 +5,8 @@ GATEWAY_NAME	   	:= fs-gateway
 GATEWAY_IMG	    	:= ${GATEWAY_NAME}:${VERSION}
 GATEWAY_PACKAGE	   	:= fs-api:api-gateway
 
+.PHONY: lint build test publish promote
+
 lint:
 	@echo 'No Lint'
 
