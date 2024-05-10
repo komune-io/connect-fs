@@ -1,4 +1,4 @@
-package io.komune.hpp.trace.sourcing.ssm.app.config
+package io.komune.fs.s2.file.app.config
 
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith

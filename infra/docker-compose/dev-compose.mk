@@ -1,4 +1,4 @@
-DOCKER_COMPOSE_FILE = bclan minio redis kb bclan-init x2
+DOCKER_COMPOSE_FILE = bclan minio redis kb bclan-init
 
 DOCKER_COMPOSE_PATH = infra/docker-compose
 DOCKER_COMPOSE_ENV = $(DOCKER_COMPOSE_PATH)/.env_dev

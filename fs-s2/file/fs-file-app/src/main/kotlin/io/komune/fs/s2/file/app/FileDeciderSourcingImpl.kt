@@ -55,5 +55,7 @@ class FileDeciderSourcingImpl(
 		)
 	}
 
-	private suspend fun FilePath.buildUrl() = buildUrl(s3Properties.externalUrl, s3BucketProvider.getBucket(), s3Properties.dns)
+	private suspend fun FilePath.buildUrl() = buildUrl(
+		s3Properties.externalUrl, s3BucketProvider.getBucket(), s3Properties.dns
+	)
 }

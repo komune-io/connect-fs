@@ -29,6 +29,7 @@ data class File(
      */
     val pathStr: String,
 
+    @Suppress("MaxLineLength")
     /**
      * External URL to access the file
      * @example "https://s3.myproject.komune.io/myBucket/MyAwesomeObject/91541047-5da8-4161-af79-3fd367fc014e/image/main.jpg"

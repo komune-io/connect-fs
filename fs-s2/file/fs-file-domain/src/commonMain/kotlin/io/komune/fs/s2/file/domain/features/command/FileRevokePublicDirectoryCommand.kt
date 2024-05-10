@@ -10,7 +10,8 @@ import kotlinx.serialization.Serializable
  * @parent [io.komune.fs.s2.file.domain.D2FilePage]
  * @order 40
  */
-typealias FileRevokePublicDirectoryFunction = F2Function<FileRevokePublicDirectoryCommand, FilePublicDirectoryRevokedEvent>
+typealias FileRevokePublicDirectoryFunction
+		= F2Function<FileRevokePublicDirectoryCommand, FilePublicDirectoryRevokedEvent>
 
 
 /**

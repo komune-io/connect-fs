@@ -283,11 +283,10 @@ class FileEndpoint(
 
         val events = s3Service.listObjects(commandPathStr, true).also { objects ->
             val count = objects.count()
-            if (count == 0) {
-                throw IllegalArgumentException("File not found at path [$commandPathStr]")
-            } else {
-                logger.info("Found $count files to delete")
+            require(count == 0) {
+                "File not found at path [$commandPathStr]"
             }
+            logger.info("Found $count files to delete")
         }.mapAsync { obj ->
             val file = obj.get().toFile { it.buildUrl() }
             val metadata = s3Service.getObjectMetadata(file.pathStr)!!
@@ -374,7 +373,9 @@ class FileEndpoint(
 
     private fun mustBeSavedToSsm(directory: String?) = directory in fsSsmConfig.directories.orEmpty()
 
-    private suspend fun ByteArray.initFileInSsm(cmd: FileUploadCommand, fileId: FileId, path: String): FileUploadedEvent {
+    private suspend fun ByteArray.initFileInSsm(
+        cmd: FileUploadCommand, fileId: FileId, path: String
+    ): FileUploadedEvent {
         return FileInitCommand(
             id = fileId,
             path = cmd.path,
@@ -384,7 +385,9 @@ class FileEndpoint(
         ).let { fileDeciderSourcingImpl.init(it).toFileUploadedEvent() }
     }
 
-    private suspend fun ByteArray.logFileInSsm(cmd: FileUploadCommand, fileId: FileId, path: String): FileUploadedEvent {
+    private suspend fun ByteArray.logFileInSsm(
+        cmd: FileUploadCommand, fileId: FileId, path: String
+    ): FileUploadedEvent {
         return FileLogCommand(
             id = fileId,
             path = path,
@@ -393,11 +396,15 @@ class FileEndpoint(
         ).let { fileDeciderSourcingImpl.log(it).toFileUploadedEvent() }
     }
 
-    private suspend fun FilePath.buildUrl() = buildUrl(s3Properties.externalUrl, s3BucketProvider.getBucket(), s3Properties.dns)
+    private suspend fun FilePath.buildUrl() = buildUrl(
+        s3Properties.externalUrl, s3BucketProvider.getBucket(), s3Properties.dns
+    )
 
     private fun Policy?.orEmpty() = this ?: Policy()
 
-    private suspend inline fun <T, R> Iterable<T>.mapAsync(crossinline transform: suspend (T) -> R): List<R> = coroutineScope {
+    private suspend inline fun <T, R> Iterable<T>.mapAsync(
+        crossinline transform: suspend (T) -> R
+    ): List<R> = coroutineScope {
         map {
             async { transform(it) }
         }.awaitAll()

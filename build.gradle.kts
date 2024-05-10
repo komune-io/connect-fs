@@ -8,7 +8,7 @@ plugins {
 	id("org.graalvm.buildtools.native") version PluginVersions.graalvm apply false
 
 	id("io.komune.fixers.gradle.config") version PluginVersions.fixers
-//	id("io.komune.fixers.gradle.check") version PluginVersions.fixers
+	id("io.komune.fixers.gradle.check") version PluginVersions.fixers
 	id("io.komune.fixers.gradle.d2") version PluginVersions.d2
 
 }

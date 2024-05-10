@@ -10,7 +10,8 @@ import kotlinx.serialization.Serializable
  * @parent [io.komune.fs.s2.file.domain.D2FilePage]
  * @order 30
  */
-typealias FileInitPublicDirectoryFunction = F2Function<FileInitPublicDirectoryCommand, FilePublicDirectoryInitializedEvent>
+typealias FileInitPublicDirectoryFunction
+        = F2Function<FileInitPublicDirectoryCommand, FilePublicDirectoryInitializedEvent>
 
 /**
  * @d2 command

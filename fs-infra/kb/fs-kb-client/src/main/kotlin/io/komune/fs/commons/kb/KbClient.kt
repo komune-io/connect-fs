@@ -41,19 +41,19 @@ fun F2Client.kbClient(): F2SupplierSingle<KbClient> = f2SupplierSingle {
 }
 
 
-fun kbClient(urlBase: String, /*accessToken: String*/): F2SupplierSingle<KbClient> = f2SupplierSingle {
+fun kbClient(urlBase: String, requestTimeout: Long = 60000): F2SupplierSingle<KbClient> = f2SupplierSingle {
     val log = LoggerFactory.getLogger(KbClient::class.java)
     KbClient(
         F2ClientBuilder.get(urlBase) {
             install(HttpTimeout) {
-                requestTimeoutMillis = 60000
+                requestTimeoutMillis = requestTimeout
             }
-//            if(log.isDebugEnabled) {
+            if(log.isDebugEnabled) {
                 install(Logging) {
                     logger = Logger.DEFAULT
                     level = LogLevel.ALL
                 }
-//            }
+            }
         }
     )
 }
