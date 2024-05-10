@@ -40,7 +40,9 @@ open class Client(
         }.body()
     }
 
-    protected suspend inline fun <reified T> postFormData(path: String, crossinline block: FormDataBodyBuilder.() -> Unit): T {
+    protected suspend inline fun <reified T> postFormData(
+        path: String, crossinline block: FormDataBodyBuilder.() -> Unit
+    ): T {
         return httpClient.submitFormWithBinaryData(
             url = "$baseUrl/$path",
             formData = FormDataBodyBuilder().apply(block).toFormData()

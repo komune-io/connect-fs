@@ -20,9 +20,8 @@ class RedisConfig {
 	): ReactiveRedisTemplate<FileId, FileEntity> {
 		val keySerializer = StringRedisSerializer()
 
-		val valueSerializer: Jackson2JsonRedisSerializer<FileEntity> = Jackson2JsonRedisSerializer(FileEntity::class.java).apply {
-			setObjectMapper(jacksonObjectMapper())
-		}
+		val valueSerializer: Jackson2JsonRedisSerializer<FileEntity>
+			= Jackson2JsonRedisSerializer(jacksonObjectMapper(), FileEntity::class.java)
 		val builder: RedisSerializationContext.RedisSerializationContextBuilder<FileId, FileEntity> =
 			RedisSerializationContext.newSerializationContext(keySerializer)
 		val context: RedisSerializationContext<FileId, FileEntity> = builder.value(valueSerializer).build()

@@ -43,7 +43,8 @@ import org.springframework.util.ReflectionUtils
 class AotProcessor : BeanFactoryInitializationAotProcessor {
 
     override fun processAheadOfTime(bf: ConfigurableListableBeanFactory): BeanFactoryInitializationAotContribution {
-        return  BeanFactoryInitializationAotContribution { ctx: GenerationContext, code: BeanFactoryInitializationCode? ->
+        return  BeanFactoryInitializationAotContribution {
+            ctx: GenerationContext, code: BeanFactoryInitializationCode? ->
             val hints = ctx.runtimeHints
             hints.resources().registerPattern("user/*")
 

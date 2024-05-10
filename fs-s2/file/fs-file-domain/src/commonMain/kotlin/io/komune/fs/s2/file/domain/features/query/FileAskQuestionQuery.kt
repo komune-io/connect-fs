@@ -29,7 +29,7 @@ interface FileAskQuestionQueryDTO {
      * @example "Where does the project take place?"
      */
     val question: String
-
+    @Suppress("MaxLineLength")
     /**
      * Previous questions and answers in the context of the chat.
      * @example [[{
@@ -67,14 +67,19 @@ data class FileAskQuestionQuery(
 interface FileAskQuestionResultDTO {
     /**
      * Generated response to the given question.
-     * @example "The Banana4All project is primarily focused on implementing its initiatives in the banana-growing regions of Latin America,
-     * specifically in countries such as Ecuador, Costa Rica, Colombia, Guatemala, and Honduras. These countries have a significant presence
+     * @example "The Banana4All project is primarily focused on implementing
+     * its initiatives in the banana-growing regions of Latin America,
+     * specifically in countries such as Ecuador, Costa Rica, Colombia, Guatemala, and Honduras.
+     * These countries have a significant presence
      * in the global banana market and are known for their large-scale banana plantations.\n
-     * By targeting these regions, Banana4All aims to address the ecological impact of banana production in areas where it is most prevalent.
-     * These countries have a high concentration of banana farms and play a crucial role in supplying bananas to international markets.\n
-     * However, it is important to note that while the project's initial focus may be on Latin America, its principles and strategies can be
-     * adapted and implemented in other banana-growing regions worldwide. The ultimate goal of Banana4All is to bring about positive change
-     * and sustainability to the banana industry on a global scale."
+     * By targeting these regions, Banana4All aims to address the ecological
+     * impact of banana production in areas where it is most prevalent.
+     * These countries have a high concentration of banana farms and play a crucial
+     * role in supplying bananas to international markets.\n
+     * However, it is important to note that while the project's initial focus may be on Latin America,
+     * its principles and strategies can be adapted and implemented in other banana-growing regions worldwide.
+     * The ultimate goal of Banana4All is to bring about positive change and
+     * sustainability to the banana industry on a global scale."
      */
     val item: String
 }

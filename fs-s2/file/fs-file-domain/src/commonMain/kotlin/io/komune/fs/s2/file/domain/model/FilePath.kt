@@ -55,7 +55,7 @@ data class FilePath(
 ): FilePathDTO {
     companion object {
         fun from(path: String): FilePath {
-            val (objectType, objectId, directory, name) = path.split("/", limit = 4).padEnd(4)
+            val (objectType, objectId, directory, name) = path.split("/", limit = 4).padEnd(size = 4)
             return FilePath(
                 objectType = objectType,
                 objectId = objectId,
