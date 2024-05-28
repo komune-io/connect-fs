@@ -6,9 +6,7 @@ plugins {
 
 dependencies {
     api("io.komune.f2:f2-spring-boot-starter-function:${Versions.f2}")
-
-    //TODO replace f2-spring-boot-starter-auth-tenant by  Dependencies.Jvm.f2Auth(::api)
-    api(project(":fs-api:f2-spring-boot-starter-auth-tenant"))
+    api("io.komune.f2:f2-spring-boot-starter-auth-tenant:${Versions.f2}")
 
     implementation(project(":fs-commons:fs-error"))
     api("io.minio:minio:${Versions.minio}")

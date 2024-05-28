@@ -1,5 +1,6 @@
 package io.komune.fs.s2.file.client
 
+import f2.client.ktor.http.plugin.model.AuthRealm
 import io.komune.fs.s2.file.domain.features.command.FileDeleteCommand
 import io.komune.fs.s2.file.domain.features.command.FileDeletedEvents
 import io.komune.fs.s2.file.domain.features.command.FileInitPublicDirectoryCommand
@@ -20,8 +21,9 @@ import io.ktor.utils.io.ByteReadChannel
 
 class FileClient(
     url: String,
+    authProvider: suspend () -> AuthRealm,
     block: HttpClientConfig<*>.() -> Unit = {}
-): Client(url, block) {
+): Client(url, authProvider, block) {
     suspend fun fileGet(command: List<FileGetQuery>): List<FileGetResult> = post("fileGet", command)
 
     suspend fun fileDownload(command: FileDownloadQuery): ByteReadChannel = post("fileDownload", command)

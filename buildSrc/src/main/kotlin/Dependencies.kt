@@ -97,6 +97,5 @@ object Dependencies {
 		"io.ktor:ktor-client-content-negotiation:${Versions.ktor}",
 		"io.ktor:ktor-client-cio:${Versions.ktor}",
 		"io.ktor:ktor-serialization-kotlinx-json:${Versions.ktor}",
-		"io.ktor:ktor-serialization-jackson:${Versions.ktor}"
 	)
 }
