@@ -208,7 +208,7 @@ class FileEndpoint(
             metadata = cmd.metadata.plus("id" to fileId)
         )
 
-        if (cmd.vectorize) {
+        if (cmd.vectorize ?: false) {
             vectorize(cmd.path, cmd.metadata, fileByteArray)
         }
 
