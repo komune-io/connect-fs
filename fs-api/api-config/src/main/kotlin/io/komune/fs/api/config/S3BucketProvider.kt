@@ -13,7 +13,7 @@ class S3BucketProvider(
     }
 
     private suspend fun getSpace(): String? {
-        return fsProperties.space?.name ?: AuthenticationProvider.getSpace()
+        return fsProperties.space?.name ?: AuthenticationProvider.getTenant()
     }
 
     private fun deprecatedBucket(): String? {
