@@ -12,7 +12,7 @@ import java.util.Base64
 
 fun FilePath.toUploadCommand(
     metadata: Map<String, String> = emptyMap(),
-    vectorize: Boolean = false
+    vectorize: Boolean? = false
 ) = FileUploadCommand(
     path = this,
     metadata = mapOf(
