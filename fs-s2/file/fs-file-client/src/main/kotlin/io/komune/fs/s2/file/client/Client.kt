@@ -1,12 +1,18 @@
 package io.komune.fs.s2.file.client
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import f2.client.ktor.http.F2DefaultJson
+import f2.client.ktor.http.plugin.F2Auth
+import f2.client.ktor.http.plugin.model.AuthRealm
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.forms.FormPart
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
@@ -17,15 +23,36 @@ import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import io.ktor.serialization.jackson.jackson
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.slf4j.LoggerFactory
 
 open class Client(
     protected val baseUrl: String,
+    protected val  authProvider: suspend () -> AuthRealm,
     protected val block: HttpClientConfig<*>.() -> Unit = {}
 ) {
+    val logger = LoggerFactory.getLogger(Client::class.java)
+    val jsonConverter = Json {
+        ignoreUnknownKeys = true
+    }
     protected val httpClient = HttpClient(CIO) {
+        install(HttpTimeout) {
+            @SuppressWarnings("MagicNumber")
+            requestTimeoutMillis = 60000
+        }
+        if(logger.isDebugEnabled) {
+            install(Logging) {
+                logger = Logger.DEFAULT
+                level = LogLevel.ALL
+            }
+        }
         install(ContentNegotiation) {
-            jackson()
+            this.json(F2DefaultJson)
+        }
+        install(F2Auth) {
+            getAuth = authProvider
         }
         block()
     }
@@ -45,11 +72,13 @@ open class Client(
     ): T {
         return httpClient.submitFormWithBinaryData(
             url = "$baseUrl/$path",
-            formData = FormDataBodyBuilder().apply(block).toFormData()
+            formData = FormDataBodyBuilder(jsonConverter).apply(block).toFormData()
         ).body()
     }
 
-    protected class FormDataBodyBuilder {
+    protected class FormDataBodyBuilder(
+        val json: Json
+    ) {
         private val formParts = mutableListOf<FormPart<*>>()
 
         fun toFormData() = formData { formParts.forEach { append(it) } }
@@ -66,8 +95,9 @@ open class Client(
             ).let(formParts::add)
         }
 
-        fun <T> param(key: String, value: T) {
-            param(key, value.toJson(), "application/json")
+        inline fun <reified T> param(key: String, value: T) {
+            val encoded = json.encodeToString(value)
+            param(key, encoded, "application/json")
         }
 
         fun file(key: String, file: ByteArray, filename: String) {
@@ -78,9 +108,5 @@ open class Client(
             ).let(formParts::add)
         }
 
-        fun <T> T.toJson(): String = ObjectMapper()
-            .registerKotlinModule()
-            .writeValueAsString(this)
     }
-
 }
