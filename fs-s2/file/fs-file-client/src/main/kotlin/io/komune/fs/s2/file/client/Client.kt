@@ -30,13 +30,15 @@ import org.slf4j.LoggerFactory
 
 open class Client(
     protected val baseUrl: String,
-    protected val  authProvider: suspend () -> AuthRealm,
-    protected val block: HttpClientConfig<*>.() -> Unit = {}
+    private val authProvider: AuthProvider? = null,
+    private val block: HttpClientConfig<*>.() -> Unit = {}
 ) {
-    val logger = LoggerFactory.getLogger(Client::class.java)
+    private val logger = LoggerFactory.getLogger(Client::class.java)
+
     val jsonConverter = Json {
         ignoreUnknownKeys = true
     }
+
     protected val httpClient = HttpClient(CIO) {
         install(HttpTimeout) {
             @SuppressWarnings("MagicNumber")
@@ -51,8 +53,10 @@ open class Client(
         install(ContentNegotiation) {
             this.json(F2DefaultJson)
         }
-        install(F2Auth) {
-            getAuth = authProvider
+        authProvider?.let {
+            install(F2Auth) {
+                getAuth = authProvider
+            }
         }
         block()
     }

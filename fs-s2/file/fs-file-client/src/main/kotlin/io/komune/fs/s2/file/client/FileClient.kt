@@ -19,9 +19,11 @@ import io.komune.fs.s2.file.domain.features.query.FileListResult
 import io.ktor.client.HttpClientConfig
 import io.ktor.utils.io.ByteReadChannel
 
+typealias AuthProvider = suspend () -> AuthRealm
+
 class FileClient(
     url: String,
-    authProvider: suspend () -> AuthRealm,
+    authProvider: AuthProvider? = null,
     block: HttpClientConfig<*>.() -> Unit = {}
 ): Client(url, authProvider, block) {
     suspend fun fileGet(command: List<FileGetQuery>): List<FileGetResult> = post("fileGet", command)

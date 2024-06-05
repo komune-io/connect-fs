@@ -9,6 +9,7 @@ on:
       - 'release/*'
     tags:
       - '*'
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   libs:
