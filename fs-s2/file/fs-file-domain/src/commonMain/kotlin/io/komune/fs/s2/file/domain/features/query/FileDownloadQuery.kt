@@ -17,6 +17,7 @@ typealias FileDownloadFunction = F2Function<FileDownloadQuery, FileDownloadResul
  * @d2 query
  * @parent [FileDownloadFunction]
  */
+@Serializable
 data class FileDownloadQuery(
     override val objectType: String,
     override val objectId: String,

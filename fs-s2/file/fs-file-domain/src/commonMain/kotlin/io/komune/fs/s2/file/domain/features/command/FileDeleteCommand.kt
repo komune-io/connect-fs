@@ -18,6 +18,7 @@ typealias FileDeleteFunction = F2Function<FileDeleteCommand, FileDeletedEvents>
  * @d2 command
  * @parent [FileDeleteFunction]
  */
+@Serializable
 data class FileDeleteCommand(
 	/**
 	 * @ref [io.komune.fs.s2.file.domain.model.FilePath.objectType]
