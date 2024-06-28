@@ -23,4 +23,6 @@ suspend fun Item.toFile(buildUrl: suspend (FilePath) -> String): File {
 
 fun Item.sanitizedMetadata() = userMetadata().orEmpty().sanitizedMetadata()
 
-fun Map<String, String>.sanitizedMetadata() = this.mapKeys { (key) -> key.lowercase().removePrefix("x-amz-meta-") }
+fun Map<String, String?>.sanitizedMetadata(): Map<String, String> = this
+    .mapKeys { (key) -> key.lowercase().removePrefix("x-amz-meta-") }
+    .filterValues { it != null } as Map<String, String>
