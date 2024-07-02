@@ -35,6 +35,7 @@ jobs:
       packages: write
     with:
       make-file: 'docker.mk'
+      on-tag: 'publish promote'
       with-docker-registry-login: 'true'
     secrets:
       PKG_GITHUB_USERNAME: ${{ github.actor }}
