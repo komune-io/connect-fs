@@ -1,5 +1,8 @@
 package io.komune.fs.s2.file.app
 
+import f2.dsl.fnc.f2Function
+import f2.dsl.fnc.invokeWith
+import f2.spring.exception.NotFoundException
 import io.komune.fs.api.config.Roles
 import io.komune.fs.api.config.S3BucketProvider
 import io.komune.fs.api.config.S3Properties
@@ -42,10 +45,8 @@ import io.komune.fs.s2.file.domain.model.File
 import io.komune.fs.s2.file.domain.model.FilePath
 import io.komune.fs.spring.utils.contentByteArray
 import io.komune.fs.spring.utils.hash
-import f2.dsl.fnc.f2Function
-import f2.dsl.fnc.invokeWith
-import f2.spring.exception.NotFoundException
 import jakarta.annotation.security.PermitAll
+import jakarta.annotation.security.RolesAllowed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -54,6 +55,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.asFlux
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -71,9 +73,6 @@ import reactor.core.publisher.Flux
 import java.io.InputStream
 import java.net.URLConnection
 import java.util.UUID
-import jakarta.annotation.security.RolesAllowed
-import io.komune.fs.s2.file.app.model.sanitizedMetadata
-import org.slf4j.LoggerFactory
 
 /**
  * @d2 service
@@ -283,7 +282,7 @@ class FileEndpoint(
 
         val events = s3Service.listObjects(commandPathStr, true).also { objects ->
             val count = objects.count()
-            require(count == 0) {
+            require(count > 0) {
                 "File not found at path [$commandPathStr]"
             }
             logger.info("Found $count files to delete")
