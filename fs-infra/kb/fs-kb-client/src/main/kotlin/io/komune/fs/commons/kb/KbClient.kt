@@ -5,8 +5,7 @@ import io.komune.fs.commons.kb.domain.command.VectorAskedEventDTOBase
 import io.komune.fs.commons.kb.domain.command.VectorCreateFunction
 import f2.client.F2Client
 import f2.client.ktor.F2ClientBuilder
-import f2.client.ktor.get
-import f2.client.ktor.http.F2DefaultJson
+import f2.client.ktor.common.F2DefaultJson
 import f2.client.ktor.http.HttpF2Client
 import f2.dsl.fnc.F2Function
 import f2.dsl.fnc.F2SupplierSingle

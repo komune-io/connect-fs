@@ -1,8 +1,7 @@
 package io.komune.fs.s2.file.client
 
-import f2.client.ktor.http.F2DefaultJson
+import f2.client.ktor.common.F2DefaultJson
 import f2.client.ktor.http.plugin.F2Auth
-import f2.client.ktor.http.plugin.model.AuthRealm
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
