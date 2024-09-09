@@ -1,6 +1,6 @@
 package io.komune.fs.s2.file.client
 
-import f2.client.ktor.http.plugin.model.AuthRealm
+import f2.client.domain.AuthRealm
 import io.komune.fs.s2.file.domain.features.command.FileDeleteCommand
 import io.komune.fs.s2.file.domain.features.command.FileDeletedEvents
 import io.komune.fs.s2.file.domain.features.command.FileInitPublicDirectoryCommand
