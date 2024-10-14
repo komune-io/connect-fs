@@ -31,8 +31,12 @@ fixers {
 	}
 	bundle {
 		id = "fs"
-		name = "Connect FileSystem"
+		name = "FS"
 		description = "File manager"
 		url = "https://github.com/komune-io/connect-fs"
+	}
+	sonar {
+		organization = "komune-io"
+		projectKey = "komune-io_connect-fs"
 	}
 }

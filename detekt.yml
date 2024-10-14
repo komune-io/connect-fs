@@ -126,7 +126,7 @@ complexity:
     active: true
   LongParameterList:
     active: true
-    functionThreshold: 6
+    functionThreshold: 16
     constructorThreshold: 16
     ignoreDefaultParameters: false
     ignoreDataClasses: true
@@ -202,7 +202,7 @@ empty-blocks:
     active: true
   EmptyFunctionBlock:
     active: true
-    ignoreOverridden: false
+    ignoreOverridden: true
   EmptyIfBlock:
     active: true
   EmptyInitBlock:
@@ -246,6 +246,8 @@ exceptions:
       - 'MalformedURLException'
       - 'NumberFormatException'
       - 'ParseException'
+      - 'JakartaNotFoundException'
+      - 'ConflictException'
     allowedExceptionNameRegex: '_|(ignore|expected).*'
   ThrowingExceptionFromFinally:
     active: true
@@ -506,7 +508,7 @@ style:
     active: false
   DestructuringDeclarationWithTooManyEntries:
     active: true
-    maxDestructuringEntries: 5
+    maxDestructuringEntries: 4
   DoubleNegativeLambda:
     active: false
     negativeFunctions:
@@ -574,7 +576,7 @@ style:
     ignoreOverridden: false
     ignoreUsageInGenerics: false
   FunctionOnlyReturningConstant:
-    active: true
+    active: false
     ignoreOverridableFunction: true
     ignoreActualFunction: true
     excludedFunctions: []
@@ -733,7 +735,7 @@ style:
   UseOrEmpty:
     active: true
   UseRequire:
-    active: true
+    active: false
   UseRequireNotNull:
     active: true
   UseSumOfInsteadOfFlatMapSize:
