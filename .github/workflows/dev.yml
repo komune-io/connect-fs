@@ -13,7 +13,7 @@ on:
 
 jobs:
   libs:
-    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@main
+    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@0.23.0
     permissions:
       contents: read
       packages: write
@@ -29,7 +29,7 @@ jobs:
       PKG_SONATYPE_OSS_TOKEN: ${{ secrets.PKG_SONATYPE_OSS_TOKEN }}
 
   docker:
-    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@main
+    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@0.23.0
     permissions:
       contents: read
       packages: write
@@ -46,7 +46,7 @@ jobs:
       DOCKER_PROMOTE_PASSWORD: ${{ secrets.DOCKER_IO_PASSWORD }}
 
   docs:
-    uses: komune-io/fixers-gradle/.github/workflows/publish-storybook-workflow.yml@main
+    uses: komune-io/fixers-gradle/.github/workflows/publish-storybook-workflow.yml@0.23.0
     permissions:
       contents: read
       packages: write
@@ -55,6 +55,7 @@ jobs:
     with:
       on-tag: 'publish_promote'
       with-chromatic: false
+      make-file: 'Makefile_docs.mk'
       storybook-dir: storybook
       storybook-static-dir: storybook-static
       with-setup-npm-github-pkg: 'false'

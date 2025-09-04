@@ -138,3 +138,16 @@ Properties prefix: `spring.redis`
 | password | Redis login password | blblbl | sOmE_sEcUrE_pAsS |
 
 # Errors
+
+## fs-script quickstart
+
+See docs/task.md for detailed configuration and usage.
+
+Run locally (no web server):
+- Create application.yml with fs.script.init.* and fs.script.retry.* as documented.
+- Run: ./gradlew :fs-script:script-gateway:bootRun --args=""
+
+Docker image targets:
+- make docker-fs-script-build
+- make docker-fs-script-publish
+- make docker-fs-script-promote

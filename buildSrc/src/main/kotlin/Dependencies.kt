@@ -39,10 +39,34 @@ object Repo {
 }
 
 object Dependencies {
+	object Jvm {
+		object Spring {
+			fun test(scope: Scope) = FixersDependencies.Jvm.Test.junit(scope).add(
+				"org.springframework.boot:spring-boot-starter-test:${Versions.springBoot}",
+			)
+
+			fun autoConfigure(scope: Scope, ksp: Scope) = FixersDependencies.Jvm.Spring.autoConfigure(scope, ksp)
+		}
+
+		object F2 {
+			fun f2Function(scope: Scope) = scope.add(
+				"io.komune.f2:f2-spring-boot-starter-function:${Versions.f2}"
+			)
+		}
+		object Json {
+			fun jackson(scope: Scope) = FixersDependencies.Jvm.Json.jackson(scope)
+		}
+	}
+
 	object Fixers {
 		fun s2SourcingSsm(scope: Scope) = scope.add(
 			"io.komune.s2:s2-spring-boot-starter-sourcing-ssm:${Versions.s2}",
 		)
+	}
+
+
+	object Logging {
+		fun slf4j(scope: Scope) = FixersDependencies.Jvm.Logging.slf4j(scope)
 	}
 
 	object Spring {
@@ -76,6 +100,10 @@ object Dependencies {
 
 		fun f2Client(scope: Scope) = scope.add(
 			"io.komune.f2:f2-client-ktor:${Versions.f2}",
+			"io.komune.f2:f2-client-domain:${Versions.f2}",
+		)
+		fun f2ClientDomain(scope: Scope) = scope.add(
+			"io.komune.f2:f2-client-domain:${Versions.f2}",
 		)
 
 		object Ktor {
