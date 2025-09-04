@@ -34,7 +34,7 @@ docker-fs-api-promote:
 # fs-script docker image targets
 SCRIPT_NAME := fs-script
 SCRIPT_IMG := ${SCRIPT_NAME}:${VERSION}
-SCRIPT_PACKAGE := fs-script:script-gateway
+SCRIPT_PACKAGE := fs-script:fs-script-gateway
 
 docker-fs-script-build:
 	VERSION=${VERSION} ./gradlew build ${SCRIPT_PACKAGE}:bootBuildImage --imageName ${SCRIPT_IMG} -x test

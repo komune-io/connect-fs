@@ -145,7 +145,7 @@ See docs/task.md for detailed configuration and usage.
 
 Run locally (no web server):
 - Create application.yml with fs.script.init.* and fs.script.retry.* as documented.
-- Run: ./gradlew :fs-script:script-gateway:bootRun --args=""
+- Run: ./gradlew :fs-script:fs-script-gateway:bootRun --args=""
 
 Docker image targets:
 - make docker-fs-script-build
