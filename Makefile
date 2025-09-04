@@ -4,24 +4,24 @@ VERSION = $(shell cat VERSION)
 
 ## New
 lint:
-	@make -f libs.mk lint
-	@make -f docker.mk lint
+	@make -f make_libs.mk lint
+	@make -f make_docker.mk lint
 
 build:
-	@make -f libs.mk build
-	@make -f docker.mk build
+	@make -f make_libs.mk build
+	@make -f make_docker.mk build
 
 test:
-	@make -f libs.mk test
-	@make -f docker.mk test
+	@make -f make_libs.mk test
+	@make -f make_docker.mk test
 
 publish:
-	@make -f libs.mk publish
-	@make -f docker.mk publish
+	@make -f make_libs.mk publish
+	@make -f make_docker.mk publish
 
 promote:
-	@make -f libs.mk promote
-	@make -f docker.mk promote
+	@make -f make_libs.mk promote
+	@make -f make_docker.mk promote
 
 version:
 	@VERSION=$$(cat VERSION); \
