@@ -1,7 +1,7 @@
 package io.komune.fs.script.gateway
 
-import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Configuration
 
 @Configuration(proxyBeanMethods = false)
@@ -9,7 +9,5 @@ import org.springframework.context.annotation.Configuration
 class ScriptApplication
 
 fun main(args: Array<String>) {
-	SpringApplication(ScriptApplication::class.java).run {
-		run(*args)
-	}
+    runApplication<ScriptApplication>(*args)
 }
