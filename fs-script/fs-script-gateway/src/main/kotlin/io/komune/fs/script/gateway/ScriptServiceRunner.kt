@@ -12,6 +12,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.stereotype.Service
 
+class ImportScriptException(message: String) : RuntimeException(message)
+
 @Service
 @EnableConfigurationProperties(FsScriptInitProperties::class, FsRetryProperties::class)
 class ScriptServiceRunner(
@@ -48,7 +50,9 @@ class ScriptServiceRunner(
             importScript.run()
         }
         
-        check(success) { "File Import Script failed after ${retryProperties.max} attempts" }
+        if (!success) {
+            throw ImportScriptException("File Import Script failed after ${retryProperties.max} attempts")
+        }
         
         logger.info("File Import Script completed successfully")
     }
