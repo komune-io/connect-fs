@@ -100,8 +100,8 @@ class ImportScript(
                 }
             }
         logger.info(
-            "Import summary for ${'$'}rootDirectory: uploaded=${'$'}uploaded, " +
-            "skipped=${'$'}skipped, failed=${'$'}failed"
+            "Import summary for $rootDirectory: uploaded=$uploaded, " +
+            "skipped=$skipped, failed=$failed"
         )
         return false
     }

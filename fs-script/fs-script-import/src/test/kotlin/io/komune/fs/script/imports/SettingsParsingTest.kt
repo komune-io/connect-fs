@@ -38,13 +38,11 @@ class SettingsParsingTest {
     @Test
     fun `FsScriptInitProperties should aggregate source files`() {
         val props = FsScriptInitProperties(
-            source = "/tmp/root1",
             sources = arrayListOf("/tmp/root2", "/tmp/root3")
         )
         val files = props.getSourceFiles()
-        assertEquals(3, files.size)
-        assertEquals("/tmp/root1", files[0].path)
-        assertEquals("/tmp/root2", files[1].path)
-        assertEquals("/tmp/root3", files[2].path)
+        assertEquals(2, files.size)
+        assertEquals("/tmp/root2", files[0].path)
+        assertEquals("/tmp/root3", files[1].path)
     }
 }
