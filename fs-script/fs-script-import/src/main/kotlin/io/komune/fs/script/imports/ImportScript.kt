@@ -17,7 +17,7 @@ class ImportScript(
     init {
         logger.info("=== ImportScript Configuration ===")
         logger.info("Source Directory: ${properties.sources}")
-        logger.info("=== Environment§ Variables (S3 Config) ===")
+        logger.info("=== Environment Variables (S3 Config) ===")
         logger.info("FS_S3_INTERNAL_URL: ${System.getenv("FS_S3_INTERNAL_URL")}")
         logger.info("FS_S3_EXTERNAL_URL: ${System.getenv("FS_S3_EXTERNAL_URL")}")
         logger.info("FS_S3_BUCKET: ${System.getenv("FS_S3_BUCKET")}")
