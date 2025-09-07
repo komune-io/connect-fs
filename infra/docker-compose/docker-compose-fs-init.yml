@@ -1,0 +1,21 @@
+services:
+  fs-init:
+    image: fs-script:0.22.0-SNAPSHOT
+    container_name: fs-init
+    volumes:
+      - ./data:/data
+    environment:
+      - FS_SCRIPT_INIT_SOURCE=${FS_SCRIPT_INIT_SOURCE}
+      - FS_SCRIPT_RETRY_MAX=${FS_SCRIPT_RETRY_MAX}
+      - FS_SCRIPT_RETRY_DELAY_MILLIS=${FS_SCRIPT_RETRY_DELAY_MILLIS}
+      - FS_S3_INTERNAL_URL=${FS_S3_INTERNAL_URL}
+      - FS_S3_EXTERNAL_URL=${FS_S3_EXTERNAL_URL}
+      - FS_S3_USERNAME=${FS_S3_USERNAME}
+      - FS_S3_PASSWORD=${FS_S3_PASSWORD}
+    networks:
+      - net
+
+networks:
+  net:
+    name: ${DOCKER_NETWORK}
+    external: true

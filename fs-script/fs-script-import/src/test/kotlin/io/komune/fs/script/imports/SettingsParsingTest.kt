@@ -4,34 +4,40 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.komune.fs.script.core.model.ImportSettings
 import io.komune.fs.script.core.utils.jsonMapper
 import io.komune.fs.script.core.config.properties.FsScriptInitProperties
-import io.komune.fs.script.core.config.properties.AuthProperties
-import io.komune.fs.script.core.config.properties.ApiKeyProperties
-import io.komune.fs.script.core.config.properties.FsApiProperties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class SettingsParsingTest {
 
     @Test
-    fun `should parse settings json with bucket`() {
+    fun `should parse settings json with policies and metadata`() {
         val json = """
             {
-              "buckets": {
-                "bucket": "my-space"
+              "policies": {
+                "retention": {
+                  "days": 30,
+                  "versions": 5
+                },
+                "compression": true
+              },
+              "metadata": {
+                "environment": "test",
+                "project": "connect-fs"
               }
             }
         """.trimIndent()
         val settings = jsonMapper.readValue<ImportSettings>(json)
-        requireNotNull(settings.buckets)
-        assertEquals("my-space", settings.buckets?.bucket)
+        requireNotNull(settings.policies)
+        assertEquals(30, settings.policies?.retention?.days)
+        assertEquals(5, settings.policies?.retention?.versions)
+        assertEquals(true, settings.policies?.compression)
+        assertEquals("test", settings.metadata?.get("environment"))
+        assertEquals("connect-fs", settings.metadata?.get("project"))
     }
 
     @Test
     fun `FsScriptInitProperties should aggregate source files`() {
         val props = FsScriptInitProperties(
-            auth = AuthProperties(url = "https://auth", realmId = "realm"),
-            admin = ApiKeyProperties(name = "n", clientId = "id", clientSecret = "secret"),
-            fs = FsApiProperties(url = "https://fs-api"),
             source = "/tmp/root1",
             sources = arrayListOf("/tmp/root2", "/tmp/root3")
         )

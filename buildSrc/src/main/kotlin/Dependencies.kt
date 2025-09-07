@@ -1,12 +1,11 @@
-import io.komune.gradle.dependencies.FixersDependencies
-import io.komune.gradle.dependencies.FixersPluginVersions
-import io.komune.gradle.dependencies.FixersVersions
-import io.komune.gradle.dependencies.Scope
-import io.komune.gradle.dependencies.add
+import io.komune.fixers.gradle.dependencies.FixersDependencies
+import io.komune.fixers.gradle.dependencies.FixersPluginVersions
+import io.komune.fixers.gradle.dependencies.FixersVersions
+import io.komune.fixers.gradle.dependencies.Scope
+import io.komune.fixers.gradle.dependencies.add
 
 object Framework {
 	val fixers = FixersPluginVersions.fixers
-	val connect = "0.22.0-SNAPSHOT"
 }
 
 object PluginVersions {
@@ -20,22 +19,12 @@ object PluginVersions {
 object Versions {
 	val f2 = Framework.fixers
 	val s2 = Framework.fixers
-	val c2 = Framework.fixers
 	const val springBoot = PluginVersions.springBoot
 	const val springFramework = FixersVersions.Spring.framework
-	const val springSecurity = "6.1.3"
 
 	const val ktor = FixersVersions.Kotlin.ktor
 	const val minio = "8.5.5"
 	const val reflection = "0.10.2"
-}
-
-object Repo {
-	val snapshot: List<String> = listOf(
-		// For fixers
-		"https://oss.sonatype.org/content/repositories/snapshots",
-		"https://oss.sonatype.org/service/local/repositories/releases/content",
-	)
 }
 
 object Dependencies {

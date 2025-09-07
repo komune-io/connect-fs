@@ -9,15 +9,11 @@ class S3BucketProvider(
 ) {
 
     suspend fun getBucket(): String {
-        return getSpace() ?: deprecatedBucket() ?: throw NoBucketConfiguredError().asException()
+        return getSpace() ?: throw NoBucketConfiguredError().asException()
     }
 
     private suspend fun getSpace(): String? {
         return fsProperties.space?.name ?: AuthenticationProvider.getTenant()
-    }
-
-    private fun deprecatedBucket(): String? {
-        return fsProperties.s3.bucket
     }
 
 }

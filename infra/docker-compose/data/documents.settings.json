@@ -1,0 +1,22 @@
+{
+  "policies": {
+    "retention": {
+      "days": 2555,
+      "versions": 10
+    },
+    "access": {
+      "public": false,
+      "allowedOrigins": ["https://intranet.company.com", "https://portal.company.com"]
+    },
+    "compression": false,
+    "encryption": true
+  },
+  "metadata": {
+    "classification": "business",
+    "department": "legal",
+    "backup": "required",
+    "compliance": "gdpr",
+    "bucket-type": "documents",
+    "managed-by": "legal-department"
+  }
+}

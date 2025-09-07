@@ -70,7 +70,7 @@ data class FilePath(
     }
 
     override fun toString() = "$objectType/$objectId/$directory/$name"
-        .substringBefore("//") // stop before first empty parameter
+        .substringBefore("//")
         .removeSuffix("/")
 
     fun toPartialPrefix(trailingSlash: Boolean = true) = toString().plus(if (trailingSlash) "/" else "")

@@ -1,0 +1,13 @@
+{
+  "policies": {
+    "retention": {
+      "days": 30
+    },
+    "compression": false,
+    "encryption": true
+  },
+  "metadata": {
+    "environment": "test",
+    "project": "connect-fs"
+  }
+}

@@ -2,6 +2,7 @@ package io.komune.fs.script.gateway
 
 import io.komune.fs.script.core.config.properties.FsRetryProperties
 import io.komune.fs.script.core.config.properties.FsScriptInitProperties
+import io.komune.fs.script.core.service.FsScriptS3Service
 import io.komune.fs.script.core.utils.retryOnThrow
 import io.komune.fs.script.imports.ImportScript
 import kotlinx.coroutines.runBlocking
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Service
 class ScriptServiceRunner(
     private val context: ConfigurableApplicationContext,
     private val fsScriptInitProperties: FsScriptInitProperties,
-    private val retryProperties: FsRetryProperties
+    private val retryProperties: FsRetryProperties,
+    private val fsScriptS3Service: FsScriptS3Service
 ): CommandLineRunner {
 
     private val logger = LoggerFactory.getLogger(ScriptServiceRunner::class.java)
@@ -35,7 +37,7 @@ class ScriptServiceRunner(
     }
 
     private suspend fun runFileImportScript() {
-        val importScript = ImportScript(fsScriptInitProperties)
+        val importScript = ImportScript(fsScriptInitProperties, fsScriptS3Service)
         
         val success = retryOnThrow(
             actionName = "File Import Script",

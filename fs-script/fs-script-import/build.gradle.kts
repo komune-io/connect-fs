@@ -6,7 +6,6 @@ plugins {
 }
 
 dependencies {
-	// FS Script core module with shared utilities
 	api(project(":fs-script:fs-script-core"))
 	
 	Dependencies.Jvm.Spring.autoConfigure(::implementation, ::kapt)
@@ -14,7 +13,7 @@ dependencies {
 	Dependencies.Jvm.Json.jackson(::implementation)
 	Dependencies.Mpp.f2ClientDomain(::implementation)
 
-	api(project(":fs-s2:file:fs-file-client"))
+	api(project(":fs-s2:file:fs-file-app"))
 
 	Dependencies.junit(::testImplementation)
 }

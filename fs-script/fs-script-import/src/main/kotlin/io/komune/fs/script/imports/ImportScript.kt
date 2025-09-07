@@ -4,29 +4,31 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.komune.fs.script.core.model.ImportSettings
 import io.komune.fs.script.core.utils.jsonMapper
 import io.komune.fs.script.core.config.properties.FsScriptInitProperties
-import io.komune.fs.script.core.model.ImportContext
+import io.komune.fs.script.core.service.FsScriptS3Service
 import java.io.File
 import org.slf4j.LoggerFactory
 
-import io.komune.fs.s2.file.client.FileClient
-import io.komune.fs.s2.file.domain.features.query.FileListQuery
-
 class ImportScript(
-    private val properties: FsScriptInitProperties
+    private val properties: FsScriptInitProperties,
+    private val s3Service: FsScriptS3Service
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val fileClient: FileClient by lazy {
-        val authRealm = properties.asAuthRealm()
-        FileClient(
-            url = properties.fs.url,
-            authProvider = { authRealm }
-        )
+    init {
+        logger.info("=== ImportScript Configuration ===")
+        logger.info("Source Directory: ${properties.source}")
+        logger.info("=== Environment Variables (S3 Config) ===")
+        logger.info("FS_S3_INTERNAL_URL: ${System.getenv("FS_S3_INTERNAL_URL")}")
+        logger.info("FS_S3_EXTERNAL_URL: ${System.getenv("FS_S3_EXTERNAL_URL")}")
+        logger.info("FS_S3_BUCKET: ${System.getenv("FS_S3_BUCKET")}")
+        logger.info("FS_S3_USERNAME: ${System.getenv("FS_S3_USERNAME")}")
+        logger.info("FS_S3_PASSWORD: [REDACTED]")
+        logger.info("================================")
     }
 
     suspend fun run() {
         val rootDirectories = properties.getSourceFiles()
-        rootDirectories.map { rootDirectory ->
+        rootDirectories.forEach { rootDirectory ->
             if (importFolder(rootDirectory)) return
         }
     }
@@ -42,44 +44,29 @@ class ImportScript(
             throw IllegalArgumentException("Root directory does not exist: $rootDirectory")
         }
 
-        val settingsFile = File(rootDirectory, "settings.json")
-        if (!settingsFile.exists() || !settingsFile.isFile) {
-            throw IllegalArgumentException("File settings.json not found in root directory")
-        }
+        val bucketName = rootDirectory.name.lowercase()
+        logger.info("Using bucket: $bucketName")
 
-        val importSettings = jsonMapper.readValue<ImportSettings>(settingsFile)
-            .buckets
-            ?: return true
+        val globalSettings = loadSettings(rootDirectory, "settings.json")
+        
+        initBucket(bucketName)
 
-        // Initialize bucket by triggering a lightweight list operation
-        initBucket()
-
-        // Traverse files and upload using FilePath convention: objectType/objectId/directory/name
-        val importContext = ImportContext(rootDirectory, importSettings)
         var uploaded = 0
         var skipped = 0
         var failed = 0
         rootDirectory.walkTopDown()
             .filter { it.isFile }
+            .filter { !it.name.endsWith(".settings.json") }
             .filter { it.name != "settings.json" }
             .forEach { file ->
                 val relPath = file.relativeTo(rootDirectory).invariantSeparatorsPath
                 try {
-                    // If relPath doesn't contain enough segments, skip with warning
-                    val segments = relPath.split("/")
-                    if (segments.size < 1) {
-                        logger.warn("Skipping file with empty relative path: $relPath")
-                        skipped++
-                        return@forEach
-                    }
+                    val objectKey = relPath
 
-                    // Build FilePath from relPath (FilePath.from handles missing parts)
-                    val filePath = io.komune.fs.s2.file.domain.model.FilePath.from(relPath)
-
-                    // Idempotency: check if file exists and size matches; if so, skip
-                    val existing = fileClient.fileGet(listOf(filePath)).firstOrNull()?.item
+                    val existing = s3Service.statObject(bucketName, objectKey)
+                    
                     val localSize = file.length()
-                    if (existing != null && existing.size == localSize) {
+                    if (existing != null && existing.size() == localSize) {
                         logger.info("Skip (unchanged): $relPath")
                         skipped++
                         return@forEach
@@ -91,18 +78,20 @@ class ImportScript(
                         if (contentType != null) put("content-type", contentType)
                     }
 
-                    val event = fileClient.fileUpload(
-                        command = io.komune.fs.s2.file.domain.features.command.FileUploadCommand(
-                            path = filePath,
-                            metadata = metadata
-                        ),
-                        file = content
-                    )
-                    importContext.files[filePath] = event.id
+                    val fileSettings = loadSettings(file.parentFile, "${file.nameWithoutExtension}.settings.json")
+                    
+                    val finalMetadata = buildMap {
+                        putAll(metadata)
+                        fileSettings?.metadata?.let { putAll(it) }
+                        globalSettings?.metadata?.let { putAll(it) }
+                    }
+
+                    s3Service.putObject(bucketName, objectKey, content, contentType, finalMetadata)
+                    
                     if (existing == null) {
-                        logger.info("Uploaded (new): $relPath -> ${'$'}{event.id}")
+                        logger.info("Uploaded (new): $relPath")
                     } else {
-                        logger.info("Uploaded (updated): $relPath -> ${'$'}{event.id}")
+                        logger.info("Uploaded (updated): $relPath")
                     }
                     uploaded++
                 } catch (e: Exception) {
@@ -117,25 +106,31 @@ class ImportScript(
         return false
     }
 
-    private suspend fun initBucket() {
-        logger.info("Initializing S3 bucket (create if not exists)...")
+    private suspend fun initBucket(bucketName: String) {
+        logger.info("Initializing S3 bucket: $bucketName (create if not exists)...")
         try {
-            // Any call to the file API ensures bucket existence server-side
-            // The FileClient/S3Service automatically creates the bucket if it doesn't exist
-            fileClient.fileList(
-                command = listOf(
-                    FileListQuery(
-                        objectType = null,
-                        objectId = null,
-                        directory = null,
-                        recursive = false
-                    )
-                )
-            )
-            logger.info("S3 bucket initialized successfully")
+            s3Service.ensureBucket(bucketName)
+            s3Service.listObjects(bucketName, prefix = "", recursive = false)
+            logger.info("S3 bucket '$bucketName' initialized successfully")
         } catch (e: Exception) {
-            logger.error("Failed to initialize S3 bucket", e)
+            logger.error("Failed to initialize S3 bucket: $bucketName", e)
             throw e
+        }
+    }
+    
+    private fun loadSettings(directory: File, filename: String): ImportSettings? {
+        val settingsFile = File(directory, filename)
+        return if (settingsFile.exists() && settingsFile.isFile) {
+            try {
+                jsonMapper.readValue<ImportSettings>(settingsFile).also {
+                    logger.debug("Loaded settings from: ${settingsFile.absolutePath}")
+                }
+            } catch (e: Exception) {
+                logger.warn("Failed to parse settings file: ${settingsFile.absolutePath}", e)
+                null
+            }
+        } else {
+            null
         }
     }
 

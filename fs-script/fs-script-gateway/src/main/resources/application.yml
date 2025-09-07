@@ -1,58 +1,22 @@
 server:
   port: 1001
-
-im:
-  script:
-    retry:
-      max: 5
-      delayMillis: 10000
-    init:
-      auth:
-        serverUrl:
-        realmId: master
-        clientId: admin-cli
-        username:
-        password:
-    space:
-      auth:
-        serverUrl:
-        realmId: master
-        clientId:
-        clientSecret:
-
 f2:
   tenant:
-    issuerBaseUri: http://localhost:8080
-
-connect:
-  im:
-    keycloak:
-      url: http://localhost:8080
-      realm: master
-      clientId: im-root-client
-      clientSecret: secret
-
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-
-im:
+    issuerBaseUri:
+fs:
   script:
+    retry:
+      max: 3
+      delayMillis: 5000
     init:
-      auth:
-        serverUrl: http://localhost:8080
-        realmId: master
-        clientId: admin-cli
-        username: root
-        password: root
-      json: file:./infra/docker-compose/config/build/init.json
-    space:
-      auth:
-        serverUrl: http://localhost:8080
-        realmId: master
-        clientId: im-root-client
-        clientSecret: secret
-      jsonCreate: file:./infra/docker-compose/config/build/space-create.json
-      jsonConfig: file:./infra/docker-compose/config/build/space-config.json
+      source: ${FS_SCRIPT_INIT_SOURCE:/Users/adrien/Dev/komune/connect/fs/infra/docker-compose/data/test-import}
+    s3:
+      internalUrl: ${FS_S3_INTERNAL_URL:http://localhost:9000}
+      externalUrl: ${FS_S3_EXTERNAL_URL:http://localhost:9000}
+      username: ${FS_S3_USERNAME:minio}
+      password: ${FS_S3_PASSWORD:minio123}
+
+logging:
+  level:
+    io.komune.fs.script: DEBUG
+    root: INFO
