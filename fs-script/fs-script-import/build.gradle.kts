@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
 	api(project(":fs-script:fs-script-core"))
+	implementation(project(":fs-commons:fs-commons-utils"))
 	
 	Dependencies.Jvm.Spring.autoConfigure(::implementation, ::kapt)
 	Dependencies.Logging.slf4j(::implementation)

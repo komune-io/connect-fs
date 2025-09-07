@@ -1,22 +1,15 @@
 server:
   port: 1001
-f2:
-  tenant:
-    issuerBaseUri:
+
 fs:
   script:
     retry:
       max: 3
       delayMillis: 5000
     init:
-      source: ${FS_SCRIPT_INIT_SOURCE:/Users/adrien/Dev/komune/connect/fs/infra/docker-compose/data/test-import}
+      source: ${FS_SCRIPT_INIT_SOURCE:./infra/docker-compose/data/test-import}
     s3:
       internalUrl: ${FS_S3_INTERNAL_URL:http://localhost:9000}
       externalUrl: ${FS_S3_EXTERNAL_URL:http://localhost:9000}
       username: ${FS_S3_USERNAME:minio}
       password: ${FS_S3_PASSWORD:minio123}
-
-logging:
-  level:
-    io.komune.fs.script: DEBUG
-    root: INFO
