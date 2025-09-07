@@ -34,7 +34,7 @@ class ImportScript(
     }
 
     @Suppress("LongMethod")
-    private suspend fun ImportScript.importFolder(rootDirectory: File): Boolean {
+    private suspend fun importFolder(rootDirectory: File): Boolean {
         logger.info("/////////////////////////////////////////////////////////////////")
         logger.info("/////////////////////////////////////////////////////////////////")
         logger.info("Importing data from $rootDirectory")
