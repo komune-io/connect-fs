@@ -78,7 +78,7 @@ class ImportScript(
                         if (contentType != null) put("content-type", contentType)
                     }
 
-                    val fileSettings = loadSettings(file.parentFile, "${file.nameWithoutExtension}.settings.json")
+                    val fileSettings = loadSettings(file.parentFile, "${file.nameWithoutExtension ?: file.name}.settings.json")
                     
                     val finalMetadata = buildMap {
                         putAll(metadata)

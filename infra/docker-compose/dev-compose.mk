@@ -102,8 +102,8 @@ dev-service-action:
 		docker compose --env-file $(DOCKER_COMPOSE_ENV) -f $(DOCKER_COMPOSE_PATH)/docker-compose-$(SERVICE).yml pull; \
 	elif [ "$(ACTION)" = "deploy" ]; then \
 		docker stack deploy --detach=true --compose-file $(DOCKER_COMPOSE_PATH)/docker-compose-$(SERVICE).yml $(DOCKER_NETWORK); \
-	elif [ "$(ACTION)" = "up" ]; then \
-		$(MAKE) $(MAKE_OPTS) --no-print-directory dev-service-action ACTION=deploy SERVICE=$(SERVICE); \
+	elif [ "$(ACTION)" = "remove" ]; then \
+		docker stack rm $(DOCKER_NETWORK); \
 	else \
 		echo 'No valid action: $(ACTION).'; \
 		echo 'Available actions are:'; \
