@@ -12,11 +12,9 @@ data class FsProperties (
 data class S3Properties(
     var internalUrl: String,
     var externalUrl: String,
-    var region: String,
+    var region: String? = null,
     var username: String,
     var password: String,
-    @Deprecated("Use fs.space.name")
-    var bucket: String?,
     var dns: Boolean = false,
 )
 

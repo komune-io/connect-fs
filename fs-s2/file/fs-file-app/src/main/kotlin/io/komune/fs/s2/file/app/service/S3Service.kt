@@ -2,8 +2,8 @@ package io.komune.fs.s2.file.app.service
 
 import io.komune.fs.api.config.S3BucketProvider
 import io.komune.fs.s2.file.app.model.Policy
-import io.komune.fs.s2.file.app.utils.parseJsonTo
-import io.komune.fs.s2.file.app.utils.toJson
+import io.komune.fs.commons.utils.parseJsonTo
+import io.komune.fs.commons.utils.toJson
 import io.minio.BucketExistsArgs
 import io.minio.CopyObjectArgs
 import io.minio.CopySource

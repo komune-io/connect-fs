@@ -58,7 +58,6 @@ fun kbClient(urlBase: String, requestTimeout: Long = 60000): F2SupplierSingle<Kb
 }
 
 open class KbClient(val client: F2Client) {
-//    fun knowledgeAsk(): VectorAskFunction = client.function("ask")
     fun knowledgeAsk(): VectorAskFunction = F2Function { msgs ->
         msgs.map { cmd ->
             val httpF2Client = (client as HttpF2Client)

@@ -1,0 +1,16 @@
+server:
+  port: 1001
+
+fs:
+  script:
+    retry:
+      max: 3
+      delayMillis: 5000
+    init:
+      sources:
+        - ${FS_SCRIPT_INIT_SOURCES:infra/docker-compose/data/test-import}
+    s3:
+      internalUrl: ${FS_S3_INTERNAL_URL:http://localhost:9000}
+      externalUrl: ${FS_S3_EXTERNAL_URL:http://localhost:9000}
+      username: ${FS_S3_USERNAME:minio}
+      password: ${FS_S3_PASSWORD:minio123}

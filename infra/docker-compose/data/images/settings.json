@@ -1,0 +1,20 @@
+{
+  "policies": {
+    "retention": {
+      "days": 365,
+      "versions": 3
+    },
+    "access": {
+      "public": true,
+      "allowedOrigins": ["*"]
+    },
+    "compression": true,
+    "encryption": false
+  },
+  "metadata": {
+    "type": "assets",
+    "public": "true",
+    "cacheable": "true",
+    "optimization": "web"
+  }
+}

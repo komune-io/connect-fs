@@ -16,7 +16,7 @@ include(
 )
 
 include(
-	"fs-commons:fs-error",
+	"fs-commons:fs-commons-utils",
 )
 
 include(
@@ -32,4 +32,10 @@ include(
 	"fs-s2:file:fs-file-app",
 	"fs-s2:file:fs-file-client",
 	"fs-s2:file:fs-file-domain",
+)
+
+include(
+	"fs-script:fs-script-core",
+	"fs-script:fs-script-gateway",
+	"fs-script:fs-script-import"
 )

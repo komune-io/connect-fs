@@ -18,7 +18,7 @@ import io.komune.fs.s2.file.app.model.sanitizedMetadata
 import io.komune.fs.s2.file.app.model.toFile
 import io.komune.fs.s2.file.app.model.toFileUploadedEvent
 import io.komune.fs.s2.file.app.service.S3Service
-import io.komune.fs.s2.file.app.utils.toJson
+import io.komune.fs.commons.utils.toJson
 import io.komune.fs.s2.file.domain.automate.FileId
 import io.komune.fs.s2.file.domain.features.command.FileDeleteByIdCommand
 import io.komune.fs.s2.file.domain.features.command.FileDeleteFunction

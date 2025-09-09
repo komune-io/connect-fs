@@ -7,6 +7,7 @@ plugins {
 dependencies {
 	api(project(":fs-s2:file:fs-file-domain"))
 	api(project(":fs-infra:kb:fs-kb-client"))
+	implementation(project(":fs-commons:fs-commons-utils"))
 
 	implementation(project(":fs-api:api-config"))
 	implementation(project(":fs-spring:fs-spring-utils"))

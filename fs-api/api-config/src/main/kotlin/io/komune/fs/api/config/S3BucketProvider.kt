@@ -1,7 +1,7 @@
 package io.komune.fs.api.config
 
 import io.komune.f2.spring.boot.auth.AuthenticationProvider
-import io.komune.fs.commons.error.NoBucketConfiguredError
+import io.komune.fs.s2.file.domain.error.NoBucketConfiguredError
 import f2.dsl.cqrs.error.asException
 
 class S3BucketProvider(
@@ -9,15 +9,11 @@ class S3BucketProvider(
 ) {
 
     suspend fun getBucket(): String {
-        return getSpace() ?: deprecatedBucket() ?: throw NoBucketConfiguredError().asException()
+        return getSpace() ?: throw NoBucketConfiguredError().asException()
     }
 
     private suspend fun getSpace(): String? {
         return fsProperties.space?.name ?: AuthenticationProvider.getTenant()
-    }
-
-    private fun deprecatedBucket(): String? {
-        return fsProperties.s3.bucket
     }
 
 }

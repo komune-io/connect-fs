@@ -1,12 +1,11 @@
-import io.komune.gradle.dependencies.FixersDependencies
-import io.komune.gradle.dependencies.FixersPluginVersions
-import io.komune.gradle.dependencies.FixersVersions
-import io.komune.gradle.dependencies.Scope
-import io.komune.gradle.dependencies.add
+import io.komune.fixers.gradle.dependencies.FixersDependencies
+import io.komune.fixers.gradle.dependencies.FixersPluginVersions
+import io.komune.fixers.gradle.dependencies.FixersVersions
+import io.komune.fixers.gradle.dependencies.Scope
+import io.komune.fixers.gradle.dependencies.add
 
 object Framework {
 	val fixers = FixersPluginVersions.fixers
-	val connect = "0.22.0-SNAPSHOT"
 }
 
 object PluginVersions {
@@ -20,29 +19,43 @@ object PluginVersions {
 object Versions {
 	val f2 = Framework.fixers
 	val s2 = Framework.fixers
-	val c2 = Framework.fixers
 	const val springBoot = PluginVersions.springBoot
 	const val springFramework = FixersVersions.Spring.framework
-	const val springSecurity = "6.1.3"
 
 	const val ktor = FixersVersions.Kotlin.ktor
 	const val minio = "8.5.5"
 	const val reflection = "0.10.2"
 }
 
-object Repo {
-	val snapshot: List<String> = listOf(
-		// For fixers
-		"https://oss.sonatype.org/content/repositories/snapshots",
-		"https://oss.sonatype.org/service/local/repositories/releases/content",
-	)
-}
-
 object Dependencies {
+	object Jvm {
+		object Spring {
+			fun test(scope: Scope) = FixersDependencies.Jvm.Test.junit(scope).add(
+				"org.springframework.boot:spring-boot-starter-test:${Versions.springBoot}",
+			)
+
+			fun autoConfigure(scope: Scope, ksp: Scope) = FixersDependencies.Jvm.Spring.autoConfigure(scope, ksp)
+		}
+
+		object F2 {
+			fun f2Function(scope: Scope) = scope.add(
+				"io.komune.f2:f2-spring-boot-starter-function:${Versions.f2}"
+			)
+		}
+		object Json {
+			fun jackson(scope: Scope) = FixersDependencies.Jvm.Json.jackson(scope)
+		}
+	}
+
 	object Fixers {
 		fun s2SourcingSsm(scope: Scope) = scope.add(
 			"io.komune.s2:s2-spring-boot-starter-sourcing-ssm:${Versions.s2}",
 		)
+	}
+
+
+	object Logging {
+		fun slf4j(scope: Scope) = FixersDependencies.Jvm.Logging.slf4j(scope)
 	}
 
 	object Spring {
@@ -76,6 +89,10 @@ object Dependencies {
 
 		fun f2Client(scope: Scope) = scope.add(
 			"io.komune.f2:f2-client-ktor:${Versions.f2}",
+			"io.komune.f2:f2-client-domain:${Versions.f2}",
+		)
+		fun f2ClientDomain(scope: Scope) = scope.add(
+			"io.komune.f2:f2-client-domain:${Versions.f2}",
 		)
 
 		object Ktor {

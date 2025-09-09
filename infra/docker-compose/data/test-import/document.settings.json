@@ -1,0 +1,19 @@
+{
+  "policies": {
+    "retention": {
+      "days": 365,
+      "versions": 5
+    },
+    "access": {
+      "public": false,
+      "allowedOrigins": ["https://example.com"]
+    },
+    "compression": true,
+    "encryption": false
+  },
+  "metadata": {
+    "document-type": "legal",
+    "classification": "confidential",
+    "author": "system"
+  }
+}

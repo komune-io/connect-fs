@@ -1,0 +1,10 @@
+{
+  "metadata": {
+    "document-type": "contract",
+    "status": "executed",
+    "parties": "acme-corp,supplier-inc",
+    "value": "50000",
+    "currency": "EUR",
+    "expiry-date": "2025-12-31"
+  }
+}

@@ -63,7 +63,7 @@ data class DirectoryPath(
     }
 
     override fun toString() = "$objectType/$objectId/$directory"
-        .substringBefore("//") // stop before first empty parameter
+        .substringBefore("//")
         .removeSuffix("/")
 
     fun toPartialPrefix(trailingSlash: Boolean = true) = toString().plus(if (trailingSlash) "/" else "")
