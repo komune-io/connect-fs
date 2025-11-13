@@ -3,6 +3,8 @@ import io.komune.fixers.gradle.dependencies.FixersPluginVersions
 import io.komune.fixers.gradle.dependencies.FixersVersions
 import io.komune.fixers.gradle.dependencies.Scope
 import io.komune.fixers.gradle.dependencies.add
+import org.gradle.api.artifacts.dsl.RepositoryHandler
+import java.net.URI
 
 object Framework {
 	val fixers = FixersPluginVersions.fixers
@@ -25,6 +27,14 @@ object Versions {
 	const val ktor = FixersVersions.Kotlin.ktor
 	const val minio = "8.5.5"
 	const val reflection = "0.10.2"
+}
+
+fun RepositoryHandler.defaultRepo() {
+	mavenCentral()
+	maven { url = URI("https://central.sonatype.com/repository/maven-snapshots") }
+	if(System.getenv("MAVEN_LOCAL_USE") == "true") {
+		mavenLocal()
+	}
 }
 
 object Dependencies {
