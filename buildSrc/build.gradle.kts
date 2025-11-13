@@ -1,14 +1,15 @@
 plugins {
-	`kotlin-dsl`
+    `kotlin-dsl`
 }
 
 dependencies {
-	implementation("io.komune.fixers.gradle:dependencies:0.26.0-SNAPSHOT")
+    implementation("io.komune.fixers.gradle:dependencies:0.26.0-SNAPSHOT")
 }
 
 repositories {
-	mavenCentral()
-	mavenLocal()
-	maven { url = uri("https://s01.oss.sonatype.org/service/local/repositories/releases/content") }
-	maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots") }
+    mavenCentral()
+    maven { url = uri("https://central.sonatype.com/repository/maven-snapshots") }
+    if (System.getenv("MAVEN_LOCAL_USE") == "true") {
+        mavenLocal()
+    }
 }

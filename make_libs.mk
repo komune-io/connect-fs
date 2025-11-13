@@ -1,6 +1,6 @@
 VERSION = $(shell cat VERSION)
 
-.PHONY: lint build test publish promote
+.PHONY: lint build test stage promote
 
 lint:
 	./gradlew detekt
@@ -11,8 +11,11 @@ build:
 test:
 	./gradlew test
 
-publish:
-	VERSION=$(VERSION) PKG_MAVEN_REPO=github ./gradlew publish --info
+check:
+	./gradlew sonar -Dsonar.token=${SONAR_TOKEN} -Dorg.gradle.parallel=true
+
+stage:
+	VERSION=$(VERSION) ./gradlew stage
 
 promote:
-	VERSION=$(VERSION) PKG_MAVEN_REPO=sonatype_oss ./gradlew publish
+	VERSION=$(VERSION) ./gradlew promote

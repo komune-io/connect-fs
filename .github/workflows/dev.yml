@@ -1,6 +1,9 @@
 name: Dev
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
   pull_request:
     types: [opened, synchronize, labeled]
   push:
@@ -9,11 +12,10 @@ on:
       - 'release/*'
     tags:
       - '*'
-  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   libs:
-    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@0.23.0
+    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@main
     permissions:
       contents: read
       packages: write
@@ -29,31 +31,32 @@ jobs:
       PKG_SONATYPE_OSS_TOKEN: ${{ secrets.PKG_SONATYPE_OSS_TOKEN }}
 
   docker:
-    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@0.23.0
+    uses: komune-io/fixers-gradle/.github/workflows/make-jvm-workflow.yml@main
     permissions:
       contents: read
       packages: write
     with:
       make-file: 'make_docker.mk'
-      on-tag: 'publish promote'
-      with-docker-registry-login: 'true'
+      on-tag: 'stage promote'
+      with-stage-docker-registry-login: 'true'
+      with-promote-docker-registry-login: 'true'
     secrets:
       PKG_GITHUB_USERNAME: ${{ github.actor }}
       PKG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      DOCKER_PUBLISH_USERNAME: ${{ github.actor }}
-      DOCKER_PUBLISH_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      DOCKER_STAGE_USERNAME: ${{ github.actor }}
+      DOCKER_STAGE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       DOCKER_PROMOTE_USERNAME: ${{ secrets.DOCKER_IO_USERNAME }}
       DOCKER_PROMOTE_PASSWORD: ${{ secrets.DOCKER_IO_PASSWORD }}
 
   docs:
-    uses: komune-io/fixers-gradle/.github/workflows/publish-storybook-workflow.yml@0.23.0
+    uses: komune-io/fixers-gradle/.github/workflows/publish-storybook-workflow.yml@main
     permissions:
       contents: read
       packages: write
       pages: write
       id-token: write
     with:
-      on-tag: 'publish_promote'
+      on-tag: 'stage promote'
       with-chromatic: false
       make-file: 'make_docs.mk'
       storybook-dir: storybook
@@ -62,7 +65,7 @@ jobs:
     secrets:
       NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-      DOCKER_PUBLISH_USERNAME: ${{ github.actor }}
-      DOCKER_PUBLISH_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      DOCKER_STAGE_USERNAME: ${{ github.actor }}
+      DOCKER_STAGE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       DOCKER_PROMOTE_USERNAME: ${{ secrets.DOCKER_IO_USERNAME }}
       DOCKER_PROMOTE_PASSWORD: ${{ secrets.DOCKER_IO_PASSWORD }}
