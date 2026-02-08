@@ -82,6 +82,7 @@ import java.util.UUID
 @RestController
 @RequestMapping
 @Configuration
+@Suppress("TooManyFunctions")
 class FileEndpoint(
     private val fileDeciderSourcingImpl: FileDeciderSourcingImpl,
     private val fsSsmConfig: FsSsmConfig,

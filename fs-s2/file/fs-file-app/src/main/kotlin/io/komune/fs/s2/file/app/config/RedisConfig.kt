@@ -1,7 +1,7 @@
 package io.komune.fs.s2.file.app.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.komune.fs.s2.file.app.entity.FileEntity
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.komune.fs.s2.file.domain.automate.FileId
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -21,7 +21,7 @@ class RedisConfig {
 		val keySerializer = StringRedisSerializer()
 
 		val valueSerializer: Jackson2JsonRedisSerializer<FileEntity>
-			= Jackson2JsonRedisSerializer(jacksonObjectMapper(), FileEntity::class.java)
+			= Jackson2JsonRedisSerializer(ObjectMapper(), FileEntity::class.java)
 		val builder: RedisSerializationContext.RedisSerializationContextBuilder<FileId, FileEntity> =
 			RedisSerializationContext.newSerializationContext(keySerializer)
 		val context: RedisSerializationContext<FileId, FileEntity> = builder.value(valueSerializer).build()

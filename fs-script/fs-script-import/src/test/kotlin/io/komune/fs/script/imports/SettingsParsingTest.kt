@@ -1,6 +1,6 @@
 package io.komune.fs.script.imports
 
-import com.fasterxml.jackson.module.kotlin.readValue
+import tools.jackson.module.kotlin.readValue
 import io.komune.fs.commons.utils.jsonMapper
 import io.komune.fs.script.core.model.ImportSettings
 import io.komune.fs.script.core.config.properties.FsScriptInitProperties
