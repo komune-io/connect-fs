@@ -1,8 +1,5 @@
 package io.komune.fs.commons.kb
 
-import io.komune.fs.commons.kb.domain.command.VectorAskFunction
-import io.komune.fs.commons.kb.domain.command.VectorAskedEventDTOBase
-import io.komune.fs.commons.kb.domain.command.VectorCreateFunction
 import f2.client.F2Client
 import f2.client.ktor.F2ClientBuilder
 import f2.client.ktor.common.F2DefaultJson
@@ -10,6 +7,9 @@ import f2.client.ktor.http.HttpF2Client
 import f2.dsl.fnc.F2Function
 import f2.dsl.fnc.F2SupplierSingle
 import f2.dsl.fnc.f2SupplierSingle
+import io.komune.fs.commons.kb.domain.command.VectorAskFunction
+import io.komune.fs.commons.kb.domain.command.VectorAskedEventDTOBase
+import io.komune.fs.commons.kb.domain.command.VectorCreateFunction
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.logging.DEFAULT
@@ -24,7 +24,6 @@ import io.ktor.client.request.setBody
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject

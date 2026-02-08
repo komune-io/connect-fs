@@ -1,8 +1,8 @@
 package io.komune.fs.api.config
 
+import f2.dsl.cqrs.error.asException
 import io.komune.f2.spring.boot.auth.AuthenticationProvider
 import io.komune.fs.s2.file.domain.error.NoBucketConfiguredError
-import f2.dsl.cqrs.error.asException
 
 class S3BucketProvider(
     private val fsProperties: FsProperties

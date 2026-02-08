@@ -1,14 +1,14 @@
 package io.komune.fs.script.imports
 
-import tools.jackson.module.kotlin.readValue
 import io.komune.fs.commons.utils.jsonMapper
-import io.komune.fs.script.core.model.ImportSettings
 import io.komune.fs.script.core.config.properties.FsScriptInitProperties
+import io.komune.fs.script.core.model.ImportSettings
 import io.komune.fs.script.core.service.FsScriptS3Service
 import io.minio.errors.MinioException
 import java.io.File
 import java.io.IOException
 import org.slf4j.LoggerFactory
+import tools.jackson.module.kotlin.readValue
 
 class ImportScript(
     private val properties: FsScriptInitProperties,

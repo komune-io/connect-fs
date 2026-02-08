@@ -1,11 +1,11 @@
 package io.komune.fs.commons.kb.domain.command
 
-import io.komune.fs.s2.file.domain.model.FilePathDTO
 import f2.dsl.cqrs.Event
 import f2.dsl.fnc.F2Function
-import kotlinx.serialization.Serializable
+import io.komune.fs.s2.file.domain.model.FilePathDTO
 import kotlin.js.JsExport
 import kotlin.js.JsName
+import kotlinx.serialization.Serializable
 
 /**
  * Create a knowledge vector.

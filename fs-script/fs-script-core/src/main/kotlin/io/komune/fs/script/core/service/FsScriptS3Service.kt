@@ -6,15 +6,14 @@ import io.minio.ListObjectsArgs
 import io.minio.MakeBucketArgs
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
-import io.minio.Result
 import io.minio.StatObjectArgs
 import io.minio.errors.ErrorResponseException
 import io.minio.errors.MinioException
 import io.minio.messages.Item
-import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
+import org.slf4j.LoggerFactory
 
 class FsScriptS3Service(
     private val minioClient: MinioClient
