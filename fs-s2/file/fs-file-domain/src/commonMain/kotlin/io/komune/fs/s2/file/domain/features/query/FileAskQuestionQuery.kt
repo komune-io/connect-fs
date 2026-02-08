@@ -1,13 +1,13 @@
 package io.komune.fs.s2.file.domain.features.query
 
+import f2.dsl.fnc.F2Function
 import io.komune.fs.s2.file.domain.model.FileAskMessage
 import io.komune.fs.s2.file.domain.model.FileAskMessageDTO
 import io.komune.fs.s2.file.domain.model.FileAskMetadata
 import io.komune.fs.s2.file.domain.model.FileAskMetadataDTO
-import f2.dsl.fnc.F2Function
-import kotlinx.serialization.Serializable
 import kotlin.js.JsExport
 import kotlin.js.JsName
+import kotlinx.serialization.Serializable
 
 /**
  * Ask a question to files.

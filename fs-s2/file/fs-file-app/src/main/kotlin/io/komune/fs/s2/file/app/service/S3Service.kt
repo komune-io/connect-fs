@@ -1,9 +1,9 @@
 package io.komune.fs.s2.file.app.service
 
 import io.komune.fs.api.config.S3BucketProvider
-import io.komune.fs.s2.file.app.model.Policy
 import io.komune.fs.commons.utils.parseJsonTo
 import io.komune.fs.commons.utils.toJson
+import io.komune.fs.s2.file.app.model.Policy
 import io.minio.BucketExistsArgs
 import io.minio.CopyObjectArgs
 import io.minio.CopySource
@@ -22,9 +22,9 @@ import io.minio.StatObjectArgs
 import io.minio.StatObjectResponse
 import io.minio.errors.ErrorResponseException
 import io.minio.messages.Item
+import java.net.URLConnection
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.net.URLConnection
 
 @Service
 class S3Service(

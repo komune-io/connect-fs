@@ -26,12 +26,12 @@ class ScriptServiceRunner(
     private val logger = LoggerFactory.getLogger(ScriptServiceRunner::class.java)
     
 
-    override fun run(vararg args: String?) = runBlocking {
+    override fun run(vararg args: String) = runBlocking {
         try {
             logger.info("Starting FS Script Gateway...")
             runFileImportScript()
             logger.info("FS Script Gateway completed successfully")
-        } catch (e: Exception) {
+        } catch (e: ImportScriptException) {
             logger.error("FS Script Gateway failed", e)
         } finally {
             context.close()

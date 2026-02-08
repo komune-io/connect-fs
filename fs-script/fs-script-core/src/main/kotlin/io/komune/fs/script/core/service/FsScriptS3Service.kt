@@ -6,12 +6,14 @@ import io.minio.ListObjectsArgs
 import io.minio.MakeBucketArgs
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
-import io.minio.Result
 import io.minio.StatObjectArgs
+import io.minio.errors.ErrorResponseException
+import io.minio.errors.MinioException
 import io.minio.messages.Item
-import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
+import java.io.IOException
 import java.io.InputStream
+import org.slf4j.LoggerFactory
 
 class FsScriptS3Service(
     private val minioClient: MinioClient
@@ -37,7 +39,10 @@ class FsScriptS3Service(
             } else {
                 logger.debug("Bucket already exists: $bucketName")
             }
-        } catch (e: Exception) {
+        } catch (e: MinioException) {
+            logger.error("Failed to ensure bucket: $bucketName", e)
+            throw e
+        } catch (e: IOException) {
             logger.error("Failed to ensure bucket: $bucketName", e)
             throw e
         }
@@ -56,7 +61,10 @@ class FsScriptS3Service(
             )
             
             results.map { it.get() }.toList()
-        } catch (e: Exception) {
+        } catch (e: MinioException) {
+            logger.error("Failed to list objects in bucket: $bucketName, prefix: $prefix", e)
+            throw e
+        } catch (e: IOException) {
             logger.error("Failed to list objects in bucket: $bucketName, prefix: $prefix", e)
             throw e
         }
@@ -70,7 +78,7 @@ class FsScriptS3Service(
                     .`object`(objectKey)
                     .build()
             )
-        } catch (e: Exception) {
+        } catch (e: ErrorResponseException) {
             logger.debug("Object not found: $bucketName/$objectKey", e)
             null
         }
@@ -97,7 +105,10 @@ class FsScriptS3Service(
             
             minioClient.putObject(builder.build())
             logger.debug("Successfully uploaded object: $bucketName/$objectKey")
-        } catch (e: Exception) {
+        } catch (e: MinioException) {
+            logger.error("Failed to put object: $bucketName/$objectKey", e)
+            throw e
+        } catch (e: IOException) {
             logger.error("Failed to put object: $bucketName/$objectKey", e)
             throw e
         }
@@ -111,7 +122,7 @@ class FsScriptS3Service(
                     .`object`(objectKey)
                     .build()
             )
-        } catch (e: Exception) {
+        } catch (e: ErrorResponseException) {
             logger.debug("Object not found: $bucketName/$objectKey", e)
             null
         }

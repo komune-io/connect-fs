@@ -20,7 +20,7 @@ jobs:
       contents: read
       packages: write
     with:
-      make-file: 'make_libs.mk'
+      make-file: 'infra/make/make_libs.mk'
       on-tag: 'promote'
     secrets:
       GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
@@ -37,7 +37,7 @@ jobs:
       contents: read
       packages: write
     with:
-      make-file: 'make_docker.mk'
+      make-file: 'infra/make/make_docker.mk'
       on-tag: 'stage promote'
       with-stage-docker-registry-login: 'true'
       with-promote-docker-registry-login: 'true'
@@ -59,7 +59,7 @@ jobs:
     with:
       on-tag: 'stage promote'
       with-chromatic: false
-      make-file: 'make_docs.mk'
+      make-file: 'infra/make/make_docs.mk'
       base-dir: "storybook"
       storybook-dir: storybook
       storybook-static-dir: storybook-static

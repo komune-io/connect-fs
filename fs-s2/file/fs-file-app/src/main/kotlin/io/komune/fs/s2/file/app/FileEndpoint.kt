@@ -9,6 +9,7 @@ import io.komune.fs.api.config.S3Properties
 import io.komune.fs.commons.kb.KbClient
 import io.komune.fs.commons.kb.domain.command.VectorAskQueryDTOBase
 import io.komune.fs.commons.kb.domain.command.VectorCreateCommandDTOBase
+import io.komune.fs.commons.utils.toJson
 import io.komune.fs.s2.file.app.config.FsSsmConfig
 import io.komune.fs.s2.file.app.model.Policy
 import io.komune.fs.s2.file.app.model.S3Action
@@ -18,7 +19,6 @@ import io.komune.fs.s2.file.app.model.sanitizedMetadata
 import io.komune.fs.s2.file.app.model.toFile
 import io.komune.fs.s2.file.app.model.toFileUploadedEvent
 import io.komune.fs.s2.file.app.service.S3Service
-import io.komune.fs.commons.utils.toJson
 import io.komune.fs.s2.file.domain.automate.FileId
 import io.komune.fs.s2.file.domain.features.command.FileDeleteByIdCommand
 import io.komune.fs.s2.file.domain.features.command.FileDeleteFunction
@@ -47,6 +47,9 @@ import io.komune.fs.spring.utils.contentByteArray
 import io.komune.fs.spring.utils.hash
 import jakarta.annotation.security.PermitAll
 import jakarta.annotation.security.RolesAllowed
+import java.io.InputStream
+import java.net.URLConnection
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -70,9 +73,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
-import java.io.InputStream
-import java.net.URLConnection
-import java.util.UUID
 
 /**
  * @d2 service
@@ -82,6 +82,7 @@ import java.util.UUID
 @RestController
 @RequestMapping
 @Configuration
+@Suppress("TooManyFunctions")
 class FileEndpoint(
     private val fileDeciderSourcingImpl: FileDeciderSourcingImpl,
     private val fsSsmConfig: FsSsmConfig,
