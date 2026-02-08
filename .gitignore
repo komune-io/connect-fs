@@ -1,6 +1,5 @@
 ### Kotlin ###
 .kotlin
-kotlin-js-store
 
 ### Gradle ###
 .gradle
@@ -22,3 +21,7 @@ kotlin-js-store
 *.iml
 *.ipr
 **/out/
+
+### Storybook ###
+storybook-static
+**/node_modules
