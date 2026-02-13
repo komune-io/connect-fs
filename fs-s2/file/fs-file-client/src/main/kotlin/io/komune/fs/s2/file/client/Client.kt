@@ -6,6 +6,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.cio.CIOEngineConfig
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.DEFAULT
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory
 open class Client(
     protected val baseUrl: String,
     private val authProvider: AuthProvider? = null,
-    private val block: HttpClientConfig<*>.() -> Unit = {}
+    private val block: HttpClientConfig<CIOEngineConfig>.() -> Unit = {}
 ) {
     private val logger = LoggerFactory.getLogger(Client::class.java)
 
