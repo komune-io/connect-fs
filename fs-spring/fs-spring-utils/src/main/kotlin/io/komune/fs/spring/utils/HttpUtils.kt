@@ -4,13 +4,13 @@ import io.komune.fs.s2.file.client.FileClient
 import io.komune.fs.s2.file.domain.features.query.FileDownloadQuery
 import io.komune.fs.s2.file.domain.model.FilePathDTO
 import io.ktor.utils.io.jvm.javaio.toInputStream
+import java.io.InputStream
+import java.net.URLConnection
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import java.io.InputStream
-import java.net.URLConnection
 
 suspend fun serveFile(
     fileClient: FileClient,

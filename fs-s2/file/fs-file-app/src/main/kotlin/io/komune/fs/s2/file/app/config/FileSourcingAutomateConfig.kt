@@ -10,6 +10,7 @@ import io.komune.fs.s2.file.domain.features.command.FileDeletedEvent
 import io.komune.fs.s2.file.domain.features.command.FileEvent
 import io.komune.fs.s2.file.domain.features.command.FileInitiatedEvent
 import io.komune.fs.s2.file.domain.features.command.FileLoggedEvent
+import kotlin.reflect.KClass
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -22,7 +23,6 @@ import ssm.chaincode.dsl.model.Agent
 import ssm.chaincode.dsl.model.uri.ChaincodeUri
 import ssm.chaincode.dsl.model.uri.from
 import ssm.sdk.sign.extention.loadFromFile
-import kotlin.reflect.KClass
 
 @ConditionalOnProperty("ssm.chaincode.url")
 @Configuration

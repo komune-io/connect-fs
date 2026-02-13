@@ -1,12 +1,14 @@
 package io.komune.fs.script.imports
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.komune.fs.commons.utils.jsonMapper
-import io.komune.fs.script.core.model.ImportSettings
 import io.komune.fs.script.core.config.properties.FsScriptInitProperties
+import io.komune.fs.script.core.model.ImportSettings
 import io.komune.fs.script.core.service.FsScriptS3Service
+import io.minio.errors.MinioException
 import java.io.File
+import java.io.IOException
 import org.slf4j.LoggerFactory
+import tools.jackson.module.kotlin.readValue
 
 class ImportScript(
     private val properties: FsScriptInitProperties,
@@ -34,7 +36,11 @@ class ImportScript(
     }
 
     private suspend fun importFolder(rootDirectory: File): Boolean {
-        logImportStart(rootDirectory)
+        logger.info("/////////////////////////////////////////////////////////////////")
+        logger.info("/////////////////////////////////////////////////////////////////")
+        logger.info("Importing data from $rootDirectory")
+        logger.info("/////////////////////////////////////////////////////////////////")
+        logger.info("/////////////////////////////////////////////////////////////////")
         validateDirectory(rootDirectory)
 
         val bucketName = rootDirectory.name.lowercase()
@@ -47,14 +53,6 @@ class ImportScript(
         logImportSummary(rootDirectory, stats)
         
         return false
-    }
-
-    private fun logImportStart(rootDirectory: File) {
-        logger.info("/////////////////////////////////////////////////////////////////")
-        logger.info("/////////////////////////////////////////////////////////////////")
-        logger.info("Importing data from $rootDirectory")
-        logger.info("/////////////////////////////////////////////////////////////////")
-        logger.info("/////////////////////////////////////////////////////////////////")
     }
 
     private fun validateDirectory(rootDirectory: File) {
@@ -103,7 +101,10 @@ class ImportScript(
 
             uploadFile(file, bucketName, objectKey, globalSettings, relPath)
             FileProcessResult.UPLOADED
-        } catch (e: Exception) {
+        } catch (e: MinioException) {
+            logger.error("Failed to upload $relPath", e)
+            FileProcessResult.FAILED
+        } catch (e: IOException) {
             logger.error("Failed to upload $relPath", e)
             FileProcessResult.FAILED
         }
@@ -187,7 +188,10 @@ class ImportScript(
             s3Service.ensureBucket(bucketName)
             s3Service.listObjects(bucketName, prefix = "", recursive = false)
             logger.info("S3 bucket '$bucketName' initialized successfully")
-        } catch (e: Exception) {
+        } catch (e: MinioException) {
+            logger.error("Failed to initialize S3 bucket: $bucketName", e)
+            throw e
+        } catch (e: IOException) {
             logger.error("Failed to initialize S3 bucket: $bucketName", e)
             throw e
         }
@@ -200,7 +204,7 @@ class ImportScript(
                 jsonMapper.readValue<ImportSettings>(settingsFile).also {
                     logger.debug("Loaded settings from: ${settingsFile.absolutePath}")
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 logger.warn("Failed to parse settings file: ${settingsFile.absolutePath}", e)
                 null
             }

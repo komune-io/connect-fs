@@ -1,8 +1,8 @@
 package io.komune.fs.s2.file.domain.features.command
 
-import io.komune.fs.s2.file.domain.model.FilePath
 import f2.dsl.fnc.F2Function
 import io.komune.fs.s2.file.domain.automate.FileId
+import io.komune.fs.s2.file.domain.model.FilePath
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

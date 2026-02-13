@@ -1,7 +1,7 @@
 package io.komune.fs.s2.file.domain.features.query
 
-import io.komune.fs.s2.file.domain.model.File
 import f2.dsl.fnc.F2Function
+import io.komune.fs.s2.file.domain.model.File
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

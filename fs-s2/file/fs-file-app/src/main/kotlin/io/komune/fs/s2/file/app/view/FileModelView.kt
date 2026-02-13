@@ -36,6 +36,7 @@ class FileModelView: View<FileEvent, FileEntity> {
 		uploadDate = event.time
 	)
 
+	@Suppress("UnusedParameter")
 	private fun FileEntity.delete(event: FileDeletedEvent) = copy(
 		status = FileState.Deleted
 	)
