@@ -315,7 +315,7 @@ class FileEndpoint(
         logger.info("fileVectorize: ${cmd.path}")
 
         val fileContent = withContext(Dispatchers.IO) {
-            s3Service.getObject(cmd.path.toString())?.readAllBytes()
+            s3Service.getObject(cmd.path.toString())?.use { it.readAllBytes() }
         } ?: throw NotFoundException("File", cmd.path.toString())
 
         vectorize(cmd.path, cmd.metadata, fileContent)
