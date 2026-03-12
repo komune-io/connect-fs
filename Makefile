@@ -1,31 +1,25 @@
 VERSION = $(shell cat VERSION)
 
-.PHONY: lint build test publish promote
+.PHONY: clean lint build test stage promote
 
-## New
+clean:
+	@make -f infra/make/libs.mk clean
+
 lint:
-	@make -f infra/make/make_libs.mk lint
-	@make -f infra/make/make_docker.mk lint
+	@make -f infra/make/libs.mk lint
+	@make -f infra/make/docker.mk lint
 
 build:
-	@make -f infra/make/make_libs.mk build
-	@make -f infra/make/make_docker.mk build
+	@make -f infra/make/libs.mk build
 
 test:
-	@make -f infra/make/make_libs.mk test
-	@make -f infra/make/make_docker.mk test
+	@make -f infra/make/libs.mk test
 
-publish:
-	@make -f infra/make/make_libs.mk publish
-	@make -f infra/make/make_docker.mk publish
+stage:
+	@make -f infra/make/libs.mk stage
 
 promote:
-	@make -f infra/make/make_libs.mk promote
-	@make -f infra/make/make_docker.mk promote
-
-version:
-	@VERSION=$$(cat VERSION); \
-	echo "$$VERSION"
+	@make -f infra/make/libs.mk promote
 
 ## DOCKER-COMPOSE DEV ENVIRONMENT
 include infra/docker-compose/dev-compose.mk
