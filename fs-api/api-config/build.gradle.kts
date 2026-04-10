@@ -5,9 +5,9 @@ plugins {
 }
 
 dependencies {
-    api("io.komune.f2:f2-spring-boot-starter-function:${Versions.f2}")
-    api("io.komune.f2:f2-spring-boot-starter-auth-tenant:${Versions.f2}")
+    api(catalogue.spring.boot.starter.function)
+    api(catalogue.spring.boot.starter.auth.tenant)
 
     implementation(project(":fs-s2:file:fs-file-domain"))
-    api("io.minio:minio:${Versions.minio}")
+    api(libs.minio)
 }

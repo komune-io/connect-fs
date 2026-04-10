@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    Dependencies.Jvm.Json.jackson(::api)
+    api(libs.jackson.module.kotlin)
 }

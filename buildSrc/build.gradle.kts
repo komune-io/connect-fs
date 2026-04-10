@@ -2,10 +2,6 @@ plugins {
     `kotlin-dsl`
 }
 
-dependencies {
-    implementation("io.komune.fixers.gradle:dependencies:0.30.0")
-}
-
 repositories {
     mavenCentral()
     maven { url = uri("https://central.sonatype.com/repository/maven-snapshots") }

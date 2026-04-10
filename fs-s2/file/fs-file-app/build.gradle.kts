@@ -12,9 +12,12 @@ dependencies {
 	implementation(project(":fs-api:api-config"))
 	implementation(project(":fs-spring:fs-spring-utils"))
 
-	Dependencies.Fixers.s2SourcingSsm(::implementation)
-	Dependencies.Spring.bootWebflux(::implementation)
-	Dependencies.Spring.redis(::implementation)
-	Dependencies.Spring.test(::testImplementation)
-	Dependencies.ktor(::api)
+	implementation(libs.s2.spring.boot.starter.sourcing.ssm)
+	implementation(libs.spring.boot.starter.webflux)
+	implementation(libs.spring.boot.starter.data.redis.reactive)
+	implementation(libs.lettuce.core)
+	testImplementation(libs.spring.boot.starter.test)
+	testImplementation(libs.junit.jupiter)
+	testImplementation(libs.junit.platform.suite)
+	api(libs.bundles.ktor.client)
 }

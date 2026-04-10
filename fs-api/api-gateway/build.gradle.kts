@@ -6,10 +6,10 @@ plugins {
 }
 
 dependencies {
-    api("io.komune.f2:f2-spring-boot-starter-function-http:${Versions.f2}")
+    api(catalogue.spring.boot.starter.function.http)
 
     implementation(project(":fs-api:api-config"))
     implementation(project(":fs-s2:file:fs-file-app"))
-    implementation("org.reflections:reflections:${Versions.reflection}")
+    implementation(libs.reflections)
 
 }
