@@ -6,7 +6,6 @@ plugins {
 	alias(catalogue.plugins.kotlin.kapt) apply false
 
 	alias(catalogue.plugins.spring.boot) apply false
-	alias(libs.plugins.graalvm) apply false
 
 	alias(catalogue.plugins.fixers.gradle.config)
 	alias(catalogue.plugins.fixers.gradle.check)

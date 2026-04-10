@@ -1,10 +1,8 @@
 [versions]
 fixers = "0.34.0"
-graalvm = "0.10.6"
 lettuce = "6.1.6.RELEASE"
 minio = "8.5.5"
 reflections = "0.10.2"
-slf4j = "2.0.16"
 
 [libraries]
 # Jackson
@@ -20,7 +18,7 @@ minio = { module = "io.minio:minio", version.ref = "minio" }
 reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
 
 # SLF4J
-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-api = { module = "org.slf4j:slf4j-api" }
 
 # Spring Boot starters
 spring-boot-autoconfigure = { module = "org.springframework.boot:spring-boot-autoconfigure" }
@@ -56,5 +54,3 @@ junit = ["junit-jupiter", "junit-platform-suite"]
 spring-test = ["spring-boot-starter-test", "junit-jupiter", "junit-platform-suite"]
 spring-redis = ["spring-boot-starter-data-redis-reactive", "lettuce-core"]
 
-[plugins]
-graalvm = { id = "org.graalvm.buildtools.native", version.ref = "graalvm" }
