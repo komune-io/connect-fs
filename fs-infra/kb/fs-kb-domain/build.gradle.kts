@@ -6,5 +6,6 @@ plugins {
 dependencies {
     commonMainApi(project(":fs-s2:file:fs-file-domain"))
 
-    Dependencies.Mpp.f2Client(::commonMainImplementation)
+    commonMainImplementation(catalogue.client.ktor)
+    commonMainImplementation(catalogue.client.domain)
 }

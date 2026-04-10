@@ -1,0 +1,56 @@
+[versions]
+fixers = "0.34.0"
+lettuce = "6.1.6.RELEASE"
+minio = "8.5.5"
+reflections = "0.10.2"
+
+[libraries]
+# Jackson
+jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
+
+# Lettuce
+lettuce-core = { module = "io.lettuce:lettuce-core", version.ref = "lettuce" }
+
+# Minio
+minio = { module = "io.minio:minio", version.ref = "minio" }
+
+# Reflections
+reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+
+# SLF4J
+slf4j-api = { module = "org.slf4j:slf4j-api" }
+
+# Spring Boot starters
+spring-boot-autoconfigure = { module = "org.springframework.boot:spring-boot-autoconfigure" }
+spring-boot-autoconfigure-processor = { module = "org.springframework.boot:spring-boot-autoconfigure-processor" }
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter" }
+spring-boot-starter-data-redis-reactive = { module = "org.springframework.boot:spring-boot-starter-data-redis-reactive" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
+
+# Spring Framework
+spring-web = { module = "org.springframework:spring-web" }
+
+# S2
+s2-automate-dsl = { module = "io.komune.s2:s2-automate-dsl", version.ref = "fixers" }
+s2-spring-boot-starter-sourcing-ssm = { module = "io.komune.s2:s2-spring-boot-starter-sourcing-ssm", version.ref = "fixers" }
+
+# Ktor
+ktor-client-auth = { module = "io.ktor:ktor-client-auth" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
+ktor-client-core = { module = "io.ktor:ktor-client-core" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json" }
+
+# Test
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-suite = { module = "org.junit.platform:junit-platform-suite" }
+
+[bundles]
+ktor-client = ["ktor-client-core", "ktor-client-content-negotiation", "ktor-client-cio", "ktor-serialization-kotlinx-json"]
+junit = ["junit-jupiter", "junit-platform-suite"]
+spring-test = ["spring-boot-starter-test", "junit-jupiter", "junit-platform-suite"]
+spring-redis = ["spring-boot-starter-data-redis-reactive", "lettuce-core"]
+

@@ -7,9 +7,11 @@ plugins {
 dependencies {
     api(project(":fs-infra:kb:fs-kb-domain"))
 
-    Dependencies.Spring.autoConfigure(::implementation, ::kapt)
-    Dependencies.Mpp.f2Client(::implementation)
+    implementation(libs.spring.boot.autoconfigure)
+    kapt(libs.spring.boot.autoconfigure.processor)
+    implementation(catalogue.client.ktor)
+    implementation(catalogue.client.domain)
 
-    Dependencies.Mpp.Ktor.Client.logging(::implementation)
-    Dependencies.Mpp.Ktor.Client.auth(::implementation)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.auth)
 }

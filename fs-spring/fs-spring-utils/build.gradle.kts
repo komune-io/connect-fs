@@ -4,9 +4,9 @@ plugins {
 }
 
 dependencies {
-    implementation("io.komune.f2:f2-dsl-cqrs:${Versions.f2}")
-    api("io.komune.f2:f2-spring-boot-exception-http:${Versions.f2}")
+    implementation(catalogue.dsl.cqrs)
+    api(catalogue.spring.boot.exception.http)
     api(project(":fs-s2:file:fs-file-client"))
-    Dependencies.ktor(::implementation)
-    Dependencies.Spring.frameworkWeb(::api)
+    implementation(libs.bundles.ktor.client)
+    api(libs.spring.web)
 }

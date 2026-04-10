@@ -5,5 +5,5 @@ plugins {
 }
 
 dependencies {
-	commonMainApi("io.komune.s2:s2-automate-dsl:${Versions.s2}")
+	commonMainApi(libs.s2.automate.dsl)
 }

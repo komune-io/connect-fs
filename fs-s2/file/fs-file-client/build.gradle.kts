@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
 	api(project(":fs-s2:file:fs-file-domain"))
-	Dependencies.Mpp.f2Client(::implementation)
-	Dependencies.ktor(::implementation)
+	implementation(catalogue.client.ktor)
+	implementation(catalogue.client.domain)
+	implementation(libs.bundles.ktor.client)
 }
