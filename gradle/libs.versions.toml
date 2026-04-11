@@ -1,5 +1,5 @@
 [versions]
-fixers = "0.35.0"
+fixers = "0.36.0-SNAPSHOT"
 lettuce = "6.1.6.RELEASE"
 minio = "8.5.5"
 reflections = "0.10.2"
