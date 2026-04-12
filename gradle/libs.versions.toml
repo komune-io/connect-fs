@@ -1,7 +1,7 @@
 [versions]
 fixers = "0.37.0-SNAPSHOT"
 lettuce = "6.1.6.RELEASE"
-minio = "8.5.5"
+minio = "9.0.0"
 reflections = "0.10.2"
 
 [libraries]
