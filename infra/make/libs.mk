@@ -15,7 +15,7 @@ test:
 	./gradlew test
 
 #check:
-	#./gradlew sonar -Dsonar.token=${SONAR_TOKEN} -Dorg.gradle.parallel=true
+	#./gradlew sonar -Dsonar.token=${FIXERS_SONAR_TOKEN} -Dorg.gradle.parallel=true
 
 stage:
 	VERSION=$(VERSION) ./gradlew stage

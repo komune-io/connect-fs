@@ -1,4 +1,4 @@
-#### Stage 1: Build the react application
+#### Stage 1: Build the Storybook static site
 FROM node:21.7-alpine3.19 as build
 
 WORKDIR /app
@@ -22,7 +22,7 @@ RUN if [ ! -d "./storybook-static" ]; then \
 
 FROM nginx:1.25.4-alpine
 
-LABEL org.opencontainers.image.source="https://github.com/komune-io/fixers-f2"
+LABEL org.opencontainers.image.source="https://github.com/komune-io/connect-fs"
 
 COPY --from=build /app/storybook/storybook-static /var/www
 COPY infra/docker/storybook/nginx.conf /etc/nginx/nginx.conf
