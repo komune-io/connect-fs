@@ -1,9 +1,0 @@
-
-
-### Command
-
-Type: `FileDeleteCommand`
-
-
-
-
