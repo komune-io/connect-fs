@@ -10,27 +10,12 @@ plugins {
 	alias(catalogue.plugins.fixers.gradle.config)
 	alias(catalogue.plugins.fixers.gradle.check)
 	alias(catalogue.plugins.fixers.gradle.publish)
-	id("io.komune.fixers.gradle.d2") version catalogue.versions.fixers.get()
-}
-
-allprojects {
-	group = "io.komune.fs"
-	version = System.getenv("VERSION") ?: "latest"
-	repositories {
-		mavenCentral()
-		maven { url = uri("https://central.sonatype.com/repository/maven-snapshots") }
-		if(System.getenv("MAVEN_LOCAL_USE") == "true") {
-			mavenLocal()
-		}
-	}
 }
 
 fixers {
-	d2 {
-		outputDirectory = file("storybook/d2/")
-	}
 	bundle {
 		id = "fs"
+		group = "io.komune.fs"
 		name = "FS"
 		description = "File manager"
 		url = "https://github.com/komune-io/connect-fs"
@@ -38,5 +23,8 @@ fixers {
 	sonar {
 		organization = "komune-io"
 		projectKey = "komune-io_connect-fs"
+	}
+	repositories {
+		sonatypeSnapshots = true
 	}
 }
