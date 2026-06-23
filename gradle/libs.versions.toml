@@ -1,6 +1,6 @@
 [versions]
 fixers = "0.38.0"
-lettuce = "6.1.6.RELEASE"
+lettuce = "7.6.0.RELEASE"
 minio = "8.5.5"
 reflections = "0.10.2"
 
