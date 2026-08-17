@@ -6,4 +6,5 @@ plugins {
 
 dependencies {
 	commonMainApi(libs.s2.automate.dsl)
+	commonMainApi(libs.f2.dsl.function)
 }
