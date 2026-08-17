@@ -1,5 +1,5 @@
 [versions]
-fixers = "0.38.0"
+fixers = "0.43.0-SNAPSHOT"
 lettuce = "6.1.6.RELEASE"
 minio = "8.5.5"
 reflections = "0.10.2"
@@ -17,6 +17,12 @@ minio = { module = "io.minio:minio", version.ref = "minio" }
 # Reflections
 reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
 
+# Coroutines
+kotlinx-coroutines-reactive = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactive" }
+
+# Reactor
+reactor-core = { module = "io.projectreactor:reactor-core" }
+
 # SLF4J
 slf4j-api = { module = "org.slf4j:slf4j-api" }
 
@@ -32,9 +38,14 @@ spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-s
 # Spring Framework
 spring-web = { module = "org.springframework:spring-web" }
 
+# F2
+f2-dsl-function = { module = "io.komune.f2:f2-dsl-function" }
+
 # S2
 s2-automate-dsl = { module = "io.komune.s2:s2-automate-dsl", version.ref = "fixers" }
-s2-spring-boot-starter-sourcing-ssm = { module = "io.komune.s2:s2-spring-boot-starter-sourcing-ssm", version.ref = "fixers" }
+
+# C2
+c2-ssm-s2-sourcing-spring-boot-starter = { module = "io.komune.c2:ssm-s2-sourcing-spring-boot-starter", version.ref = "fixers" }
 
 # Ktor
 ktor-client-auth = { module = "io.ktor:ktor-client-auth" }

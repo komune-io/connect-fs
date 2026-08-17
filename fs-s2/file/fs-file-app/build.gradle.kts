@@ -12,7 +12,7 @@ dependencies {
 	implementation(project(":fs-api:api-config"))
 	implementation(project(":fs-spring:fs-spring-utils"))
 
-	implementation(libs.s2.spring.boot.starter.sourcing.ssm)
+	implementation(libs.c2.ssm.s2.sourcing.spring.boot.starter)
 	implementation(libs.spring.boot.starter.webflux)
 	implementation(libs.spring.boot.starter.data.redis.reactive)
 	implementation(libs.lettuce.core)
