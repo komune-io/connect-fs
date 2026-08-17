@@ -2,6 +2,7 @@ package io.komune.fs.s2.file.app.model
 
 import io.komune.fs.s2.file.domain.model.File
 import io.komune.fs.s2.file.domain.model.FilePath
+import io.minio.Http
 import io.minio.messages.Item
 
 suspend fun Item.toFile(buildUrl: suspend (FilePath) -> String): File {
@@ -22,6 +23,10 @@ suspend fun Item.toFile(buildUrl: suspend (FilePath) -> String): File {
 }
 
 fun Item.sanitizedMetadata() = userMetadata().orEmpty().sanitizedMetadata()
+
+fun Http.Headers.sanitizedMetadata(): Map<String, String> = toMetadataMap().sanitizedMetadata()
+
+fun Http.Headers.toMetadataMap(): Map<String, String?> = associate { it.key to it.value }
 
 fun Map<String, String?>.sanitizedMetadata(): Map<String, String> = this
     .mapKeys { (key) -> key.lowercase().removePrefix("x-amz-meta-") }

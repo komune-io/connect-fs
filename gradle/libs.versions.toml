@@ -1,15 +1,16 @@
 [versions]
 fixers = "0.43.0-SNAPSHOT"
-lettuce = "6.1.6.RELEASE"
-minio = "8.5.5"
+lettuce = "7.6.0.RELEASE"
+minio = "9.0.3"
 reflections = "0.10.2"
+mockk = "1.14.11"
 
 [libraries]
 # Jackson
 jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
 
 # Lettuce
-lettuce-core = { module = "io.lettuce:lettuce-core", version.ref = "lettuce" }
+lettuce-core = { module = "io.lettuce:lettuce-core", version = { strictly = "7.6.0.RELEASE" } }
 
 # Minio
 minio = { module = "io.minio:minio", version.ref = "minio" }
@@ -58,10 +59,15 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 # Test
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-suite = { module = "org.junit.platform:junit-platform-suite" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
+assertj-core = { module = "org.assertj:assertj-core" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [bundles]
 ktor-client = ["ktor-client-core", "ktor-client-content-negotiation", "ktor-client-cio", "ktor-serialization-kotlinx-json"]
-junit = ["junit-jupiter", "junit-platform-suite"]
+junit = ["junit-jupiter", "junit-jupiter-api", "junit-platform-suite", "assertj-core", "kotlinx-coroutines-test"]
 spring-test = ["spring-boot-starter-test", "junit-jupiter", "junit-platform-suite"]
 spring-redis = ["spring-boot-starter-data-redis-reactive", "lettuce-core"]
 

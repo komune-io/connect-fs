@@ -4,4 +4,6 @@ plugins {
 
 dependencies {
     api(libs.jackson.module.kotlin)
+
+    testImplementation(libs.bundles.junit)
 }

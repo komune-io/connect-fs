@@ -10,4 +10,6 @@ dependencies {
 	implementation(catalogue.client.ktor)
 	implementation(catalogue.client.domain)
 	implementation(libs.bundles.ktor.client)
+
+    testImplementation(libs.bundles.junit)
 }

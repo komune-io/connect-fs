@@ -11,4 +11,6 @@ dependencies {
     api(project(":fs-s2:file:fs-file-client"))
     implementation(libs.bundles.ktor.client)
     api(libs.spring.web)
+
+    testImplementation(libs.bundles.junit)
 }

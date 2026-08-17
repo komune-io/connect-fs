@@ -17,7 +17,6 @@ dependencies {
 	implementation(libs.spring.boot.starter.data.redis.reactive)
 	implementation(libs.lettuce.core)
 	testImplementation(libs.spring.boot.starter.test)
-	testImplementation(libs.junit.jupiter)
-	testImplementation(libs.junit.platform.suite)
+	testImplementation(libs.bundles.junit)
 	api(libs.bundles.ktor.client)
 }

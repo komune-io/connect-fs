@@ -18,4 +18,6 @@ dependencies {
 
     api(catalogue.client.ktor)
 
+    testImplementation(libs.bundles.junit)
+    testImplementation(project(":fs-commons:fs-commons-utils"))
 }
