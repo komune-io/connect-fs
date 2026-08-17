@@ -1,24 +1,27 @@
 plugins {
-	kotlin("plugin.jpa") version PluginVersions.kotlin apply false
-	kotlin("plugin.spring") version PluginVersions.kotlin apply false
-	kotlin("plugin.serialization") version PluginVersions.kotlin apply false
-	kotlin("kapt") version PluginVersions.kotlin apply false
+	alias(catalogue.plugins.kotlin.jpa) apply false
+	alias(catalogue.plugins.kotlin.spring) apply false
+	alias(catalogue.plugins.kotlin.serialization) apply false
+	alias(catalogue.plugins.kotlin.kapt) apply false
 
-	id("org.springframework.boot") version PluginVersions.springBoot apply false
-	id("org.graalvm.buildtools.native") version PluginVersions.graalvm apply false
+	alias(catalogue.plugins.spring.boot) apply false
 
-	id("io.komune.fixers.gradle.config") version PluginVersions.fixers
-	id("io.komune.fixers.gradle.check") version PluginVersions.fixers
-	id("io.komune.fixers.gradle.d2") version PluginVersions.d2
+	alias(catalogue.plugins.f2.bom)
+	alias(catalogue.plugins.fixers.gradle.config)
+	alias(catalogue.plugins.fixers.gradle.check)
+	alias(libs.plugins.fixers.gradle.d2)
 
+	// Declared here so the plugin jar lands on the build classpath exactly once;
+	// subprojects then alias them without re-resolving a version. Same shape as
+	// fixers-s2 / fixers-c2.
+	alias(catalogue.plugins.fixers.gradle.kotlin.jvm) apply false
+	alias(catalogue.plugins.fixers.gradle.kotlin.mpp) apply false
+	alias(catalogue.plugins.fixers.gradle.publish) apply false
 }
 
 allprojects {
 	group = "io.komune.fs"
 	version = System.getenv("VERSION") ?: "latest"
-	repositories {
-		defaultRepo()
-	}
 }
 
 fixers {

@@ -1,7 +1,7 @@
 plugins {
-	id("io.komune.fixers.gradle.kotlin.jvm")
-	kotlin("plugin.spring")
-	kotlin("plugin.serialization")
+	alias(catalogue.plugins.fixers.gradle.kotlin.jvm)
+	alias(catalogue.plugins.kotlin.spring)
+	alias(catalogue.plugins.kotlin.serialization)
 }
 
 dependencies {
@@ -12,9 +12,15 @@ dependencies {
 	implementation(project(":fs-api:api-config"))
 	implementation(project(":fs-spring:fs-spring-utils"))
 
-	Dependencies.Fixers.s2SourcingSsm(::implementation)
-	Dependencies.Spring.bootWebflux(::implementation)
-	Dependencies.Spring.redis(::implementation)
-	Dependencies.Spring.test(::testImplementation)
-	Dependencies.ktor(::api)
+	// S2 dropped all C2 dependencies, so the SSM sourcing starter lives in C2 now.
+	// The s2.spring.sourcing.ssm package is unchanged — only the coordinate moved.
+	implementation(libs.c2.ssm.s2.sourcing.spring.boot.starter)
+
+	implementation(libs.spring.boot.starter.webflux)
+	implementation(libs.bundles.spring.redis)
+
+	testImplementation(libs.spring.boot.starter.test)
+	testImplementation(libs.bundles.test.junit)
+
+	api(libs.bundles.ktor.client)
 }

@@ -1,19 +1,18 @@
 plugins {
-    id("org.springframework.boot")
-    id("io.komune.fixers.gradle.kotlin.jvm")
-    kotlin("plugin.spring")
+    alias(catalogue.plugins.spring.boot)
+    alias(catalogue.plugins.fixers.gradle.kotlin.jvm)
+    alias(catalogue.plugins.kotlin.spring)
 }
 
 dependencies {
     implementation(project(":fs-script:fs-script-core"))
     implementation(project(":fs-script:fs-script-import"))
-    
-    implementation("org.springframework.boot:spring-boot-starter:${Versions.springBoot}")
-    
-    Dependencies.Mpp.f2ClientDomain(::implementation)
-    
-    Dependencies.Logging.slf4j(::implementation)
+
+    implementation(libs.spring.boot.starter)
+
+    implementation(libs.f2.client.domain)
+
+    implementation(libs.slf4j.api)
 }
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {}
-

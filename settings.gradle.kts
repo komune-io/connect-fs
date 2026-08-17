@@ -8,6 +8,30 @@ pluginManagement {
 		}
 	}
 }
+
+dependencyResolutionManagement {
+	repositories {
+		mavenCentral()
+		maven { url = uri("https://central.sonatype.com/repository/maven-snapshots") }
+		if(System.getenv("MAVEN_LOCAL_USE") == "true") {
+			mavenLocal()
+		}
+	}
+	versionCatalogs {
+		// The Fixers catalogue is itself a published artifact, so its coordinate has to be
+		// resolved before any catalog accessor exists. Read the version straight out of the
+		// TOML — same bootstrap as fixers-s2 and fixers-c2.
+		val fixersVersion = file("gradle/libs.versions.toml")
+			.readLines()
+			.firstNotNullOfOrNull {
+				Regex("^fixers\\s*=\\s*\"([^\"]+)\"").find(it)?.groupValues?.get(1)
+			} ?: error("fixers version not found in gradle/libs.versions.toml")
+		create("catalogue") {
+			from("io.komune.f2:f2-gradle-catalog:$fixersVersion")
+		}
+	}
+}
+
 rootProject.name = "connect-fs"
 
 include(

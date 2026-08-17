@@ -1,0 +1,86 @@
+[versions]
+# Fixers release line. Read by settings.gradle.kts to resolve the published catalogue
+# before this file's accessors exist, so keep the `fixers = "..."` line shape intact.
+fixers = "0.42.0"
+
+# The d2 Gradle plugin left the Fixers version line: fixers-d2 tags reach 0.39.0 but
+# io.komune.fixers.gradle.d2 was last published to Maven Central at 0.28.21.
+d2 = "0.28.21"
+
+# Project-specific — not managed by f2-gradle-bom.
+minio = "8.5.5"
+reflections = "0.10.2"
+lettuce = "6.1.6.RELEASE"
+
+[libraries]
+# ── S2 / C2 ──────────────────────────────────────────────────────────────────
+# f2-gradle-bom constrains io.komune.f2 only, so every S2 and C2 coordinate carries
+# its own version.ref. Same split as fixers-c2's catalog.
+s2-automate-dsl = { group = "io.komune.s2", name = "s2-automate-dsl", version.ref = "fixers" }
+c2-ssm-s2-sourcing-spring-boot-starter = { group = "io.komune.c2", name = "ssm-s2-sourcing-spring-boot-starter", version.ref = "fixers" }
+
+# ── F2 (versions from the BOM) ───────────────────────────────────────────────
+f2-dsl-cqrs = { group = "io.komune.f2", name = "f2-dsl-cqrs" }
+f2-dsl-function = { group = "io.komune.f2", name = "f2-dsl-function" }
+f2-client-domain = { group = "io.komune.f2", name = "f2-client-domain" }
+f2-client-ktor = { group = "io.komune.f2", name = "f2-client-ktor" }
+f2-spring-boot-exception-http = { group = "io.komune.f2", name = "f2-spring-boot-exception-http" }
+f2-spring-boot-starter-auth-tenant = { group = "io.komune.f2", name = "f2-spring-boot-starter-auth-tenant" }
+f2-spring-boot-starter-function = { group = "io.komune.f2", name = "f2-spring-boot-starter-function" }
+f2-spring-boot-starter-function-http = { group = "io.komune.f2", name = "f2-spring-boot-starter-function-http" }
+
+# ── Spring (versions from the BOM) ───────────────────────────────────────────
+spring-boot-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure" }
+spring-boot-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor" }
+spring-boot-starter = { group = "org.springframework.boot", name = "spring-boot-starter" }
+spring-boot-starter-data-redis-reactive = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis-reactive" }
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+spring-boot-starter-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" }
+spring-web = { group = "org.springframework", name = "spring-web" }
+
+# ── Ktor (versions from the BOM) ─────────────────────────────────────────────
+ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth" }
+ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio" }
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation" }
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json" }
+
+# ── JSON / logging (versions from the BOM) ───────────────────────────────────
+jackson-module-kotlin = { group = "tools.jackson.module", name = "jackson-module-kotlin" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api" }
+
+# ── Test (versions from the BOM) ─────────────────────────────────────────────
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api" }
+junit-platform-suite = { group = "org.junit.platform", name = "junit-platform-suite" }
+assertj-core = { group = "org.assertj", name = "assertj-core" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
+
+# ── Project-specific (not in the BOM) ────────────────────────────────────────
+minio = { group = "io.minio", name = "minio", version.ref = "minio" }
+reflections = { group = "org.reflections", name = "reflections", version.ref = "reflections" }
+# Deliberately pinned. Carried over from the pre-catalog build; older than what
+# fixers-s2 uses (7.6.0.RELEASE). Changing it is a behaviour change, not a cleanup.
+lettuce-core = { group = "io.lettuce", name = "lettuce-core", version.ref = "lettuce" }
+
+[bundles]
+ktor-client = [
+    "ktor-client-core",
+    "ktor-client-content-negotiation",
+    "ktor-client-cio",
+    "ktor-serialization-kotlinx-json",
+]
+f2-client = ["f2-client-ktor", "f2-client-domain"]
+test-junit = [
+    "junit-jupiter",
+    "junit-jupiter-api",
+    "junit-platform-suite",
+    "assertj-core",
+    "kotlinx-coroutines-test",
+]
+spring-redis = ["spring-boot-starter-data-redis-reactive", "lettuce-core"]
+
+[plugins]
+# Project-specific only — fixers, kotlin and spring-boot plugins come from the catalogue.
+fixers-gradle-d2 = { id = "io.komune.fixers.gradle.d2", version.ref = "d2" }

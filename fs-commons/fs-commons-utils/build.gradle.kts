@@ -1,7 +1,7 @@
 plugins {
-    id("io.komune.fixers.gradle.kotlin.jvm")
+    alias(catalogue.plugins.fixers.gradle.kotlin.jvm)
 }
 
 dependencies {
-    Dependencies.Jvm.Json.jackson(::api)
+    api(libs.jackson.module.kotlin)
 }

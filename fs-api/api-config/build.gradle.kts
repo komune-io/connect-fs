@@ -1,13 +1,13 @@
 plugins {
-    id("io.komune.fixers.gradle.kotlin.jvm")
-    kotlin("plugin.spring")
-    kotlin("kapt")
+    alias(catalogue.plugins.fixers.gradle.kotlin.jvm)
+    alias(catalogue.plugins.kotlin.spring)
+    alias(catalogue.plugins.kotlin.kapt)
 }
 
 dependencies {
-    api("io.komune.f2:f2-spring-boot-starter-function:${Versions.f2}")
-    api("io.komune.f2:f2-spring-boot-starter-auth-tenant:${Versions.f2}")
+    api(libs.f2.spring.boot.starter.function)
+    api(libs.f2.spring.boot.starter.auth.tenant)
 
     implementation(project(":fs-s2:file:fs-file-domain"))
-    api("io.minio:minio:${Versions.minio}")
+    api(libs.minio)
 }
