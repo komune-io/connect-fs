@@ -7,7 +7,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 class KbPropertiesTest {
 
     @Test
-    fun `url is required, so the knowledge base cannot be half-configured`() {
+    fun `the configured url is carried through verbatim`() {
+        // `url` is non-null in the constructor, so a missing `fs.kb.url` fails at binding
+        // time rather than here; this only pins that nothing rewrites the value.
         assertThat(KbProperties(url = "http://kb:8080").url).isEqualTo("http://kb:8080")
     }
 

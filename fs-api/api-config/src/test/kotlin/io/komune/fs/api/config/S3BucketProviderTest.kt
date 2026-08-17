@@ -1,9 +1,10 @@
 package io.komune.fs.api.config
 
+import f2.dsl.cqrs.exception.F2Exception
+import io.komune.f2.spring.boot.auth.AuthenticationProvider
 import io.komune.fs.s2.file.domain.error.NoBucketConfiguredError
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class S3BucketProviderTest {
@@ -28,10 +29,17 @@ class S3BucketProviderTest {
 
     @Test
     fun `no configured space and no authenticated tenant is an error, not an empty bucket`() = runTest {
-        // Falling back to "" here would silently write into the wrong place.
+        // The fallback reads the tenant from the coroutine's ReactorContext, which runTest
+        // does not install — asserted rather than assumed, so this fails loudly if that
+        // resolution ever moves somewhere ambient.
+        assertThat(AuthenticationProvider.getTenant()).isNull()
         val provider = S3BucketProvider(properties(spaceName = null))
 
-        assertThatThrownBy { kotlinx.coroutines.runBlocking { provider.getBucket() } }
+        // Falling back to "" here would silently write into the wrong place.
+        val thrown = runCatching { provider.getBucket() }.exceptionOrNull()
+
+        assertThat(thrown)
+            .isInstanceOf(F2Exception::class.java)
             .hasMessageContaining(NoBucketConfiguredError().message)
     }
 
@@ -40,7 +48,10 @@ class S3BucketProviderTest {
         val props = properties(spaceName = null).copy(space = SpaceProperties(name = null, jwt = null))
         val provider = S3BucketProvider(props)
 
-        assertThatThrownBy { kotlinx.coroutines.runBlocking { provider.getBucket() } }
-            .isInstanceOf(Exception::class.java)
+        val thrown = runCatching { provider.getBucket() }.exceptionOrNull()
+
+        assertThat(thrown)
+            .isInstanceOf(F2Exception::class.java)
+            .hasMessageContaining(NoBucketConfiguredError().message)
     }
 }
