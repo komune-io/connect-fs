@@ -12,7 +12,10 @@ object Framework {
 
 object PluginVersions {
 	val fixers = Framework.fixers
-	val d2 = Framework.fixers
+	// The d2 Gradle plugin left the Fixers version line: fixers-d2 tags reach 0.39.0 but
+	// io.komune.fixers.gradle.d2 was last published to Maven Central at 0.28.21. Pinning
+	// it to Framework.fixers stopped resolving once Fixers moved past 0.28.x.
+	val d2 = "0.28.21"
 	const val kotlin = FixersPluginVersions.kotlin
 	const val springBoot = FixersPluginVersions.springBoot
 	const val graalvm = FixersPluginVersions.graalvm
@@ -21,6 +24,7 @@ object PluginVersions {
 object Versions {
 	val f2 = Framework.fixers
 	val s2 = Framework.fixers
+	val c2 = Framework.fixers
 	const val springBoot = PluginVersions.springBoot
 	const val springFramework = FixersVersions.Spring.framework
 
@@ -58,8 +62,10 @@ object Dependencies {
 	}
 
 	object Fixers {
+		// S2 dropped all C2 dependencies, so the SSM sourcing starter moved to C2. The
+		// s2.spring.sourcing.ssm package is unchanged — only the coordinate moved.
 		fun s2SourcingSsm(scope: Scope) = scope.add(
-			"io.komune.s2:s2-spring-boot-starter-sourcing-ssm:${Versions.s2}",
+			"io.komune.c2:ssm-s2-sourcing-spring-boot-starter:${Versions.c2}",
 		)
 	}
 

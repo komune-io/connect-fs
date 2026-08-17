@@ -1,5 +1,6 @@
 package io.komune.fs.s2.file.app.config
 
+import io.komune.c2.chaincode.dsl.from
 import io.komune.fs.s2.file.app.entity.FileEntity
 import io.komune.fs.s2.file.app.view.FileModelView
 import io.komune.fs.s2.file.app.view.RedisSnapView
@@ -21,7 +22,6 @@ import s2.spring.automate.sourcing.S2AutomateDeciderSpring
 import s2.spring.sourcing.ssm.S2SourcingSsmAdapter
 import ssm.chaincode.dsl.model.Agent
 import ssm.chaincode.dsl.model.uri.ChaincodeUri
-import ssm.chaincode.dsl.model.uri.from
 import ssm.sdk.sign.extention.loadFromFile
 
 @ConditionalOnProperty("ssm.chaincode.url")
