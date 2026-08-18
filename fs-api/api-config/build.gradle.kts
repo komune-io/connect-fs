@@ -10,4 +10,6 @@ dependencies {
 
     implementation(project(":fs-s2:file:fs-file-domain"))
     api(libs.minio)
+
+    testImplementation(libs.bundles.junit)
 }

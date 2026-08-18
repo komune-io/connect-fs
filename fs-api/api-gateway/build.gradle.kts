@@ -12,4 +12,5 @@ dependencies {
     implementation(project(":fs-s2:file:fs-file-app"))
     implementation(libs.reflections)
 
+    testImplementation(libs.bundles.junit)
 }

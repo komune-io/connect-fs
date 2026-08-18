@@ -8,4 +8,7 @@ dependencies {
 
     commonMainImplementation(catalogue.client.ktor)
     commonMainImplementation(catalogue.client.domain)
+
+    commonTestImplementation(kotlin("test"))
+    commonTestImplementation(libs.kotlinx.serialization.json)
 }

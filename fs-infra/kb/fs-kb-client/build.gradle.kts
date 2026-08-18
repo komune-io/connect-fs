@@ -14,4 +14,6 @@ dependencies {
 
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.auth)
+
+    testImplementation(libs.bundles.junit)
 }

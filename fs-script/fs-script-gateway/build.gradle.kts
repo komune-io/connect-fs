@@ -13,6 +13,8 @@ dependencies {
     implementation(catalogue.client.domain)
 
     implementation(libs.slf4j.api)
+
+    testImplementation(libs.bundles.junit)
 }
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {}

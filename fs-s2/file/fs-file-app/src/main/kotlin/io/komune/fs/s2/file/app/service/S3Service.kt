@@ -4,9 +4,9 @@ import io.komune.fs.api.config.S3BucketProvider
 import io.komune.fs.commons.utils.parseJsonTo
 import io.komune.fs.commons.utils.toJson
 import io.komune.fs.s2.file.app.model.Policy
+import io.komune.fs.s2.file.app.model.sanitizedMetadata
 import io.minio.BucketExistsArgs
 import io.minio.CopyObjectArgs
-import io.minio.CopySource
 import io.minio.Directive
 import io.minio.GetBucketPolicyArgs
 import io.minio.GetObjectArgs
@@ -18,6 +18,7 @@ import io.minio.PutObjectArgs
 import io.minio.RemoveObjectArgs
 import io.minio.Result
 import io.minio.SetBucketPolicyArgs
+import io.minio.SourceObject
 import io.minio.StatObjectArgs
 import io.minio.StatObjectResponse
 import io.minio.errors.ErrorResponseException
@@ -57,7 +58,7 @@ class S3Service(
     }
 
     suspend fun copyObject(path: String, metadata: Map<String, String>) = withBucket { bucket ->
-        val source = CopySource.builder()
+        val source = SourceObject.builder()
             .bucket(bucket)
             .`object`(path)
             .build()
@@ -86,7 +87,7 @@ class S3Service(
         logger.debug("Getting metadata for $path")
         statObject(path)
             ?.userMetadata()
-            ?.mapKeys { (key) -> key.lowercase().removePrefix("x-amz-meta-") }
+            ?.sanitizedMetadata()
             .also { logger.debug("Got metadata for $path: $it") }
     }
 
