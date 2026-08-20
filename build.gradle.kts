@@ -14,7 +14,6 @@ plugins {
 
 fixers {
 	bundle {
-		id = "fs"
 		group = "io.komune.fs"
 		name = "FS"
 		description = "File manager"
