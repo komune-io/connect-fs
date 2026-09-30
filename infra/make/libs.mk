@@ -9,10 +9,10 @@ lint:
 	./gradlew detekt
 
 build:
-	./gradlew build publishToMavenLocal -x test
+	./gradlew build publishToMavenLocal -x test -x jvmTest -x jsTest -x jsBrowserTest
 
 test:
-	./gradlew test
+	./gradlew allTests test
 
 #check:
 	#./gradlew sonar -Dsonar.token=${FIXERS_SONAR_TOKEN} -Dorg.gradle.parallel=true
