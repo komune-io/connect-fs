@@ -179,9 +179,9 @@ Users and access keys are not copied: give RustFS the credentials FS already use
 The target is the server configured under `fs.script.s3` (`FS_S3_INTERNAL_URL`, `FS_S3_USERNAME`,
 `FS_S3_PASSWORD`).
 
-Objects already on the target with the same size, content type and metadata, and either the same
-ETag or a write date after the source's last change, are skipped. The script can be run as many
-times as needed, and fails (non-zero exit) when objects could not be copied after the retries. A typical cutover:
+Objects already on the target with the same size, content type, metadata and ETag are skipped.
+The script can be run as many times as needed, and fails (non-zero exit) when objects could not be
+copied after the retries. A typical cutover:
 1. Start RustFS next to MinIO with the same credentials, and run the migration while FS is live.
 2. Stop writes to FS, then run it again with `delete-extraneous` to copy the last changes and
    drop files deleted in the meantime.

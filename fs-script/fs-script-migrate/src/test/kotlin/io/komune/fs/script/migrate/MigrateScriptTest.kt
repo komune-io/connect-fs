@@ -97,16 +97,27 @@ class MigrateScriptTest {
     }
 
     @Test
-    fun `skips a copy whose ETag differs only because of multipart, as long as it is newer`() = runTest {
-        source.put("fs", "big", "content")
-        script().run()
-        target.setEtag("fs", "big", "d41d8cd98f00b204e9800998ecf8427e-3")
+    fun `overwrites a target object holding other bytes, even when written after the source`() = runTest {
+        source.put("fs", "doc", "aaa", metadata = mapOf("id" to "a"))
+        target.put("fs", "doc", "bbb", metadata = mapOf("id" to "a"))
 
         val report = script().run().buckets.single()
 
-        assertThat(report.skipped.get()).isEqualTo(1)
-        assertThat(report.copied.get()).isZero()
+        assertThat(report.copied.get()).isEqualTo(1)
+        assertThat(target.content("fs", "doc")).isEqualTo("aaa")
     }
+
+    @Test
+    fun `copies again an object whose ETag differs, as after a multipart upload with another part size`() =
+        runTest {
+            source.put("fs", "big", "content")
+            script().run()
+            target.setEtag("fs", "big", "d41d8cd98f00b204e9800998ecf8427e-3")
+
+            val report = script().run().buckets.single()
+
+            assertThat(report.copied.get()).isEqualTo(1)
+        }
 
     @Test
     fun `removes the target policy when the source has none`() = runTest {

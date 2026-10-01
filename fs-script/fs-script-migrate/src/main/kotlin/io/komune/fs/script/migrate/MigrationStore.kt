@@ -29,7 +29,7 @@ interface MigrationStore {
 /**
  * @property metadata user metadata, keys lowercased and without the `x-amz-meta-` prefix.
  * @property etag as returned by the server, used to tell whether two copies hold the same bytes.
- * @property lastModified as returned by the server. Ignored when writing.
+ * @property lastModified as returned by the server, for information. Ignored when writing.
  */
 data class ObjectInfo(
     val key: String,
@@ -47,17 +47,11 @@ data class ObjectInfo(
         && metadata == other.metadata
 
     /**
-     * Same ETag means same bytes for single-part uploads (it is their MD5). ETags of multipart uploads
-     * depend on the part size and may differ between servers, so a copy written strictly after the
-     * source was last modified also counts as up to date: an overwrite of the source since then would
-     * make the source the newer one. Equal timestamps (second precision) are treated as stale.
+     * The ETag is the MD5 of the content for single-part uploads, and derived from the part MD5s
+     * for multipart ones, so equal ETags mean equal bytes. A multipart object uploaded with another
+     * part size gets a different ETag for the same bytes: it is copied again, which is safe.
      */
-    private fun hasSameContentAs(source: ObjectInfo): Boolean {
-        val sameEtag = etag != null && etag == source.etag
-        val writtenAfter = lastModified != null && source.lastModified != null
-            && lastModified.isAfter(source.lastModified)
-        return sameEtag || writtenAfter
-    }
+    private fun hasSameContentAs(source: ObjectInfo) = etag != null && etag == source.etag
 }
 
 fun Map<String, String?>.normalizedMetadata(): Map<String, String> = this
