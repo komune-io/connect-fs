@@ -1,6 +1,6 @@
 [versions]
 fixers = "0.43.0"
-lettuce = "7.6.0.RELEASE"
+lettuce = "7.8.0.RELEASE"
 minio = "9.0.3"
 reflections = "0.10.2"
 mockk = "1.14.11"
@@ -10,7 +10,7 @@ mockk = "1.14.11"
 jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
 
 # Lettuce
-lettuce-core = { module = "io.lettuce:lettuce-core", version = { strictly = "7.6.0.RELEASE" } }
+lettuce-core = { module = "io.lettuce:lettuce-core", version = { strictly = "7.8.0.RELEASE" } }
 
 # Minio
 minio = { module = "io.minio:minio", version.ref = "minio" }
