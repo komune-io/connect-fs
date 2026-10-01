@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory
  * Copies buckets from [source] to [target]: objects with their content type and user metadata,
  * and the bucket policy (which holds FS public directories).
  *
- * Objects already present on the target with the same size, content type and metadata are
- * skipped, so the script can be run again to resume a failed run or to copy what changed
- * since the previous one.
+ * Objects already present on the target with the same size, content type, metadata and content
+ * (see [ObjectInfo.isUpToDateWith]) are skipped, so the script can be run again to resume a failed
+ * run or to copy what changed since the previous one.
  */
 class MigrateScript(
     private val properties: FsMigrateProperties,
@@ -64,13 +64,18 @@ class MigrateScript(
         return report
     }
 
+    /** Makes the target policy match the source one, removing it when the source has none. */
     private fun copyPolicy(bucket: String): Boolean {
         val policy = source.getBucketPolicy(bucket)
-            ?.takeIf { it != target.getBucketPolicyOrNull(bucket) }
-            ?: return false
+        if (policy == target.getBucketPolicyOrNull(bucket)) return false
 
-        logger.info("Copying policy of bucket $bucket")
-        if (!properties.dryRun) target.setBucketPolicy(bucket, policy)
+        if (policy == null) {
+            logger.info("Removing policy of bucket $bucket, which has none on the source")
+            if (!properties.dryRun) target.deleteBucketPolicy(bucket)
+        } else {
+            logger.info("Copying policy of bucket $bucket")
+            if (!properties.dryRun) target.setBucketPolicy(bucket, policy)
+        }
         return true
     }
 
@@ -85,7 +90,7 @@ class MigrateScript(
             }
 
             val existing = if (targetReadable) target.stat(bucket, key) else null
-            if (existing != null && info.isSameAs(existing)) {
+            if (existing != null && existing.isUpToDateWith(info)) {
                 report.skipped.incrementAndGet()
                 return
             }

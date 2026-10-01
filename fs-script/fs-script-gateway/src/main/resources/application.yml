@@ -21,6 +21,6 @@ fs:
       concurrency: ${FS_SCRIPT_MIGRATE_CONCURRENCY:8}
       deleteExtraneous: ${FS_SCRIPT_MIGRATE_DELETE_EXTRANEOUS:false}
       source:
-        internalUrl: ${FS_MIGRATE_SOURCE_URL:http://localhost:9000}
-        username: ${FS_MIGRATE_SOURCE_USERNAME:minio}
-        password: ${FS_MIGRATE_SOURCE_PASSWORD:minio123}
+        internalUrl: ${FS_MIGRATE_SOURCE_URL:}
+        username: ${FS_MIGRATE_SOURCE_USERNAME:}
+        password: ${FS_MIGRATE_SOURCE_PASSWORD:}

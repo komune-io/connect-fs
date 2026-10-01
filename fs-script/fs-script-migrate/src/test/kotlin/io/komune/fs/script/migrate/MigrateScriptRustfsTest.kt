@@ -69,7 +69,11 @@ class MigrateScriptRustfsTest {
         assertThat(first.copied.get()).isEqualTo(3)
         assertThat(first.policyCopied).isTrue()
         listOf("doc/1/contract.pdf", "public/logo.svg", "big.bin").forEach { key ->
-            assertThat(target.stat(BUCKET, key)).isEqualTo(source.stat(BUCKET, key))
+            val copy = target.stat(BUCKET, key)!!
+            val original = source.stat(BUCKET, key)!!
+            assertThat(copy.copy(etag = null, lastModified = null))
+                .isEqualTo(original.copy(etag = null, lastModified = null))
+            assertThat(copy.isUpToDateWith(original)).isTrue()
         }
         assertThat(target.stat(BUCKET, "doc/1/contract.pdf")?.metadata)
             .isEqualTo(mapOf("id" to "file-1", "vectorized" to "true"))
@@ -77,15 +81,23 @@ class MigrateScriptRustfsTest {
         assertThat(target.getBucketPolicy(BUCKET)).contains("arn:aws:s3:::$BUCKET/public/*")
 
         source.write(BUCKET, "doc/1/added.txt", "new", "text/plain", mapOf("id" to "file-3"))
+        // Same size, content type and metadata: only the bytes tell the change apart.
+        source.write(BUCKET, "doc/1/contract.pdf", "PDF CONTENT", "application/pdf",
+            mapOf("id" to "file-1", "vectorized" to "true"))
         source.remove(BUCKET, "public/logo.svg")
+        source.deleteBucketPolicy(BUCKET)
         val second = MigrateScript(properties.copy(deleteExtraneous = true), source, target).run().buckets.single()
 
         assertThat(second.failed.get()).isZero()
-        assertThat(second.copied.get()).isEqualTo(1)
-        assertThat(second.skipped.get()).isEqualTo(2)
+        assertThat(second.copied.get()).isEqualTo(2)
+        assertThat(second.skipped.get()).isEqualTo(1)
         assertThat(second.deleted.get()).isEqualTo(1)
+        assertThat(second.policyCopied).isTrue()
         assertThat(target.stat(BUCKET, "public/logo.svg")).isNull()
         assertThat(target.stat(BUCKET, "doc/1/added.txt")).isNotNull()
+        assertThat(target.read(BUCKET, "doc/1/contract.pdf").use { it.readBytes().decodeToString() })
+            .isEqualTo("PDF CONTENT")
+        assertThat(target.getBucketPolicy(BUCKET)).isNull()
     }
 
     private fun MigrationStore.write(

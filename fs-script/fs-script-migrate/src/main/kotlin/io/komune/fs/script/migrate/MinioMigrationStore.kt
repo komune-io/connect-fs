@@ -1,6 +1,7 @@
 package io.komune.fs.script.migrate
 
 import io.minio.BucketExistsArgs
+import io.minio.DeleteBucketPolicyArgs
 import io.minio.GetBucketPolicyArgs
 import io.minio.GetObjectArgs
 import io.minio.ListObjectsArgs
@@ -17,6 +18,7 @@ import java.io.InputStream
  * [MigrationStore] backed by the MinIO client, which works against any S3-compatible server
  * (MinIO and RustFS alike). Closing it closes the client.
  */
+@Suppress("TooManyFunctions") // one per MigrationStore operation
 class MinioMigrationStore(
     private val client: MinioClient,
 ) : MigrationStore, AutoCloseable {
@@ -51,6 +53,8 @@ class MinioMigrationStore(
             size = stat.size(),
             contentType = stat.contentType(),
             metadata = stat.userMetadata().associate { it.key to it.value }.normalizedMetadata(),
+            etag = stat.etag(),
+            lastModified = stat.lastModified()?.toInstant(),
         )
     } catch (e: ErrorResponseException) {
         if (e.errorResponse().code() in NOT_FOUND_CODES) null else throw e
@@ -97,6 +101,13 @@ class MinioMigrationStore(
             .config(policy)
             .build()
             .let(client::setBucketPolicy)
+    }
+
+    override fun deleteBucketPolicy(bucket: String) {
+        DeleteBucketPolicyArgs.builder()
+            .bucket(bucket)
+            .build()
+            .let(client::deleteBucketPolicy)
     }
 
     override fun close() = client.close()

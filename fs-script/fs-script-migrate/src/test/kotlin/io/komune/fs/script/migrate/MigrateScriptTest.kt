@@ -23,7 +23,8 @@ class MigrateScriptTest {
 
         assertThat(target.keys("fs")).containsExactlyInAnyOrder("doc/1/contract.pdf", "doc/1/notes.md")
         assertThat(target.content("fs", "doc/1/contract.pdf")).isEqualTo("pdf")
-        assertThat(target.stat("fs", "doc/1/contract.pdf")).isEqualTo(source.stat("fs", "doc/1/contract.pdf"))
+        assertThat(target.stat("fs", "doc/1/contract.pdf")?.copy(lastModified = null))
+            .isEqualTo(source.stat("fs", "doc/1/contract.pdf")?.copy(lastModified = null))
         assertThat(report.buckets.single().copied.get()).isEqualTo(2)
         assertThat(report.hasFailures).isFalse()
     }
@@ -81,6 +82,54 @@ class MigrateScriptTest {
         assertThat(report.copied.get()).isEqualTo(2)
         assertThat(report.skipped.get()).isEqualTo(1)
         assertThat(target.stat("fs", "changed")?.metadata).containsEntry("vectorized", "true")
+    }
+
+    @Test
+    fun `copies again an object overwritten with other bytes of the same size`() = runTest {
+        source.put("fs", "doc", "aaa", metadata = mapOf("id" to "a"))
+        script().run()
+
+        source.put("fs", "doc", "bbb", metadata = mapOf("id" to "a"))
+        val report = script().run().buckets.single()
+
+        assertThat(report.copied.get()).isEqualTo(1)
+        assertThat(target.content("fs", "doc")).isEqualTo("bbb")
+    }
+
+    @Test
+    fun `skips a copy whose ETag differs only because of multipart, as long as it is newer`() = runTest {
+        source.put("fs", "big", "content")
+        script().run()
+        target.setEtag("fs", "big", "d41d8cd98f00b204e9800998ecf8427e-3")
+
+        val report = script().run().buckets.single()
+
+        assertThat(report.skipped.get()).isEqualTo(1)
+        assertThat(report.copied.get()).isZero()
+    }
+
+    @Test
+    fun `removes the target policy when the source has none`() = runTest {
+        source.put("fs", "x", "1")
+        source.setBucketPolicy("fs", "{}")
+        script().run()
+
+        source.deleteBucketPolicy("fs")
+        val report = script().run().buckets.single()
+
+        assertThat(target.getBucketPolicy("fs")).isNull()
+        assertThat(report.policyCopied).isTrue()
+    }
+
+    @Test
+    fun `a dry run does not remove the target policy`() = runTest {
+        source.put("fs", "x", "1")
+        target.put("fs", "x", "1")
+        target.setBucketPolicy("fs", "{}")
+
+        script(FsMigrateProperties(enabled = true, dryRun = true)).run()
+
+        assertThat(target.getBucketPolicy("fs")).isEqualTo("{}")
     }
 
     @Test

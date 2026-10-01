@@ -160,7 +160,8 @@ servers). It runs instead of the import script when `fs.script.migrate.enabled` 
 
 What is copied, bucket by bucket:
 - every object, with its content type and user metadata (`id`, `vectorized`, ...);
-- the bucket policy, which holds the public directories created by `initPublicDirectory`.
+- the bucket policy, which holds the public directories created by `initPublicDirectory`
+  (removed from the target when the source has none).
 
 Users and access keys are not copied: give RustFS the credentials FS already uses.
 
@@ -171,15 +172,16 @@ Users and access keys are not copied: give RustFS the credentials FS already use
 | buckets | FS_SCRIPT_MIGRATE_BUCKETS | Comma-separated buckets to migrate, empty for all of them | |
 | concurrency | FS_SCRIPT_MIGRATE_CONCURRENCY | Objects copied in parallel | 8 |
 | delete-extraneous | FS_SCRIPT_MIGRATE_DELETE_EXTRANEOUS | Delete target objects that no longer exist on the source | false |
-| source.internal-url | FS_MIGRATE_SOURCE_URL | URL of the MinIO server | http://localhost:9000 |
-| source.username | FS_MIGRATE_SOURCE_USERNAME | Login to MinIO | minio |
-| source.password | FS_MIGRATE_SOURCE_PASSWORD | Password of MinIO | minio123 |
+| source.internal-url | FS_MIGRATE_SOURCE_URL | URL of the MinIO server | required |
+| source.username | FS_MIGRATE_SOURCE_USERNAME | Login to MinIO | required |
+| source.password | FS_MIGRATE_SOURCE_PASSWORD | Password of MinIO | required |
 
 The target is the server configured under `fs.script.s3` (`FS_S3_INTERNAL_URL`, `FS_S3_USERNAME`,
 `FS_S3_PASSWORD`).
 
-Objects already on the target with the same size, content type and metadata are skipped, so the
-script can be run as many times as needed. A typical cutover:
+Objects already on the target with the same size, content type and metadata, and either the same
+ETag or a write date after the source's last change, are skipped. The script can be run as many
+times as needed, and fails (non-zero exit) when objects could not be copied after the retries. A typical cutover:
 1. Start RustFS next to MinIO with the same credentials, and run the migration while FS is live.
 2. Stop writes to FS, then run it again with `delete-extraneous` to copy the last changes and
    drop files deleted in the meantime.

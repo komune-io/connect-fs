@@ -43,6 +43,8 @@ class ScriptServiceRunner(
             logger.error("FS Script Gateway failed", e)
         } catch (e: MigrateScriptException) {
             logger.error("FS Script Gateway failed", e)
+            // Fail the process so whatever runs the migration sees it did not complete.
+            throw e
         } finally {
             context.close()
         }
@@ -69,7 +71,10 @@ class ScriptServiceRunner(
 
     private suspend fun runMigrateScript() {
         val source = migrateProperties.source
-            ?: throw MigrateScriptException("fs.script.migrate.source must be set to run the migration")
+            ?.takeIf { it.internalUrl.isNotBlank() && it.username.isNotBlank() && it.password.isNotBlank() }
+            ?: throw MigrateScriptException(
+                "fs.script.migrate.source.internal-url, username and password must be set to run the migration"
+            )
         // The target client is the Spring bean, closed with the context. The source one is ours to close,
         // otherwise its idle HTTP threads keep the JVM alive after the run.
         val success = MinioMigrationStore.create(
