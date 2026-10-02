@@ -14,3 +14,13 @@ fs:
       externalUrl: ${FS_S3_EXTERNAL_URL:http://localhost:9000}
       username: ${FS_S3_USERNAME:minio}
       password: ${FS_S3_PASSWORD:minio123}
+    migrate:
+      enabled: ${FS_SCRIPT_MIGRATE_ENABLED:false}
+      dryRun: ${FS_SCRIPT_MIGRATE_DRY_RUN:false}
+      buckets: ${FS_SCRIPT_MIGRATE_BUCKETS:}
+      concurrency: ${FS_SCRIPT_MIGRATE_CONCURRENCY:8}
+      deleteExtraneous: ${FS_SCRIPT_MIGRATE_DELETE_EXTRANEOUS:false}
+      source:
+        internalUrl: ${FS_MIGRATE_SOURCE_URL:}
+        username: ${FS_MIGRATE_SOURCE_USERNAME:}
+        password: ${FS_MIGRATE_SOURCE_PASSWORD:}
