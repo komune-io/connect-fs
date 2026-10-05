@@ -20,7 +20,7 @@ stage: docker-fs-api-stage docker-fs-script-stage
 promote: docker-fs-api-promote docker-fs-script-promote
 
 docker-fs-api-build:
-	VERSION=${VERSION} ./gradlew build ${GATEWAY_PACKAGE}:bootBuildImage --imageName ${GATEWAY_IMG} -x test
+	VERSION=${VERSION} ./gradlew ${GATEWAY_PACKAGE}:bootBuildImage --imageName ${GATEWAY_IMG} -x test
 
 docker-fs-api-stage:
 	@docker tag ${GATEWAY_IMG} ghcr.io/komune-io/${GATEWAY_IMG}
@@ -37,7 +37,7 @@ SCRIPT_IMG := ${SCRIPT_NAME}:${VERSION}
 SCRIPT_PACKAGE := fs-script:fs-script-gateway
 
 docker-fs-script-build:
-	VERSION=${VERSION} ./gradlew build ${SCRIPT_PACKAGE}:bootBuildImage --imageName ${SCRIPT_IMG} -x test
+	VERSION=${VERSION} ./gradlew ${SCRIPT_PACKAGE}:bootBuildImage --imageName ${SCRIPT_IMG} -x test
 
 docker-fs-script-stage:
 	@docker tag ${SCRIPT_IMG} ghcr.io/komune-io/${SCRIPT_IMG}
