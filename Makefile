@@ -11,15 +11,18 @@ lint:
 
 build:
 	@make -f infra/make/libs.mk build
+	@make -f infra/make/docker.mk build
 
 test:
 	@make -f infra/make/libs.mk test
 
 stage:
 	@make -f infra/make/libs.mk stage
+	@make -f infra/make/docker.mk stage
 
 promote:
 	@make -f infra/make/libs.mk promote
+	@make -f infra/make/docker.mk promote
 
 ## DOCKER-COMPOSE DEV ENVIRONMENT
 include infra/docker-compose/dev-compose.mk
