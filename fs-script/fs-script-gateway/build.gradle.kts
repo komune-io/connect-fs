@@ -7,6 +7,7 @@ plugins {
 dependencies {
     implementation(project(":fs-script:fs-script-core"))
     implementation(project(":fs-script:fs-script-import"))
+    implementation(project(":fs-script:fs-script-migrate"))
 
     implementation(libs.spring.boot.starter)
 

@@ -64,6 +64,8 @@ assertj-core = { module = "org.assertj:assertj-core" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+testcontainers = { module = "org.testcontainers:testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter" }
 
 [bundles]
 ktor-client = ["ktor-client-core", "ktor-client-content-negotiation", "ktor-client-cio", "ktor-serialization-kotlinx-json"]

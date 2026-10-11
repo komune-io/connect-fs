@@ -58,5 +58,6 @@ include(
 include(
 	"fs-script:fs-script-core",
 	"fs-script:fs-script-gateway",
-	"fs-script:fs-script-import"
+	"fs-script:fs-script-import",
+	"fs-script:fs-script-migrate"
 )
