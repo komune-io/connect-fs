@@ -81,6 +81,14 @@ class FsConfig {
 
 # Configuration
 
+## Allowed clients
+
+The roles above say what a token may do, not which application holds it: every token of a trusted
+realm authenticates. `fs.security.allowedClients` (env `fs_security_allowedClients`, comma-separated)
+lists the clients whose tokens may call FS, matched on the token's `azp` claim; any other token is
+refused with `403`. Empty, the default, allows every client. List every caller, IM's own client
+included when IM stores files here.
+
 ## S3
 
 Properties prefix: `fs.s3`

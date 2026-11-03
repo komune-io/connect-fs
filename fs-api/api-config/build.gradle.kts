@@ -12,4 +12,5 @@ dependencies {
     api(libs.minio)
 
     testImplementation(libs.bundles.junit)
+    testImplementation(libs.spring.boot.starter.test)
 }

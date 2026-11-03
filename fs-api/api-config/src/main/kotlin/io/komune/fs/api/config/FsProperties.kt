@@ -7,6 +7,14 @@ data class FsProperties (
     val s3: S3Properties,
     val init: BucketInitProperties?,
     val space: SpaceProperties?,
+    val security: SecurityProperties? = null,
+)
+
+/**
+ * `allowedClients`: the clients (`azp`) whose tokens may call this service; empty allows every client.
+ */
+data class SecurityProperties(
+    val allowedClients: List<String> = emptyList(),
 )
 
 data class S3Properties(
