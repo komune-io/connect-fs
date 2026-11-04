@@ -151,3 +151,45 @@ Docker image targets:
 - make docker-fs-script-build
 - make docker-fs-script-publish
 - make docker-fs-script-promote
+
+## Migrating from MinIO to RustFS
+
+The MinIO server is no longer published. The `fs-script` image can copy an existing MinIO
+server into a [RustFS](https://github.com/rustfs/rustfs) one (or between any two S3-compatible
+servers). It runs instead of the import script when `fs.script.migrate.enabled` is true.
+
+What is copied, bucket by bucket:
+- every object, with its content type and user metadata (`id`, `vectorized`, ...);
+- the bucket policy, which holds the public directories created by `initPublicDirectory`
+  (removed from the target when the source has none).
+
+Users and access keys are not copied: give RustFS the credentials FS already uses.
+
+| Property (`fs.script.migrate.*`) | Environment variable | Description | Default |
+| --- | --- | --- | --- |
+| enabled | FS_SCRIPT_MIGRATE_ENABLED | Run the migration instead of the import | false |
+| dry-run | FS_SCRIPT_MIGRATE_DRY_RUN | Log what would be copied or deleted, write nothing | false |
+| buckets | FS_SCRIPT_MIGRATE_BUCKETS | Comma-separated buckets to migrate, empty for all of them | |
+| concurrency | FS_SCRIPT_MIGRATE_CONCURRENCY | Objects copied in parallel | 8 |
+| delete-extraneous | FS_SCRIPT_MIGRATE_DELETE_EXTRANEOUS | Delete target objects that no longer exist on the source | false |
+| source.internal-url | FS_MIGRATE_SOURCE_URL | URL of the MinIO server | required |
+| source.username | FS_MIGRATE_SOURCE_USERNAME | Login to MinIO | required |
+| source.password | FS_MIGRATE_SOURCE_PASSWORD | Password of MinIO | required |
+
+The target is the server configured under `fs.script.s3` (`FS_S3_INTERNAL_URL`, `FS_S3_USERNAME`,
+`FS_S3_PASSWORD`).
+
+Objects already on the target with the same size, content type, metadata and ETag are skipped.
+The script can be run as many times as needed, and fails (non-zero exit) when objects could not be
+copied after the retries. A typical cutover:
+1. Start RustFS next to MinIO with the same credentials, and run the migration while FS is live.
+2. Stop writes to FS, then run it again with `delete-extraneous` to copy the last changes and
+   drop files deleted in the meantime.
+3. Point `fs.s3.internal-url` at RustFS, and point the host of `fs.s3.external-url` at it too:
+   file URLs recorded in the SSM keep that host.
+
+In the dev environment:
+```bash
+docker compose --env-file infra/docker-compose/.env_dev -f infra/docker-compose/docker-compose-rustfs.yml up -d
+docker compose --env-file infra/docker-compose/.env_dev -f infra/docker-compose/docker-compose-fs-migrate.yml up
+```
