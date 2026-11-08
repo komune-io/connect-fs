@@ -1,7 +1,7 @@
 [versions]
 fixers = "0.46.0"
 lettuce = "7.8.0.RELEASE"
-minio = "9.0.3"
+minio = "9.0.4"
 reflections = "0.10.2"
 mockk = "1.14.11"
 
