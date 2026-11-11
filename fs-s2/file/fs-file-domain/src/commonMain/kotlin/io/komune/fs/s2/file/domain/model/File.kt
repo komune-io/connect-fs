@@ -62,7 +62,8 @@ data class File(
      * Whether the file has been vectorized and sent to a knowledge-base.
      * @example false
      */
-    val isVectorized: Boolean,
+    @Suppress("BooleanPropertyNaming") // wire names
+    val vectorized: Boolean,
 
     /**
      * Date of the last modification of the file, formatted as UNIX timestamp in ms.

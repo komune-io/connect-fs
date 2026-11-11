@@ -18,7 +18,7 @@ suspend fun Item.toFile(buildUrl: suspend (FilePath) -> String): File {
         metadata = metadata,
         isDirectory = isDir,
         size = size(),
-        isVectorized = metadata[VECTORIZED_METADATA_KEY].toBoolean(),
+        vectorized = metadata[VECTORIZED_METADATA_KEY].toBoolean(),
         lastModificationDate = if (isDir) 0 else lastModified().toInstant().toEpochMilli()
     )
 }

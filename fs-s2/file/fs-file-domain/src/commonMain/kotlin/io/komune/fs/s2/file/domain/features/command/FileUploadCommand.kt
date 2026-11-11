@@ -35,7 +35,8 @@ data class FileUploadCommand(
      * /!\ The vector store API url needs to be configured for this to work.
      * @example false
      */
-    val isVectorizationRequested: Boolean = false
+    @Suppress("BooleanPropertyNaming") // wire names
+    val vectorize: Boolean? = false
 )
 
 /**

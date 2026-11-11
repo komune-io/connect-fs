@@ -125,7 +125,7 @@ class FileEndpoint(
                     metadata = metadata,
                     isDirectory = false,
                     size = objectStats.size(),
-                    isVectorized = metadata[VECTORIZED_METADATA_KEY].toBoolean(),
+                    vectorized = metadata[VECTORIZED_METADATA_KEY].toBoolean(),
                     lastModificationDate = objectStats.lastModified().toInstant().toEpochMilli()
                 ),
             )
@@ -172,7 +172,7 @@ class FileEndpoint(
         ).toPartialPrefix()
 
         FileListResult(
-            s3Service.listObjects(prefix, query.isRecursive)
+            s3Service.listObjects(prefix, query.recursive)
                 .map { obj -> obj.get().toFile { it.buildUrl() } }
         )
     }
@@ -217,7 +217,7 @@ class FileEndpoint(
             metadata = cmd.metadata.plus("id" to fileId)
         )
 
-        if (cmd.isVectorizationRequested) {
+        if (cmd.vectorize == true) {
             vectorize(cmd.path, cmd.metadata, fileByteArray)
         }
 

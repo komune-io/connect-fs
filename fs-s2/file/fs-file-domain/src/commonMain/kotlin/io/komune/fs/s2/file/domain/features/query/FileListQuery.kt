@@ -42,7 +42,8 @@ data class FileListQuery(
      * @example false
      * @default true
      */
-    val isRecursive: Boolean = true
+    @Suppress("BooleanPropertyNaming") // wire names
+    val recursive: Boolean = true
 )
 
 /**

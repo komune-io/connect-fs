@@ -11,13 +11,13 @@ import org.springframework.http.codec.multipart.FilePart
 
 fun FilePath.toUploadCommand(
     metadata: Map<String, String> = emptyMap(),
-    isVectorizationRequested: Boolean = false
+    vectorize: Boolean? = false
 ): FileUploadCommand = FileUploadCommand(
     path = this,
     metadata = mapOf(
         "uploadedAt" to System.currentTimeMillis().toString()
     ) + metadata,
-    isVectorizationRequested = isVectorizationRequested
+    vectorize = vectorize
 )
 
 fun ByteArray.hash(): String = MessageDigest
