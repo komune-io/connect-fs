@@ -322,7 +322,7 @@ class FileEndpoint(
     fun fileVectorize(): FileVectorizeFunction = f2Function { cmd ->
         logger.info("fileVectorize: ${cmd.path}")
 
-        @Suppress("InjectDispatcher") // a CGLIB-built @Configuration cannot take a Kotlin default dispatcher
+        @Suppress("InjectDispatcher") // Spring proxies this @Configuration with CGLIB, which drops Kotlin defaults
         val fileContent = withContext(Dispatchers.IO) {
             s3Service.getObject(cmd.path.toString())?.use { it.readAllBytes() }
         } ?: throw NotFoundException(name = "File", id = cmd.path.toString())
