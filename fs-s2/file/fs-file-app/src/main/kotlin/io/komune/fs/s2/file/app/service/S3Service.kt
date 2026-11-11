@@ -24,82 +24,94 @@ import io.minio.StatObjectResponse
 import io.minio.errors.ErrorResponseException
 import io.minio.messages.Item
 import java.net.URLConnection
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+
+private const val NO_SUCH_KEY = "NoSuchKey"
 
 @Service
 class S3Service(
     private val minioClient: MinioClient,
     private val s3BucketProvider: S3BucketProvider
 ) {
-    private val logger = LoggerFactory.getLogger(S3Service::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(S3Service::class.java)
 
-    suspend fun putObject(path: String, content: ByteArray, metadata: Map<String, String>) = withBucket { bucket ->
+    suspend fun putObject(
+        path: String,
+        content: ByteArray,
+        metadata: Map<String, String>,
+    ): Unit = withBucket { bucket ->
         val contentType = metadata.entries.firstOrNull { (key) -> key.lowercase() == "content-type" }
             ?.value
             ?: URLConnection.guessContentTypeFromName(path)
 
-        PutObjectArgs.builder()
+        val args = PutObjectArgs.builder()
             .bucket(bucket)
             .`object`(path)
             .stream(content.inputStream(), content.size.toLong(), -1)
             .userMetadata(metadata)
-            .apply { contentType?.let(this::contentType) }
-            .build()
-            .let(minioClient::putObject)
+        if (contentType != null) {
+            args.contentType(contentType)
+        }
+        minioClient.putObject(args.build())
     }
 
-    suspend fun removeObject(path: String) = withBucket { bucket ->
-        RemoveObjectArgs.builder()
-            .bucket(bucket)
-            .`object`(path)
-            .build()
-            .let(minioClient::removeObject)
+    suspend fun removeObject(path: String): Unit = withBucket { bucket ->
+        minioClient.removeObject(
+            RemoveObjectArgs.builder()
+                .bucket(bucket)
+                .`object`(path)
+                .build()
+        )
     }
 
-    suspend fun copyObject(path: String, metadata: Map<String, String>) = withBucket { bucket ->
+    suspend fun copyObject(path: String, metadata: Map<String, String>): Unit = withBucket { bucket ->
         val source = SourceObject.builder()
             .bucket(bucket)
             .`object`(path)
             .build()
 
-        CopyObjectArgs.builder()
-            .bucket(bucket)
-            .source(source)
-            .`object`(path)
-            .metadataDirective(Directive.REPLACE)
-            .userMetadata(metadata)
-            .build()
-            .let(minioClient::copyObject)
+        minioClient.copyObject(
+            CopyObjectArgs.builder()
+                .bucket(bucket)
+                .source(source)
+                .`object`(path)
+                .metadataDirective(Directive.REPLACE)
+                .userMetadata(metadata)
+                .build()
+        )
     }
 
-    suspend fun listObjects(prefix: String, recursive: Boolean): Iterable<Result<Item>> = withBucket { bucket ->
-        ListObjectsArgs.builder()
-            .bucket(bucket)
-            .prefix(prefix)
-            .recursive(recursive)
-            .includeUserMetadata(true)
-            .build()
-            .let(minioClient::listObjects)
+    suspend fun listObjects(prefix: String, isRecursive: Boolean): Iterable<Result<Item>> = withBucket { bucket ->
+        minioClient.listObjects(
+            ListObjectsArgs.builder()
+                .bucket(bucket)
+                .prefix(prefix)
+                .recursive(isRecursive)
+                .includeUserMetadata(true)
+                .build()
+        )
     }
 
-    suspend fun getObjectMetadata(path: String): Map<String, String>? = withBucket { bucket ->
-        logger.debug("Getting metadata for $path")
-        statObject(path)
+    suspend fun getObjectMetadata(path: String): Map<String, String>? {
+        logger.debug("Getting metadata for {}", path)
+        return statObject(path)
             ?.userMetadata()
             ?.sanitizedMetadata()
-            .also { logger.debug("Got metadata for $path: $it") }
+            .also { logger.debug("Got metadata for {}: {}", path, it) }
     }
 
     suspend fun statObject(path: String): StatObjectResponse? = withBucket { bucket ->
         try {
-            StatObjectArgs.builder()
-                .bucket(bucket)
-                .`object`(path)
-                .build()
-                .let(minioClient::statObject)
+            minioClient.statObject(
+                StatObjectArgs.builder()
+                    .bucket(bucket)
+                    .`object`(path)
+                    .build()
+            )
         } catch (e: ErrorResponseException) {
-            if (e.errorResponse().code() == "NoSuchKey") {
+            if (e.errorResponse().code() == NO_SUCH_KEY) {
                 null
             } else {
                 throw e
@@ -109,14 +121,15 @@ class S3Service(
 
     suspend fun getObject(path: String): GetObjectResponse? = withBucket { bucket ->
         try {
-            GetObjectArgs.builder()
-                .bucket(bucket)
-                .`object`(path)
-                .build()
-                .let(minioClient::getObject)
+            minioClient.getObject(
+                GetObjectArgs.builder()
+                    .bucket(bucket)
+                    .`object`(path)
+                    .build()
+            )
         } catch (e: ErrorResponseException) {
-            if (e.errorResponse().code() == "NoSuchKey") {
-                println("NoSuchKey")
+            if (e.errorResponse().code() == NO_SUCH_KEY) {
+                logger.debug("No object at {}", path)
                 null
             } else {
                 throw e
@@ -125,29 +138,31 @@ class S3Service(
     }
 
     suspend fun getBucketPolicy(): Policy? = withBucket { bucket ->
-        GetBucketPolicyArgs.builder()
-            .bucket(bucket)
-            .build()
-            .let(minioClient::getBucketPolicy)
+        minioClient.getBucketPolicy(
+            GetBucketPolicyArgs.builder()
+                .bucket(bucket)
+                .build()
+        )
             .ifBlank { null }
             ?.parseJsonTo(Policy::class.java)
     }
 
-    suspend fun setBucketPolicy(policy: Policy) = withBucket { bucket ->
-        SetBucketPolicyArgs.builder()
-            .bucket(bucket)
-            .config(policy.toJson())
-            .build()
-            .let(minioClient::setBucketPolicy)
+    suspend fun setBucketPolicy(policy: Policy): Unit = withBucket { bucket ->
+        minioClient.setBucketPolicy(
+            SetBucketPolicyArgs.builder()
+                .bucket(bucket)
+                .config(policy.toJson())
+                .build()
+        )
     }
 
     private suspend fun <R> withBucket(execute: suspend (bucket: String) -> R): R {
         val bucket = s3BucketProvider.getBucket()
-        val exists = minioClient.bucketExists(
+        val isExisting = minioClient.bucketExists(
             BucketExistsArgs.builder().bucket(bucket).build()
         )
-        if (!exists) {
-            logger.info("Initializing bucket $bucket")
+        if (!isExisting) {
+            logger.info("Initializing bucket {}", bucket)
             minioClient.makeBucket(
                 MakeBucketArgs.builder().bucket(bucket).build()
             )

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration
 class FsSsmConfiguration
 
 @ConfigurationProperties(prefix = "fs.ssm")
-class FsSsmConfig(
+data class FsSsmConfig(
     val channel: String,
     val chaincode: String,
     val signerName: String,

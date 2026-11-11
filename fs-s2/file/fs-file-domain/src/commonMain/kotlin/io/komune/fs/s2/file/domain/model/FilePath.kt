@@ -40,7 +40,7 @@ interface FilePathDTO {
 }
 
 /**
- * Describe a path to a file within S3
+ * Describe a path to a file within S3.
  * @d2 model
  * @parent [io.komune.fs.s2.file.domain.D2FilePage]
  * @order 20
@@ -53,32 +53,34 @@ data class FilePath(
     override val directory: String,
     override val name: String
 ): FilePathDTO {
-    companion object {
-        fun from(path: String): FilePath {
-            val (objectType, objectId, directory, name) = path.split("/", limit = 4).padEnd(size = 4)
-            return FilePath(
-                objectType = objectType,
-                objectId = objectId,
-                directory = directory,
-                name = name
-            )
-        }
-
-        private fun List<String>.padEnd(size: Int) = if (this.size < size) {
-            this + List(size - this.size) { "" }
-        } else this
-    }
-
     override fun toString() = "$objectType/$objectId/$directory/$name"
         .substringBefore("//")
         .removeSuffix("/")
 
     fun toPartialPrefix(trailingSlash: Boolean = true) = toString().plus(if (trailingSlash) "/" else "")
 
-    fun buildUrl(baseUrl: String, bucket: String, dnsStyle: Boolean) = if (dnsStyle) {
-        val (scheme, host) = baseUrl.removeSuffix("/").split("://")
-        "$scheme://$bucket.$host/$this"
-    } else {
-        "${baseUrl.removeSuffix("/")}/$bucket/$this"
+    companion object {
+        fun from(path: String): FilePath {
+            val parts = path.split("/", limit = 4).padEnd(size = 4)
+            return FilePath(
+                objectType = parts[0],
+                objectId = parts[1],
+                directory = parts[2],
+                name = parts[3]
+            )
+        }
+
+        private fun List<String>.padEnd(size: Int) = if (this.size < size) {
+            this + List(size - this.size) { "" }
+        } else {
+            this
+        }
     }
+}
+
+fun FilePath.buildUrl(baseUrl: String, bucket: String, dnsStyle: Boolean): String = if (dnsStyle) {
+    val (scheme, host) = baseUrl.removeSuffix("/").split("://")
+    "$scheme://$bucket.$host/$this"
+} else {
+    "${baseUrl.removeSuffix("/")}/$bucket/$this"
 }

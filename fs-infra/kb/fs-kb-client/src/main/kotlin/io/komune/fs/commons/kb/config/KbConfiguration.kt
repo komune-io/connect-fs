@@ -2,6 +2,7 @@ package io.komune.fs.commons.kb.config
 
 import io.komune.fs.commons.kb.kbClient
 import kotlinx.coroutines.runBlocking
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -13,7 +14,8 @@ import org.springframework.context.annotation.Configuration
 @EnableConfigurationProperties(KbProperties::class)
 class KbConfiguration {
 
-    val logger = LoggerFactory.getLogger(KbConfiguration::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(KbConfiguration::class.java)
+
     @Bean
     fun kbClient(props: KbProperties) = runBlocking {
         logger.debug("Creating kb client with url ${props.url}")

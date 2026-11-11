@@ -24,14 +24,17 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.slf4j.Logger as Slf4jLogger
 import org.slf4j.LoggerFactory
+
+private const val REQUEST_TIMEOUT_MILLIS = 60_000L
 
 open class Client(
     protected val baseUrl: String,
-    private val authProvider: AuthProvider? = null,
-    private val block: HttpClientConfig<*>.() -> Unit = {}
+    authProvider: AuthProvider? = null,
+    block: HttpClientConfig<*>.() -> Unit = {}
 ) {
-    private val logger = LoggerFactory.getLogger(Client::class.java)
+    private val logger: Slf4jLogger = LoggerFactory.getLogger(Client::class.java)
 
     val jsonConverter = Json {
         ignoreUnknownKeys = true
@@ -39,8 +42,7 @@ open class Client(
 
     protected val httpClient = HttpClient(CIO) {
         install(HttpTimeout) {
-            @SuppressWarnings("MagicNumber")
-            requestTimeoutMillis = 60000
+            requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
         }
         if(logger.isDebugEnabled) {
             install(Logging) {
@@ -51,7 +53,7 @@ open class Client(
         install(ContentNegotiation) {
             this.json(F2DefaultJson)
         }
-        authProvider?.let {
+        if (authProvider != null) {
             install(F2Auth) {
                 getAuth = authProvider
             }
@@ -87,28 +89,27 @@ open class Client(
 
         fun param(key: String, value: String, contentType: String? = null) {
             val headers = contentType
-                ?.let { Headers.build { append(HttpHeaders.ContentType, contentType) } }
+                ?.let { Headers.build { append(name = HttpHeaders.ContentType, value = it) } }
                 ?: Headers.Empty
 
-            FormPart(
-                key = key,
-                value = value,
-                headers = headers
-            ).let(formParts::add)
+            formParts.add(FormPart(key = key, value = value, headers = headers))
         }
 
         inline fun <reified T> param(key: String, value: T) {
             val encoded = json.encodeToString(value)
-            param(key, encoded, "application/json")
+            param(key = key, value = encoded, contentType = ContentType.Application.Json.toString())
         }
 
         fun file(key: String, file: ByteArray, filename: String) {
-            FormPart(
-                key = key,
-                value = file,
-                headers = Headers.build { append(HttpHeaders.ContentDisposition, "filename=$filename") }
-            ).let(formParts::add)
+            formParts.add(
+                FormPart(
+                    key = key,
+                    value = file,
+                    headers = Headers.build {
+                        append(name = HttpHeaders.ContentDisposition, value = "filename=$filename")
+                    }
+                )
+            )
         }
-
     }
 }

@@ -9,25 +9,24 @@ import kotlinx.coroutines.reactive.awaitLast
 import org.springframework.core.io.buffer.DataBufferUtils
 import org.springframework.http.codec.multipart.FilePart
 
-
 fun FilePath.toUploadCommand(
     metadata: Map<String, String> = emptyMap(),
-    vectorize: Boolean? = false
-) = FileUploadCommand(
+    isVectorizationRequested: Boolean = false
+): FileUploadCommand = FileUploadCommand(
     path = this,
     metadata = mapOf(
         "uploadedAt" to System.currentTimeMillis().toString()
     ) + metadata,
-    vectorize = vectorize
+    isVectorizationRequested = isVectorizationRequested
 )
 
-fun ByteArray.hash() = MessageDigest
+fun ByteArray.hash(): String = MessageDigest
     .getInstance("SHA-256")
     .digest(this)
     .encodeToB64()
 
-fun ByteArray.encodeToB64() = Base64.getEncoder().encodeToString(this)
-fun String.decodeB64() = Base64.getDecoder().decode(substringAfterLast(";base64,"))
+fun ByteArray.encodeToB64(): String = Base64.getEncoder().encodeToString(this)
+fun String.decodeB64(): ByteArray = Base64.getDecoder().decode(substringAfterLast(";base64,"))
 
 suspend fun FilePart.contentByteArray(): ByteArray {
     return ByteArrayOutputStream().use { os ->

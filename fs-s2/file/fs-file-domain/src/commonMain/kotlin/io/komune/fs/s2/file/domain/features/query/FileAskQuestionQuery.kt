@@ -29,7 +29,7 @@ interface FileAskQuestionQueryDTO {
      * @example "Where does the project take place?"
      */
     val question: String
-    @Suppress("MaxLineLength")
+    @Suppress("MaxLineLength") // the example answer is one JSON string and cannot be wrapped
     /**
      * Previous questions and answers in the context of the chat.
      * @example [[{

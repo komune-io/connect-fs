@@ -20,6 +20,13 @@ class S3BucketProviderTest {
         space = spaceName?.let { SpaceProperties(name = it, jwt = null) }
     )
 
+    private suspend fun bucketRefusal(provider: S3BucketProvider): F2Exception? = try {
+        val _ = provider.getBucket()
+        null
+    } catch (e: F2Exception) {
+        e
+    }
+
     @Test
     fun `a configured space name is used as the bucket`() = runTest {
         val provider = S3BucketProvider(properties(spaceName = "my-bucket"))
@@ -36,7 +43,7 @@ class S3BucketProviderTest {
         val provider = S3BucketProvider(properties(spaceName = null))
 
         // Falling back to "" here would silently write into the wrong place.
-        val thrown = runCatching { provider.getBucket() }.exceptionOrNull()
+        val thrown = bucketRefusal(provider)
 
         assertThat(thrown)
             .isInstanceOf(F2Exception::class.java)
@@ -48,7 +55,7 @@ class S3BucketProviderTest {
         val props = properties(spaceName = null).copy(space = SpaceProperties(name = null, jwt = null))
         val provider = S3BucketProvider(props)
 
-        val thrown = runCatching { provider.getBucket() }.exceptionOrNull()
+        val thrown = bucketRefusal(provider)
 
         assertThat(thrown)
             .isInstanceOf(F2Exception::class.java)

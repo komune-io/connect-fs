@@ -19,12 +19,14 @@ suspend fun serveFile(
     val path = getFilePath()
         ?: return buildResponseForFile("", null)
 
-    val fileStream = FileDownloadQuery(
-        objectType = path.objectType,
-        objectId = path.objectId,
-        directory = path.directory,
-        name = path.name
-    ).let { fileClient.fileDownload(it).toInputStream() }
+    val fileStream = fileClient.fileDownload(
+        FileDownloadQuery(
+            objectType = path.objectType,
+            objectId = path.objectId,
+            directory = path.directory,
+            name = path.name
+        )
+    ).toInputStream()
 
     return buildResponseForFile(path.name, fileStream)
 }
@@ -40,9 +42,8 @@ fun ResponseEntity.BodyBuilder.headersForFile(name: String) = apply {
     header(HttpHeaders.CONTENT_TYPE, contentTypeOfFile(name).toString())
 }
 
-private fun contentDispositionOfFile(name: String): ContentDisposition {
-    return ContentDisposition.attachment().filename(name).build()
-}
+private fun contentDispositionOfFile(name: String): ContentDisposition =
+    ContentDisposition.attachment().filename(name).build()
 
 private fun contentTypeOfFile(name: String): MediaType {
     return URLConnection.guessContentTypeFromName(name)

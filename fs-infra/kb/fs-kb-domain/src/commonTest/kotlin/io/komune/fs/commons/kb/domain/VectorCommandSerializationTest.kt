@@ -41,8 +41,8 @@ class VectorCommandSerializationTest {
         val encoded = json.encodeToString(VectorCreateCommandDTOBase.serializer(), command)
         val decoded = json.decodeFromString(VectorCreateCommandDTOBase.serializer(), encoded)
 
-        assertEquals(command.path, decoded.path)
-        assertEquals(command.metadata, decoded.metadata)
+        assertEquals(expected = command.path, actual = decoded.path)
+        assertEquals(expected = command.metadata, actual = decoded.metadata)
         assertTrue(command.file.contentEquals(decoded.file))
     }
 
@@ -72,7 +72,7 @@ class VectorCommandSerializationTest {
             json.encodeToString(VectorCreateCommandDTOBase.serializer(), empty)
         )
 
-        assertEquals(emptyMap(), decoded.metadata)
+        assertEquals(expected = emptyMap(), actual = decoded.metadata)
     }
 
     @Test

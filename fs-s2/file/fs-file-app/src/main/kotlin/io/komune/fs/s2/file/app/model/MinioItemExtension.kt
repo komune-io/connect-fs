@@ -1,6 +1,7 @@
 package io.komune.fs.s2.file.app.model
 
 import io.komune.fs.s2.file.domain.model.File
+import io.komune.fs.s2.file.domain.model.File.Companion.VECTORIZED_METADATA_KEY
 import io.komune.fs.s2.file.domain.model.FilePath
 import io.minio.Http
 import io.minio.messages.Item
@@ -17,7 +18,7 @@ suspend fun Item.toFile(buildUrl: suspend (FilePath) -> String): File {
         metadata = metadata,
         isDirectory = isDir,
         size = size(),
-        vectorized = metadata[File::vectorized.name].toBoolean(),
+        isVectorized = metadata[VECTORIZED_METADATA_KEY].toBoolean(),
         lastModificationDate = if (isDir) 0 else lastModified().toInstant().toEpochMilli()
     )
 }
@@ -28,6 +29,8 @@ fun Http.Headers.sanitizedMetadata(): Map<String, String> = toMetadataMap().sani
 
 fun Http.Headers.toMetadataMap(): Map<String, String?> = associate { it.key to it.value }
 
-fun Map<String, String?>.sanitizedMetadata(): Map<String, String> = this
-    .mapKeys { (key) -> key.lowercase().removePrefix("x-amz-meta-") }
-    .filterValues { it != null } as Map<String, String>
+fun Map<String, String?>.sanitizedMetadata(): Map<String, String> = buildMap {
+    this@sanitizedMetadata
+        .mapKeys { (key) -> key.lowercase().removePrefix("x-amz-meta-") }
+        .forEach { (key, value) -> if (value != null) put(key, value) }
+}

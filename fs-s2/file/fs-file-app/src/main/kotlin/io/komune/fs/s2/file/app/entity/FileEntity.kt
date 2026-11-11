@@ -15,6 +15,6 @@ data class FileEntity(
     val uploadDate: Long,
     val status: FileState
 ): WithS2State<FileState>, WithS2Id<FileId> {
-	override fun s2State(): FileState = status
-	override fun s2Id(): FileId = id
+    override fun s2State(): FileState = status
+    override fun s2Id(): FileId = id
 }

@@ -9,5 +9,6 @@ import org.springframework.context.annotation.Configuration
 class ScriptApplication
 
 fun main(args: Array<String>) {
+    @Suppress("SpreadOperator", "MissingUseCall") // arguments read once; closing the context would stop the app
     runApplication<ScriptApplication>(*args)
 }

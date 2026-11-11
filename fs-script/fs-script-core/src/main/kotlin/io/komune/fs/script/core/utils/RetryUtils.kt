@@ -1,5 +1,6 @@
 package io.komune.fs.script.core.utils
 
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.delay
 import org.slf4j.Logger
 
@@ -12,17 +13,19 @@ suspend fun retryOnThrow(
     logger: Logger,
     action: suspend () -> Unit
 ): Boolean {
-    var success = false
+    var isSuccess = false
     var attempts = 0
-    @Suppress("TooGenericExceptionCaught")
-    while (attempts < maxRetries && !success) {
+    @Suppress("TooGenericExceptionCaught") // any failure of the action is retried, whatever its type
+    while (attempts < maxRetries && !isSuccess) {
         attempts++
         try {
             logger.info("=".repeat(LOG_SEPARATOR_LENGTH))
             logger.info("$actionName (attempt $attempts of $maxRetries)")
             logger.info("=".repeat(LOG_SEPARATOR_LENGTH))
             action()
-            success = true
+            isSuccess = true
+        } catch (ex: CancellationException) {
+            throw ex
         } catch (ex: Exception) {
             logger.error("$actionName failed (attempt $attempts of $maxRetries). Retrying...", ex)
 
@@ -34,5 +37,5 @@ suspend fun retryOnThrow(
             delay(retryDelayMillis)
         }
     }
-    return success
+    return isSuccess
 }

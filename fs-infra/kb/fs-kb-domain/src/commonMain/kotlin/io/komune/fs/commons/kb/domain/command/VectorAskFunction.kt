@@ -3,6 +3,7 @@ package io.komune.fs.commons.kb.domain.command
 import f2.dsl.cqrs.Event
 import f2.dsl.fnc.F2Function
 import io.komune.fs.s2.file.domain.model.FileAskMessage
+import io.komune.fs.s2.file.domain.model.FileAskMessageDTO
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import kotlinx.serialization.Serializable
@@ -23,23 +24,9 @@ typealias VectorAskFunction = F2Function<VectorAskQueryDTOBase, VectorAskedEvent
 @JsName("VectorAskQueryDTO")
 interface VectorAskQueryDTO {
     val question: String
-    val history: List<FileAskMessage>
+    val history: List<FileAskMessageDTO>
     val targetedFiles: List<String>
 }
-
-interface VectorAskMessageDTO {
-    val content: String
-    val type: String
-    @Suppress("VariableNaming")
-    val additional_kwargs: Map<String, String>
-}
-
-@Serializable
-class VectorAskMessageDTOBase(
-    override val content: String,
-    override val type: String,
-    override val additional_kwargs: Map<String, String>
-): VectorAskMessageDTO
 
 /**
  * @d2 inherit
@@ -65,6 +52,6 @@ interface VectorAskedEventDTO: Event {
  * @d2 inherit
  */
 @Serializable
-class VectorAskedEventDTOBase(
+data class VectorAskedEventDTOBase(
     override val item: String
 ): VectorAskedEventDTO

@@ -37,10 +37,9 @@ class FileUtilsTest {
     }
 
     @Test
-    fun `vectorize defaults to false and is passed through when set`() {
-        assertThat(path.toUploadCommand().vectorize).isFalse()
-        assertThat(path.toUploadCommand(vectorize = true).vectorize).isTrue()
-        assertThat(path.toUploadCommand(vectorize = null).vectorize).isNull()
+    fun `vectorization defaults to false and is passed through when set`() {
+        assertThat(path.toUploadCommand().isVectorizationRequested).isFalse()
+        assertThat(path.toUploadCommand(isVectorizationRequested = true).isVectorizationRequested).isTrue()
     }
 
     @Test

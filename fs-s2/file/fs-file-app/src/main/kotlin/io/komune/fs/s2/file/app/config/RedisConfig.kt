@@ -14,15 +14,15 @@ import tools.jackson.databind.ObjectMapper
 @Configuration
 class RedisConfig {
 
-	@Bean
-	fun reactiveRedisTemplate(
-		factory: ReactiveRedisConnectionFactory,
-		objectMapper: ObjectMapper
-	): ReactiveRedisTemplate<FileId, FileEntity> {
-		val keySerializer = StringRedisSerializer()
-		val valueSerializer = JacksonJsonRedisSerializer(objectMapper, FileEntity::class.java)
-		val builder = RedisSerializationContext.newSerializationContext<FileId, FileEntity>(keySerializer)
-		val context = builder.value(valueSerializer).build()
-		return ReactiveRedisTemplate(factory, context)
-	}
+    @Bean
+    fun reactiveRedisTemplate(
+        factory: ReactiveRedisConnectionFactory,
+        objectMapper: ObjectMapper
+    ): ReactiveRedisTemplate<FileId, FileEntity> {
+        val keySerializer = StringRedisSerializer()
+        val valueSerializer = JacksonJsonRedisSerializer(objectMapper, FileEntity::class.java)
+        val builder = RedisSerializationContext.newSerializationContext<FileId, FileEntity>(keySerializer)
+        val context = builder.value(valueSerializer).build()
+        return ReactiveRedisTemplate(factory, context)
+    }
 }

@@ -38,11 +38,11 @@ data class FileListQuery(
     val directory: String?,
 
     /**
-     * If true, fetch all files of subdirectories instead of said directories
+     * If true, fetch all files of subdirectories instead of said directories.
      * @example false
      * @default true
      */
-    val recursive: Boolean = true
+    val isRecursive: Boolean = true
 )
 
 /**
@@ -53,7 +53,7 @@ data class FileListQuery(
 @SerialName("FileListResult")
 data class FileListResult(
     /**
-     * List of descriptors of the files within the given path
+     * List of descriptors of the files within the given path.
      */
     val items: List<File>
 )

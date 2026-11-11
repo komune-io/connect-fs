@@ -2,6 +2,8 @@ package io.komune.fs.api.config
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.boot.context.properties.bind.Binder
+import org.springframework.boot.context.properties.source.MapConfigurationPropertySource
 
 class FsPropertiesTest {
 
@@ -14,8 +16,25 @@ class FsPropertiesTest {
             password = "password"
         )
 
-        assertThat(s3.dns).isFalse()
+        assertThat(s3.isDns).isFalse()
         assertThat(s3.region).isNull()
+    }
+
+    @Test
+    fun `the s3 dns style is read from the fs s3 dns key`() {
+        val source = MapConfigurationPropertySource(
+            mapOf(
+                "fs.s3.internal-url" to "http://minio:9000",
+                "fs.s3.external-url" to "http://localhost:9000",
+                "fs.s3.username" to "user",
+                "fs.s3.password" to "password",
+                "fs.s3.dns" to "true",
+            )
+        )
+
+        val s3 = Binder(source).bindOrCreate("fs.s3", S3Properties::class.java)
+
+        assertThat(s3.isDns).isTrue()
     }
 
     @Test

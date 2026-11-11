@@ -15,6 +15,10 @@ import io.komune.fs.s2.file.app.model.Policy
 import io.komune.fs.s2.file.app.model.S3Action
 import io.komune.fs.s2.file.app.model.S3Effect
 import io.komune.fs.s2.file.app.model.Statement
+import io.komune.fs.s2.file.app.model.addResource
+import io.komune.fs.s2.file.app.model.getOrAddStatementWith
+import io.komune.fs.s2.file.app.model.getStatementWith
+import io.komune.fs.s2.file.app.model.removeResource
 import io.komune.fs.s2.file.app.model.sanitizedMetadata
 import io.komune.fs.s2.file.app.model.toFile
 import io.komune.fs.s2.file.app.model.toFileUploadedEvent
@@ -42,7 +46,9 @@ import io.komune.fs.s2.file.domain.features.query.FileGetResult
 import io.komune.fs.s2.file.domain.features.query.FileListFunction
 import io.komune.fs.s2.file.domain.features.query.FileListResult
 import io.komune.fs.s2.file.domain.model.File
+import io.komune.fs.s2.file.domain.model.File.Companion.VECTORIZED_METADATA_KEY
 import io.komune.fs.s2.file.domain.model.FilePath
+import io.komune.fs.s2.file.domain.model.buildUrl
 import io.komune.fs.spring.utils.contentByteArray
 import io.komune.fs.spring.utils.hash
 import jakarta.annotation.security.PermitAll
@@ -58,8 +64,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.asFlux
 import kotlinx.coroutines.withContext
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.ObjectProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.InputStreamResource
@@ -82,21 +89,19 @@ import reactor.core.publisher.Flux
 @RestController
 @RequestMapping
 @Configuration
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions") // one bean per F2 function of the file API
 class FileEndpoint(
     private val fileDeciderSourcingImpl: FileDeciderSourcingImpl,
     private val fsSsmConfig: FsSsmConfig,
     private val s3Properties: S3Properties,
     private val s3BucketProvider: S3BucketProvider,
     private val s3Service: S3Service,
+    private val kbClient: ObjectProvider<KbClient>,
 ) {
-    private val logger = LoggerFactory.getLogger(FileEndpoint::class.java)
-
-    @Autowired(required = false)
-    private lateinit var kbClient: KbClient
+    private val logger: Logger = LoggerFactory.getLogger(FileEndpoint::class.java)
 
     /**
-     * Fetch a given file descriptor and content
+     * Fetch a given file descriptor and content.
      */
     @RolesAllowed(Roles.READ_FILE)
     @Bean
@@ -108,21 +113,23 @@ class FileEndpoint(
         val metadata = objectStats
             ?.userMetadata()
             ?.sanitizedMetadata()
-            ?: return@f2Function FileGetResult(null)
-
-        FileGetResult(
-            item = File(
-                id = metadata["id"].orEmpty(),
-                path = query,
-                pathStr = pathStr,
-                url = query.buildUrl(),
-                metadata = metadata,
-                isDirectory = false,
-                size = objectStats.size(),
-                vectorized = metadata[File::vectorized.name].toBoolean(),
-                lastModificationDate = objectStats.lastModified().toInstant().toEpochMilli()
-            ),
-        )
+        if (metadata == null) {
+            FileGetResult(null)
+        } else {
+            FileGetResult(
+                item = File(
+                    id = metadata["id"].orEmpty(),
+                    path = query,
+                    pathStr = pathStr,
+                    url = query.buildUrl(),
+                    metadata = metadata,
+                    isDirectory = false,
+                    size = objectStats.size(),
+                    isVectorized = metadata[VECTORIZED_METADATA_KEY].toBoolean(),
+                    lastModificationDate = objectStats.lastModified().toInstant().toEpochMilli()
+                ),
+            )
+        }
     }
 
     @RolesAllowed(Roles.READ_FILE)
@@ -142,6 +149,7 @@ class FileEndpoint(
             ?.let { (type, subtype) -> MediaType(type, subtype) }
             ?: MediaType.APPLICATION_OCTET_STREAM
 
+        @Suppress("MissingUseCall") // the response body owns the stream: Spring closes it once written
         val fileStream = s3Service.getObject(path) ?: InputStream.nullInputStream()
 
         return ResponseEntity.ok()
@@ -150,26 +158,27 @@ class FileEndpoint(
     }
 
     /**
-     * Fetch a list of file descriptors
+     * Fetch a list of file descriptors.
      */
     @RolesAllowed(Roles.READ_FILE)
     @Bean
     fun fileList(): FileListFunction = f2Function { query ->
         logger.info("fileList: $query")
         val prefix = FilePath(
-            objectType = query.objectType ?: "",
-            objectId = query.objectId ?: "",
-            directory = query.directory ?: "",
+            objectType = query.objectType.orEmpty(),
+            objectId = query.objectId.orEmpty(),
+            directory = query.directory.orEmpty(),
             name = ""
         ).toPartialPrefix()
 
-        s3Service.listObjects(prefix, query.recursive)
-            .map { obj -> obj.get().toFile { it.buildUrl() } }
-            .let(::FileListResult)
+        FileListResult(
+            s3Service.listObjects(prefix, query.isRecursive)
+                .map { obj -> obj.get().toFile { it.buildUrl() } }
+        )
     }
 
     /**
-     * Upload multiple files
+     * Upload multiple files.
      * @d2 command
      */
     @RolesAllowed(Roles.WRITE_FILE)
@@ -179,13 +188,13 @@ class FileEndpoint(
         @RequestPart("file") files: Flux<FilePart>
     ): Flux<FileUploadedEvent> {
         return files.asFlow().map { file ->
-            val cmd = commands[file.filename()]!! // TODO throw readable error if no command found for file
+            val cmd = requireNotNull(commands[file.filename()]) { "No command for the file ${file.filename()}" }
             fileUpload(cmd, file)
         }.asFlux()
     }
 
     /**
-     * Upload a file
+     * Upload a file.
      */
     @RolesAllowed(Roles.WRITE_FILE)
     @PostMapping("/fileUpload")
@@ -197,7 +206,7 @@ class FileEndpoint(
         logger.info("fileUpload: $cmd")
 
         val fileMetadata = s3Service.getObjectMetadata(pathStr)
-        val fileExists = fileMetadata != null
+        val isFileExisting = fileMetadata != null
         val fileId = fileMetadata?.get("id") ?: UUID.randomUUID().toString()
 
         val fileByteArray = file.contentByteArray()
@@ -208,12 +217,12 @@ class FileEndpoint(
             metadata = cmd.metadata.plus("id" to fileId)
         )
 
-        if (cmd.vectorize ?: false) {
+        if (cmd.isVectorizationRequested) {
             vectorize(cmd.path, cmd.metadata, fileByteArray)
         }
 
         return if (mustBeSavedToSsm(cmd.path.directory)) {
-            if (fileExists) {
+            if (isFileExisting) {
                 fileByteArray.logFileInSsm(cmd, fileId, cmd.path.buildUrl())
             } else {
                 fileByteArray.initFileInSsm(cmd, fileId, cmd.path.buildUrl())
@@ -240,14 +249,14 @@ class FileEndpoint(
             path = path,
             file = fileByteArray,
             metadata = metadata
-        ).invokeWith(kbClient.vectorCreateFunction())
+        ).invokeWith(requireKbClient().vectorCreateFunction())
 
         val newMetadata = s3Service.getObjectMetadata(path.toString())
             .orEmpty()
             .sanitizedMetadata()
-            .plus("vectorized" to "true")
+            .plus(VECTORIZED_METADATA_KEY to "true")
 
-        println(newMetadata.toJson())
+        logger.debug("New metadata of {}: {}", path, newMetadata.toJson())
 
         s3Service.copyObject(path.toString(), newMetadata)
 
@@ -262,26 +271,25 @@ class FileEndpoint(
             question = query.question,
             targetedFiles = query.metadata.targetedFiles,
             history = query.history
-        ).invokeWith(kbClient.knowledgeAsk())
+        ).invokeWith(requireKbClient().knowledgeAsk())
             .let { FileAskQuestionResult(it.item) }
-
     }
 
     /**
-     * Delete a file
+     * Delete a file.
      */
     @RolesAllowed(Roles.WRITE_FILE)
     @Bean
     fun fileDelete(): FileDeleteFunction = f2Function { command ->
         val commandPathStr = FilePath(
-            objectType = command.objectType ?: "",
-            objectId = command.objectId ?: "",
-            directory = command.directory ?: "",
-            name = command.name ?: ""
+            objectType = command.objectType.orEmpty(),
+            objectId = command.objectId.orEmpty(),
+            directory = command.directory.orEmpty(),
+            name = command.name.orEmpty()
         ).toPartialPrefix(trailingSlash = command.name == null)
         logger.info("fileDelete: $commandPathStr")
 
-        val events = s3Service.listObjects(commandPathStr, true).also { objects ->
+        val events = s3Service.listObjects(commandPathStr, isRecursive = true).also { objects ->
             val count = objects.count()
             require(count > 0) {
                 "File not found at path [$commandPathStr]"
@@ -289,12 +297,12 @@ class FileEndpoint(
             logger.info("Found $count files to delete")
         }.mapAsync { obj ->
             val file = obj.get().toFile { it.buildUrl() }
-            val metadata = s3Service.getObjectMetadata(file.pathStr)!!
+            val metadata = checkNotNull(s3Service.getObjectMetadata(file.pathStr)) { "No metadata for ${file.pathStr}" }
             val id = metadata["id"]
 
             s3Service.removeObject(file.pathStr)
             if (id != null && mustBeSavedToSsm(file.path.directory)) {
-                fileDeciderSourcingImpl.delete(FileDeleteByIdCommand(id = id))
+                val _ = fileDeciderSourcingImpl.delete(FileDeleteByIdCommand(id = id))
             }
 
             FileDeletedEvent(
@@ -307,16 +315,17 @@ class FileEndpoint(
     }
 
     /**
-     * Vectorize a file and save it into a vector-store
+     * Vectorize a file and save it into a vector-store.
      */
     @RolesAllowed(Roles.WRITE_FILE)
     @Bean
     fun fileVectorize(): FileVectorizeFunction = f2Function { cmd ->
         logger.info("fileVectorize: ${cmd.path}")
 
+        @Suppress("InjectDispatcher") // a CGLIB-built @Configuration cannot take a Kotlin default dispatcher
         val fileContent = withContext(Dispatchers.IO) {
-            s3Service.getObject(cmd.path.toString())?.readAllBytes()
-        } ?: throw NotFoundException("File", cmd.path.toString())
+            s3Service.getObject(cmd.path.toString())?.use { it.readAllBytes() }
+        } ?: throw NotFoundException(name = "File", id = cmd.path.toString())
 
         vectorize(cmd.path, cmd.metadata, fileContent)
 
@@ -324,7 +333,7 @@ class FileEndpoint(
     }
 
     /**
-     * Grant public access to a given directory
+     * Grant public access to a given directory.
      */
     @RolesAllowed(Roles.WRITE_POLICY)
     @Bean
@@ -348,7 +357,7 @@ class FileEndpoint(
     }
 
     /**
-     * Revoke public access to a given directory
+     * Revoke public access to a given directory.
      */
     @RolesAllowed(Roles.WRITE_POLICY)
     @Bean
@@ -375,30 +384,35 @@ class FileEndpoint(
 
     private suspend fun ByteArray.initFileInSsm(
         cmd: FileUploadCommand, fileId: FileId, path: String
-    ): FileUploadedEvent {
-        return FileInitCommand(
+    ): FileUploadedEvent = fileDeciderSourcingImpl.init(
+        FileInitCommand(
             id = fileId,
             path = cmd.path,
             url = path,
             hash = hash(),
             metadata = cmd.metadata,
-        ).let { fileDeciderSourcingImpl.init(it).toFileUploadedEvent() }
-    }
+        )
+    ).toFileUploadedEvent()
 
     private suspend fun ByteArray.logFileInSsm(
         cmd: FileUploadCommand, fileId: FileId, path: String
-    ): FileUploadedEvent {
-        return FileLogCommand(
+    ): FileUploadedEvent = fileDeciderSourcingImpl.log(
+        FileLogCommand(
             id = fileId,
             path = path,
             hash = hash(),
             metadata = cmd.metadata,
-        ).let { fileDeciderSourcingImpl.log(it).toFileUploadedEvent() }
-    }
+        )
+    ).toFileUploadedEvent()
 
     private suspend fun FilePath.buildUrl() = buildUrl(
-        s3Properties.externalUrl, s3BucketProvider.getBucket(), s3Properties.dns
+        baseUrl = s3Properties.externalUrl,
+        bucket = s3BucketProvider.getBucket(),
+        dnsStyle = s3Properties.isDns,
     )
+
+    private fun requireKbClient(): KbClient =
+        checkNotNull(kbClient.ifAvailable) { "No knowledge base configured: set fs.kb.url" }
 
     private fun Policy?.orEmpty() = this ?: Policy()
 

@@ -33,10 +33,10 @@ class PolicyTest {
     fun `effect is part of the match, so Allow and Deny are separate statements`() {
         val policy = Policy()
 
-        policy.getOrAddStatementWith(S3Effect.ALLOW, S3Action.GET_OBJECT)
-        policy.getOrAddStatementWith(S3Effect.DENY, S3Action.GET_OBJECT)
+        val allow = policy.getOrAddStatementWith(S3Effect.ALLOW, S3Action.GET_OBJECT)
+        val deny = policy.getOrAddStatementWith(S3Effect.DENY, S3Action.GET_OBJECT)
 
-        assertThat(policy.statements).hasSize(2)
+        assertThat(policy.statements).containsExactly(allow, deny)
     }
 
     @Test
@@ -48,7 +48,7 @@ class PolicyTest {
     fun `resources are namespaced with the s3 arn prefix`() {
         val statement = Statement.with(S3Effect.ALLOW, S3Action.GET_OBJECT)
 
-        statement.addResource("my-bucket", "public/*")
+        statement.addResource(bucket = "my-bucket", path = "public/*")
 
         assertThat(statement.resources).containsExactly("arn:aws:s3:::my-bucket/public/*")
     }
@@ -57,8 +57,8 @@ class PolicyTest {
     fun `removeResource undoes addResource`() {
         val statement = Statement.with(S3Effect.ALLOW, S3Action.GET_OBJECT)
 
-        statement.addResource("my-bucket", "public/*")
-        statement.removeResource("my-bucket", "public/*")
+        statement.addResource(bucket = "my-bucket", path = "public/*")
+        statement.removeResource(bucket = "my-bucket", path = "public/*")
 
         assertThat(statement.resources).isEmpty()
     }
@@ -66,7 +66,7 @@ class PolicyTest {
     @Test
     fun `serializes with the capitalised keys S3 expects`() {
         val policy = Policy().apply {
-            getOrAddStatementWith(S3Effect.ALLOW, S3Action.GET_OBJECT).addResource("b", "p/*")
+            getOrAddStatementWith(S3Effect.ALLOW, S3Action.GET_OBJECT).addResource(bucket = "b", path = "p/*")
         }
 
         val json = policy.toJson()
@@ -79,7 +79,7 @@ class PolicyTest {
     @Test
     fun `round-trips through the json mapper`() {
         val policy = Policy().apply {
-            getOrAddStatementWith(S3Effect.ALLOW, S3Action.GET_OBJECT).addResource("b", "p/*")
+            getOrAddStatementWith(S3Effect.ALLOW, S3Action.GET_OBJECT).addResource(bucket = "b", path = "p/*")
         }
 
         val parsed = policy.toJson().parseJsonTo(Policy::class.java)
