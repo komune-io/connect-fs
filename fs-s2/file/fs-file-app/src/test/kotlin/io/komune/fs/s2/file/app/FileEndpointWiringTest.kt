@@ -4,17 +4,25 @@ import io.komune.fs.api.config.FsProperties
 import io.komune.fs.api.config.S3BucketProvider
 import io.komune.fs.api.config.S3Properties
 import io.komune.fs.api.config.SpaceProperties
+import f2.dsl.fnc.F2Function
+import f2.dsl.fnc.invokeWith
 import io.komune.fs.commons.kb.KbClient
+import io.komune.fs.commons.kb.domain.command.VectorAskedEventDTOBase
 import io.komune.fs.s2.file.app.config.FileSourcingS2Decider
 import io.komune.fs.s2.file.app.config.FsSsmConfig
 import io.komune.fs.s2.file.app.service.S3Service
+import io.komune.fs.s2.file.domain.features.query.FileAskQuestionQuery
+import io.komune.fs.s2.file.domain.model.FileAskMetadata
 import io.minio.MinioClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import org.springframework.beans.factory.ObjectProvider
 import org.springframework.boot.test.context.runner.ApplicationContextRunner
-import org.springframework.test.util.ReflectionTestUtils
+import org.springframework.http.HttpStatus
 
 class FileEndpointWiringTest {
 
@@ -40,23 +48,40 @@ class FileEndpointWiringTest {
         .withBean(S3Service::class.java)
         .withUserConfiguration(FileEndpoint::class.java)
 
+    private val question = FileAskQuestionQuery(
+        question = "What is it?",
+        history = emptyList(),
+        metadata = FileAskMetadata(targetedFiles = listOf("o/i/d/n")),
+    )
+
     @Test
-    fun `the endpoint starts without a knowledge base`() {
+    fun `without a knowledge base, asking a question is refused with 503`() {
         runner.run { context ->
             assertThat(context).hasNotFailed()
-            assertThat(kbClientOf(context.getBean(FileEndpoint::class.java)).ifAvailable).isNull()
+            val endpoint = context.getBean(FileEndpoint::class.java)
+
+            val refusal = assertThrows<KnowledgeBaseNotConfiguredException> {
+                runBlocking { val _ = question.invokeWith(endpoint.fileAskQuestion()) }
+            }
+
+            assertThat(refusal.status).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE)
+            assertThat(refusal.error.refusal?.code).isEqualTo(KnowledgeBaseNotConfiguredException.REFUSAL_CODE)
         }
     }
 
     @Test
-    fun `the endpoint receives the knowledge base client when one is configured`() {
+    fun `with a knowledge base, the question is answered by it`() {
         val kbClient = mock(KbClient::class.java)
+        `when`(kbClient.knowledgeAsk()).thenReturn(
+            F2Function { queries -> queries.map { VectorAskedEventDTOBase(item = "answer to ${it.question}") } }
+        )
 
         runner.withBean(KbClient::class.java, { kbClient }).run { context ->
-            assertThat(kbClientOf(context.getBean(FileEndpoint::class.java)).ifAvailable).isSameAs(kbClient)
+            val endpoint = context.getBean(FileEndpoint::class.java)
+
+            val result = runBlocking { question.invokeWith(endpoint.fileAskQuestion()) }
+
+            assertThat(result.item).isEqualTo("answer to What is it?")
         }
     }
-
-    private fun kbClientOf(endpoint: FileEndpoint): ObjectProvider<*> =
-        checkNotNull(ReflectionTestUtils.getField(endpoint, "kbClient")) as ObjectProvider<*>
 }

@@ -322,7 +322,7 @@ class FileEndpoint(
     fun fileVectorize(): FileVectorizeFunction = f2Function { cmd ->
         logger.info("fileVectorize: ${cmd.path}")
 
-        @Suppress("InjectDispatcher") // Spring proxies this @Configuration with CGLIB, which drops Kotlin defaults
+        @Suppress("InjectDispatcher") // the MinIO read blocks: it belongs on the IO pool, whatever the caller runs on
         val fileContent = withContext(Dispatchers.IO) {
             s3Service.getObject(cmd.path.toString())?.use { it.readAllBytes() }
         } ?: throw NotFoundException(name = "File", id = cmd.path.toString())
@@ -411,8 +411,7 @@ class FileEndpoint(
         dnsStyle = s3Properties.isDns,
     )
 
-    private fun requireKbClient(): KbClient =
-        checkNotNull(kbClient.ifAvailable) { "No knowledge base configured: set fs.kb.url" }
+    private fun requireKbClient(): KbClient = kbClient.ifAvailable ?: throw KnowledgeBaseNotConfiguredException()
 
     private fun Policy?.orEmpty() = this ?: Policy()
 
