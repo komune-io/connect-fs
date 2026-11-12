@@ -14,4 +14,4 @@ style:
 naming:
   BooleanPropertyNaming:
     # The KMP domain modules are the published wire contract: their boolean field names are JSON keys.
-    excludes: ['**/src/commonMain/**']
+    excludes: ['**/*-domain/src/commonMain/**']
