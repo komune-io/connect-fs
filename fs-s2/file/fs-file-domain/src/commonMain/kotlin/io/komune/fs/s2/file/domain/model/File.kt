@@ -62,7 +62,6 @@ data class File(
      * Whether the file has been vectorized and sent to a knowledge-base.
      * @example false
      */
-    @Suppress("BooleanPropertyNaming") // wire names
     val vectorized: Boolean,
 
     /**
