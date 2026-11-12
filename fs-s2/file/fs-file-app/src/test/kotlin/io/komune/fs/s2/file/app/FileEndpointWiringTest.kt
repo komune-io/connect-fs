@@ -61,7 +61,7 @@ class FileEndpointWiringTest {
             val endpoint = context.getBean(FileEndpoint::class.java)
 
             val refusal = assertThrows<KnowledgeBaseNotConfiguredException> {
-                runBlocking { val _ = question.invokeWith(endpoint.fileAskQuestion()) }
+                runBlocking { question.invokeWith(endpoint.fileAskQuestion()) }
             }
 
             assertThat(refusal.status).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE)

@@ -21,7 +21,7 @@ class S3BucketProviderTest {
     )
 
     private suspend fun bucketRefusal(provider: S3BucketProvider): F2Exception? = try {
-        val _ = provider.getBucket()
+        provider.getBucket()
         null
     } catch (e: F2Exception) {
         e

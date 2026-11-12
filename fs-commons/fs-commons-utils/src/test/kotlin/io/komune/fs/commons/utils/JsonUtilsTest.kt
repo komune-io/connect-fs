@@ -47,7 +47,7 @@ class JsonUtilsTest {
 
     @Test
     fun `malformed json throws rather than returning null`() {
-        assertThatThrownBy { val _ = """{"name":""".parseJsonTo(Sample::class.java) }
+        assertThatThrownBy { """{"name":""".parseJsonTo(Sample::class.java) }
             .isInstanceOf(Exception::class.java)
     }
 }
