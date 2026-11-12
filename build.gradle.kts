@@ -26,4 +26,8 @@ fixers {
 		organization = "komune-io"
 		projectKey = "komune-io_connect-fs"
 	}
+	strictCompilation {
+		// A test calls for the call's effect or its exception: an ignored result there is no defect.
+		returnValueCheckerInTests = false
+	}
 }
