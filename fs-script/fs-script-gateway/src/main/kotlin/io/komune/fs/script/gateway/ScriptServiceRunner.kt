@@ -6,6 +6,7 @@ import io.komune.fs.script.core.service.FsScriptS3Service
 import io.komune.fs.script.core.utils.retryOnThrow
 import io.komune.fs.script.imports.ImportScript
 import kotlinx.coroutines.runBlocking
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -23,10 +24,9 @@ class ScriptServiceRunner(
     private val fsScriptS3Service: FsScriptS3Service
 ): CommandLineRunner {
 
-    private val logger = LoggerFactory.getLogger(ScriptServiceRunner::class.java)
-    
+    private val logger: Logger = LoggerFactory.getLogger(ScriptServiceRunner::class.java)
 
-    override fun run(vararg args: String) = runBlocking {
+    override fun run(vararg args: String): Unit = runBlocking {
         try {
             logger.info("Starting FS Script Gateway...")
             runFileImportScript()
@@ -40,8 +40,8 @@ class ScriptServiceRunner(
 
     private suspend fun runFileImportScript() {
         val importScript = ImportScript(fsScriptInitProperties, fsScriptS3Service)
-        
-        val success = retryOnThrow(
+
+        val isSuccess = retryOnThrow(
             actionName = "File Import Script",
             maxRetries = retryProperties.max,
             retryDelayMillis = retryProperties.delayMillis,
@@ -49,11 +49,11 @@ class ScriptServiceRunner(
         ) {
             importScript.run()
         }
-        
-        if (!success) {
+
+        if (!isSuccess) {
             throw ImportScriptException("File Import Script failed after ${retryProperties.max} attempts")
         }
-        
+
         logger.info("File Import Script completed successfully")
     }
 }

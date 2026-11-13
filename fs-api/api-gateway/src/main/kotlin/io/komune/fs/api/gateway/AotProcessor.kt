@@ -36,12 +36,10 @@ import org.springframework.beans.factory.aot.BeanFactoryInitializationCode
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.util.ReflectionUtils
 
-
 class AotProcessor : BeanFactoryInitializationAotProcessor {
 
     override fun processAheadOfTime(bf: ConfigurableListableBeanFactory): BeanFactoryInitializationAotContribution {
-        return  BeanFactoryInitializationAotContribution {
-            ctx: GenerationContext, code: BeanFactoryInitializationCode? ->
+        return BeanFactoryInitializationAotContribution { ctx: GenerationContext, _: BeanFactoryInitializationCode? ->
             val hints = ctx.runtimeHints
             hints.resources().registerPattern("user/*")
 
@@ -82,56 +80,24 @@ class AotProcessor : BeanFactoryInitializationAotProcessor {
     private fun registerXml(hints: RuntimeHints) {
         hints.register(Xml::class.java)
 
-        println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
         Reflections(ErrorResponse::class.java.packageName)
-            .getSubTypesOf(Serializable::class.java).forEach {
-            println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-            println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-            println(it)
-            println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-            println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-            hints.register(it)
-        }
+            .getSubTypesOf(Serializable::class.java)
+            .forEach { type -> hints.register(type) }
         Reflections(BaseArgs::class.java.packageName)
-            .getSubTypesOf(BaseArgs::class.java).forEach {
-            println("////////////////////////////////////////////////////////")
-            println("////////////////////////////////////////////////////////")
-            println(it)
-            println("////////////////////////////////////////////////////////")
-            println("////////////////////////////////////////////////////////")
-            hints.register(it)
+            .getSubTypesOf(BaseArgs::class.java)
+            .forEach { type -> hints.register(type) }
+
+        hints.registerXmlMethod("marshal", Any::class.java)
+        hints.registerXmlMethod("unmarshal", Class::class.java, String::class.java)
+        hints.registerXmlMethod("unmarshal", Class::class.java, Reader::class.java)
+        hints.registerXmlMethod("validate", Class::class.java, String::class.java)
+    }
+
+    private fun RuntimeHints.registerXmlMethod(name: String, vararg parameterTypes: Class<*>) {
+        val method: Method = checkNotNull(ReflectionUtils.findMethod(Xml::class.java, name, *parameterTypes)) {
+            "Xml.$name not found"
         }
-
-        val methodMarshal: Method = ReflectionUtils.findMethod(
-            Xml::class.java,
-            "marshal",
-            Object::class.java,
-        )!!
-        hints.reflection().registerMethod(methodMarshal, ExecutableMode.INVOKE)
-
-        val methodUnmarshalString: Method = ReflectionUtils.findMethod(
-            Xml::class.java,
-            "unmarshal",
-            Class::class.java,
-            String::class.java
-        )!!
-        hints.reflection().registerMethod(methodUnmarshalString, ExecutableMode.INVOKE)
-
-        val methodUnmarshalReader: Method = ReflectionUtils.findMethod(
-            Xml::class.java,
-            "unmarshal",
-            Class::class.java,
-            Reader::class.java
-        )!!
-        hints.reflection().registerMethod(methodUnmarshalReader, ExecutableMode.INVOKE)
-
-        val validateReader: Method = ReflectionUtils.findMethod(
-            Xml::class.java,
-            "validate",
-            Class::class.java,
-            String::class.java
-        )!!
-        hints.reflection().registerMethod(validateReader, ExecutableMode.INVOKE)
+        reflection().registerMethod(method, ExecutableMode.INVOKE)
     }
 
     private fun <T> RuntimeHints.register(clazz: Class<T>) {

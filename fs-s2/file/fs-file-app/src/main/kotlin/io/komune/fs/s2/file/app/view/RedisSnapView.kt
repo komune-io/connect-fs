@@ -15,17 +15,15 @@ class RedisSnapView(
     private val template: ReactiveRedisTemplate<FileId, FileEntity>,
 ): SnapRepository<FileEntity, FileId>  {
 
-    override suspend fun get(id: FileId): FileEntity? {
-        return template.opsForSet().pop(id).awaitFirstOrNull()
-    }
+    override suspend fun get(id: FileId): FileEntity? = template.opsForSet().pop(id).awaitFirstOrNull()
 
     override suspend fun save(entity: FileEntity): FileEntity {
-        return template.opsForSet().add(entity.id, entity).asFlow().toList().let {
-            entity
-        }
+        val _ = template.opsForSet()
+            .add(entity.id, entity)
+            .asFlow()
+            .toList()
+        return entity
     }
 
-    override suspend fun remove(id: FileId): Boolean {
-        return template.opsForSet().delete(id).awaitSingle()
-    }
+    override suspend fun remove(id: FileId): Boolean = template.opsForSet().delete(id).awaitSingle()
 }

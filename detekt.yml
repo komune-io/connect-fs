@@ -1,0 +1,17 @@
+# Read by fixers-gradle on top of its own configuration: a key here replaces the same key there.
+# Only repo-wide or path-wide exceptions live here; a decision local to one site stays a @Suppress on that site.
+
+complexity:
+  ReplaceSafeCallChainWithRun:
+    # Its `?.run { }` rewrite moves member calls onto the implicit receiver, and `?.let` is refused by UnnecessaryLet.
+    active: false
+
+style:
+  UnnecessaryParentheses:
+    # Parentheses that spell out the precedence of mixed operators stay.
+    allowForUnclearPrecedence: true
+
+naming:
+  BooleanPropertyNaming:
+    # The KMP domain modules are the published wire contract: their boolean field names are JSON keys.
+    excludes: ['**/*-domain/src/commonMain/**']

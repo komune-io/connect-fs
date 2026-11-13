@@ -8,12 +8,8 @@ class S3BucketProvider(
     private val fsProperties: FsProperties
 ) {
 
-    suspend fun getBucket(): String {
-        return getSpace() ?: throw NoBucketConfiguredError().asException()
-    }
+    suspend fun getBucket(): String = getSpace() ?: throw NoBucketConfiguredError().asException()
 
-    private suspend fun getSpace(): String? {
-        return fsProperties.space?.name ?: AuthenticationProvider.getTenant()
-    }
+    private suspend fun getSpace(): String? = fsProperties.space?.name ?: AuthenticationProvider.getTenant()
 
 }

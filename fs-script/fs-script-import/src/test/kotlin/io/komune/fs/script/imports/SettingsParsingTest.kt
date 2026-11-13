@@ -2,6 +2,7 @@ package io.komune.fs.script.imports
 
 import io.komune.fs.commons.utils.jsonMapper
 import io.komune.fs.script.core.config.properties.FsScriptInitProperties
+import io.komune.fs.script.core.config.properties.getSourceFiles
 import io.komune.fs.script.core.model.ImportSettings
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -27,10 +28,10 @@ class SettingsParsingTest {
             }
         """.trimIndent()
         val settings = jsonMapper.readValue<ImportSettings>(json)
-        requireNotNull(settings.policies)
-        assertEquals(30, settings.policies?.retention?.days)
-        assertEquals(5, settings.policies?.retention?.versions)
-        assertEquals(true, settings.policies?.compression)
+        val policies = requireNotNull(settings.policies)
+        assertEquals(30, policies.retention?.days)
+        assertEquals(5, policies.retention?.versions)
+        assertEquals(true, policies.isCompressed)
         assertEquals("test", settings.metadata?.get("environment"))
         assertEquals("connect-fs", settings.metadata?.get("project"))
     }

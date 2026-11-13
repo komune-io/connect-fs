@@ -19,15 +19,15 @@ fixers {
 		description = "File manager"
 		url = "https://github.com/komune-io/connect-fs"
 	}
+	kt2Ts {
+		outputDirectory = "ts/"
+	}
 	sonar {
 		organization = "komune-io"
 		projectKey = "komune-io_connect-fs"
 	}
-	repositories {
-		sonatypeSnapshots = true
+	strictCompilation {
+		// A test calls for the call's effect or its exception: an ignored result there is no defect.
+		returnValueCheckerInTests = false
 	}
-}
-
-plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin> {
-	the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().resolution("ajv", "8.20.0")
 }

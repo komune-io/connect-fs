@@ -16,5 +16,3 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
 }
-
-tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {}

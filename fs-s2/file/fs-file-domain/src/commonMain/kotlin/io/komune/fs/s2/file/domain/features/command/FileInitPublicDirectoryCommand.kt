@@ -45,5 +45,5 @@ data class FileInitPublicDirectoryCommand(
 @Serializable
 @SerialName("FilePublicDirectoryInitializedEvent")
 data class FilePublicDirectoryInitializedEvent(
-	val path: String
+    val path: String
 )

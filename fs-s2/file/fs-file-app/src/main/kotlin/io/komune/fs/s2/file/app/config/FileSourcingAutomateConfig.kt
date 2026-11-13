@@ -31,26 +31,32 @@ class FileSourcingAutomateConfig(
     redisSnapView: RedisSnapView,
     traceS2Decider: FileSourcingS2Decider
 ): S2SourcingSsmAdapter<FileEntity, FileState, FileEvent, FileId, FileSourcingS2Decider>(
-	executor = traceS2Decider,
-	view = FileModelView(),
-	snapRepository = redisSnapView
+    executor = traceS2Decider,
+    view = FileModelView(),
+    snapRepository = redisSnapView
 ) {
 
-	override fun entityType(): KClass<FileEvent> = FileEvent::class
+    override fun entityType(): KClass<FileEvent> = FileEvent::class
 
-	override fun json(): Json = Json {
-		serializersModule = SerializersModule {
-			polymorphic(FileEvent::class) {
-				subclass(FileInitiatedEvent::class, FileInitiatedEvent.serializer())
-				subclass(FileLoggedEvent::class, FileLoggedEvent.serializer())
-				subclass(FileDeletedEvent::class, FileDeletedEvent.serializer())
-			}
-		}
-	}
+    override fun json(): Json = Json {
+        serializersModule = SerializersModule {
+            polymorphic(FileEvent::class) {
+                subclass(FileInitiatedEvent::class, FileInitiatedEvent.serializer())
+                subclass(FileLoggedEvent::class, FileLoggedEvent.serializer())
+                subclass(FileDeletedEvent::class, FileDeletedEvent.serializer())
+            }
+        }
+    }
 
-	override fun chaincodeUri() = ChaincodeUri.from(channelId = fsSsmConfig.channel, chaincodeId = fsSsmConfig.chaincode)
-	override fun signerAgent() = Agent.loadFromFile(fsSsmConfig.signerName, fsSsmConfig.signerFile)
-	override fun automate() = S2.traceSourcing
+    override fun chaincodeUri() = ChaincodeUri.from(
+        channelId = fsSsmConfig.channel,
+        chaincodeId = fsSsmConfig.chaincode,
+    )
+    override fun signerAgent() = Agent.loadFromFile(
+        name = fsSsmConfig.signerName,
+        filename = fsSsmConfig.signerFile,
+    )
+    override fun automate() = S2.traceSourcing
 }
 
 @Service

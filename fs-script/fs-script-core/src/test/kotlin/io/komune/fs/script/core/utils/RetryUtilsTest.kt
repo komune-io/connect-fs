@@ -13,9 +13,9 @@ class RetryUtilsTest {
     fun `succeeds on the first attempt without retrying`() = runTest {
         var attempts = 0
 
-        val success = retryOnThrow("action", logger = logger) { attempts++ }
+        val isSuccess = retryOnThrow(actionName = "action", logger = logger) { attempts++ }
 
-        assertThat(success).isTrue()
+        assertThat(isSuccess).isTrue()
         assertThat(attempts).isEqualTo(1)
     }
 
@@ -23,12 +23,12 @@ class RetryUtilsTest {
     fun `retries until the action stops throwing`() = runTest {
         var attempts = 0
 
-        val success = retryOnThrow("action", retryDelayMillis = 0, logger = logger) {
+        val isSuccess = retryOnThrow(actionName = "action", retryDelayMillis = 0, logger = logger) {
             attempts++
             if (attempts < 3) error("not yet")
         }
 
-        assertThat(success).isTrue()
+        assertThat(isSuccess).isTrue()
         assertThat(attempts).isEqualTo(3)
     }
 
@@ -36,12 +36,12 @@ class RetryUtilsTest {
     fun `gives up after maxRetries and reports failure rather than throwing`() = runTest {
         var attempts = 0
 
-        val success = retryOnThrow("action", maxRetries = 2, retryDelayMillis = 0, logger = logger) {
+        val isSuccess = retryOnThrow(actionName = "action", maxRetries = 2, retryDelayMillis = 0, logger = logger) {
             attempts++
             error("always fails")
         }
 
-        assertThat(success).isFalse()
+        assertThat(isSuccess).isFalse()
         assertThat(attempts).isEqualTo(2)
     }
 
@@ -49,12 +49,12 @@ class RetryUtilsTest {
     fun `maxRetries of one means a single attempt`() = runTest {
         var attempts = 0
 
-        val success = retryOnThrow("action", maxRetries = 1, retryDelayMillis = 0, logger = logger) {
+        val isSuccess = retryOnThrow(actionName = "action", maxRetries = 1, retryDelayMillis = 0, logger = logger) {
             attempts++
             error("fails")
         }
 
-        assertThat(success).isFalse()
+        assertThat(isSuccess).isFalse()
         assertThat(attempts).isEqualTo(1)
     }
 }

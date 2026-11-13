@@ -7,14 +7,14 @@ data class Policy(
     val version: String = "2012-10-17",
     @JsonProperty("Statement")
     val statements: MutableList<Statement> = mutableListOf()
-) {
-    fun getOrAddStatementWith(effect: S3Effect, action: S3Action) = getStatementWith(effect, action)
-        ?: Statement.with(effect, action).also(statements::add)
+)
 
-    fun getStatementWith(effect: S3Effect, action: S3Action) = statements.firstOrNull { statement ->
-        statement.effect == effect.id
-                && statement.actions.contains(action.id)
-    }
+fun Policy.getOrAddStatementWith(effect: S3Effect, action: S3Action): Statement =
+    getStatementWith(effect = effect, action = action)
+        ?: Statement.with(effect = effect, action = action).also(statements::add)
+
+fun Policy.getStatementWith(effect: S3Effect, action: S3Action): Statement? = statements.firstOrNull { statement ->
+    statement.effect == effect.id && statement.actions.contains(action.id)
 }
 
 data class Statement(
@@ -39,14 +39,14 @@ data class Statement(
 
         fun resourcePath(bucket: String, path: String) = "$RESOURCE_PREFIX$bucket/$path"
     }
+}
 
-    fun addResource(bucket: String, path: String) {
-        resources.add(resourcePath(bucket, path))
-    }
+fun Statement.addResource(bucket: String, path: String) {
+    resources.add(Statement.resourcePath(bucket = bucket, path = path))
+}
 
-    fun removeResource(bucket: String, path: String) {
-        resources.remove(resourcePath(bucket, path))
-    }
+fun Statement.removeResource(bucket: String, path: String) {
+    resources.remove(Statement.resourcePath(bucket = bucket, path = path))
 }
 
 enum class S3Effect(val id: String) {

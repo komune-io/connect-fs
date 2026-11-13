@@ -19,15 +19,15 @@ typealias FileVectorizeFunction = F2Function<FileVectorizeCommand, FileVectorize
  */
 @Serializable
 data class FileVectorizeCommand(
-	/**
-	 * Path of the file to vectorize.
-	 */
-	val path: FilePath,
+    /**
+     * Path of the file to vectorize.
+     */
+    val path: FilePath,
 
-	/**
-	 * Metadata to add to the vectorized chunks of texts.
-	 */
-	val metadata: Map<String, String> = emptyMap()
+    /**
+     * Metadata to add to the vectorized chunks of texts.
+     */
+    val metadata: Map<String, String> = emptyMap()
 )
 
 /**
@@ -37,8 +37,8 @@ data class FileVectorizeCommand(
 @Serializable
 @SerialName("FileVectorizedEvent")
 data class FileVectorizedEvent(
-	/**
-	 * Path of the vectorized file.
-	 */
-	val path: FilePath
+    /**
+     * Path of the vectorized file.
+     */
+    val path: FilePath
 )

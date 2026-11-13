@@ -1,6 +1,7 @@
 package io.komune.fs.api.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.bind.Name
 
 @ConfigurationProperties(prefix = "fs")
 data class FsProperties (
@@ -10,16 +11,17 @@ data class FsProperties (
 )
 
 data class S3Properties(
-    var internalUrl: String,
-    var externalUrl: String,
-    var region: String? = null,
-    var username: String,
-    var password: String,
-    var dns: Boolean = false,
+    val internalUrl: String,
+    val externalUrl: String,
+    val region: String? = null,
+    val username: String,
+    val password: String,
+    @Name("dns")
+    val isDns: Boolean = false,
 )
 
 /**
- * There is two way to configure the bucket name:
+ * There are two ways to configure the bucket name.
  *   * Specify a hardcoded name
  *   * By a claim in a jwt
  */

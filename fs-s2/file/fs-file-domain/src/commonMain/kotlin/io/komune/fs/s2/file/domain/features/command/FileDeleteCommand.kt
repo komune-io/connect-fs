@@ -20,30 +20,30 @@ typealias FileDeleteFunction = F2Function<FileDeleteCommand, FileDeletedEvents>
  */
 @Serializable
 data class FileDeleteCommand(
-	/**
-	 * @ref [io.komune.fs.s2.file.domain.model.FilePath.objectType]
-	 */
-	val objectType: String?,
+    /**
+     * @ref [io.komune.fs.s2.file.domain.model.FilePath.objectType]
+     */
+    val objectType: String?,
 
-	/**
-	 * @ref [io.komune.fs.s2.file.domain.model.FilePath.objectId]
-	 */
-	val objectId: String?,
+    /**
+     * @ref [io.komune.fs.s2.file.domain.model.FilePath.objectId]
+     */
+    val objectId: String?,
 
-	/**
-	 * @ref [io.komune.fs.s2.file.domain.model.FilePath.directory]
-	 */
-	val directory: String?,
+    /**
+     * @ref [io.komune.fs.s2.file.domain.model.FilePath.directory]
+     */
+    val directory: String?,
 
-	/**
-	 * @ref [io.komune.fs.s2.file.domain.model.FilePath.name]
-	 */
-	val name: String?
+    /**
+     * @ref [io.komune.fs.s2.file.domain.model.FilePath.name]
+     */
+    val name: String?
 )
 
 @Serializable
 data class FileDeleteByIdCommand(
-	override val id: FileId
+    override val id: FileId
 ): S2Command<FileId>
 
 /**
@@ -52,20 +52,20 @@ data class FileDeleteByIdCommand(
  */
 @Serializable
 data class FileDeletedEvents(
-	val items: List<FileDeletedEvent>
+    val items: List<FileDeletedEvent>
 )
 
 @Serializable
 data class FileDeletedEvent(
     /**
-	 * Identifier of the deleted file.
-	 */
-	val id: FileId,
+     * Identifier of the deleted file.
+     */
+    val id: FileId,
 
     /**
-	 * Path of the deleted file.
-	 */
-	val path: FilePath
+     * Path of the deleted file.
+     */
+    val path: FilePath
 ): FileEvent {
-	override fun s2Id() = id
+    override fun s2Id() = id
 }

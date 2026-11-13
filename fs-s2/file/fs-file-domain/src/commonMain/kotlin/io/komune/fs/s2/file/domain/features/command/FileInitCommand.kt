@@ -28,5 +28,5 @@ data class FileInitiatedEvent(
     val metadata: Map<String, String>,
     val time: Long
 ): FileEvent {
-	override fun s2Id(): FileId = id
+    override fun s2Id(): FileId = id
 }

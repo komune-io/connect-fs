@@ -6,10 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(prefix = "fs.script.init")
 data class FsScriptInitProperties(
     val sources: List<String>? = null,
-) {
-    fun getSourceFiles(): List<File> {
-        return sources?.map(::File) ?: emptyList()
-    }
-}
+)
 
+fun FsScriptInitProperties.getSourceFiles(): List<File> = sources?.map(::File).orEmpty()
 

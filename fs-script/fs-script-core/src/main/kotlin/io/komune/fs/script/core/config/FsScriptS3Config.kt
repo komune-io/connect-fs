@@ -12,15 +12,11 @@ import org.springframework.context.annotation.Configuration
 class FsScriptS3Config {
 
     @Bean
-    fun minioClient(s3Properties: FsS3Properties): MinioClient {
-        return MinioClient.builder()
-            .endpoint(s3Properties.internalUrl)
-            .credentials(s3Properties.username, s3Properties.password)
-            .build()
-    }
+    fun minioClient(s3Properties: FsS3Properties): MinioClient = MinioClient.builder()
+        .endpoint(s3Properties.internalUrl)
+        .credentials(s3Properties.username, s3Properties.password)
+        .build()
 
     @Bean
-    fun fsScriptS3Service(minioClient: MinioClient): FsScriptS3Service {
-        return FsScriptS3Service(minioClient)
-    }
+    fun fsScriptS3Service(minioClient: MinioClient): FsScriptS3Service = FsScriptS3Service(minioClient)
 }

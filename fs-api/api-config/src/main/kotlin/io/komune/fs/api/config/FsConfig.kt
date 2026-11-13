@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-
 @Configuration
 @EnableConfigurationProperties(FsProperties::class)
 class FsConfig {
@@ -20,9 +19,7 @@ class FsConfig {
     fun s3Properties(fsProperties: FsProperties): S3Properties = fsProperties.s3
 
     @Bean
-    fun s3BucketProvider(fsProperties: FsProperties): S3BucketProvider {
-        return S3BucketProvider(fsProperties)
-    }
+    fun s3BucketProvider(fsProperties: FsProperties): S3BucketProvider = S3BucketProvider(fsProperties)
 
     @Bean
     fun minioClient(fsProperties: FsProperties): MinioClient = MinioClient.builder()
@@ -31,7 +28,7 @@ class FsConfig {
         .credentials(fsProperties.s3.username, fsProperties.s3.password)
         .build()
         .apply {
-            if (fsProperties.s3.dns) { enableVirtualStyleEndpoint() }
+            if (fsProperties.s3.isDns) { enableVirtualStyleEndpoint() }
             else { disableVirtualStyleEndpoint() }
         }
 
@@ -40,20 +37,17 @@ class FsConfig {
         fsProperties: FsProperties,
         minioClient: MinioClient
     ) = CommandLineRunner {
-        fsProperties.init?.buckets?.let { buckets ->
-            buckets.split(",").map{
-                it.trim()
-            }.forEach { bucket ->
-                val exists = minioClient.bucketExists(
-                    BucketExistsArgs.builder().bucket(bucket).build()
-                )
-                if(!exists) {
-                    logger.info("Initializing bucket $bucket.")
-                    minioClient.makeBucket(
-                        MakeBucketArgs.builder().bucket(bucket).build()
-                    )
-                }
-            }
+        val buckets = fsProperties.init?.buckets
+        if (buckets != null) {
+            buckets.split(",").map(String::trim).forEach { bucket -> minioClient.initBucket(bucket) }
+        }
+    }
+
+    private fun MinioClient.initBucket(bucket: String) {
+        val isExisting = bucketExists(BucketExistsArgs.builder().bucket(bucket).build())
+        if (!isExisting) {
+            logger.info("Initializing bucket $bucket.")
+            makeBucket(MakeBucketArgs.builder().bucket(bucket).build())
         }
     }
 

@@ -7,5 +7,6 @@ import org.springframework.boot.runApplication
 class FsApplication
 
 fun main(args: Array<String>) {
-	runApplication<FsApplication>(*args)
+    @Suppress("SpreadOperator", "MissingUseCall") // arguments read once; closing the context would stop the app
+    runApplication<FsApplication>(*args)
 }
