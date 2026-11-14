@@ -7,8 +7,21 @@ pluginManagement {
 		id("io.komune.fixers.gradle.settings") version fixersVersion
 	}
 	repositories {
+		// A release builds each connect repository against the artifacts released before it, in Maven Local.
+		if (providers.environmentVariable("FIXERS_REPOSITORIES_MAVEN_LOCAL").orNull == "true") {
+			mavenLocal { content { includeGroupByRegex("io\\.komune(\\..*)?") } }
+		}
 		gradlePluginPortal()
 		mavenCentral()
+	}
+}
+
+// Before the settings plugin's repositories: a release resolves the io.komune artifacts it just built from Maven Local.
+dependencyResolutionManagement {
+	repositories {
+		if (providers.environmentVariable("FIXERS_REPOSITORIES_MAVEN_LOCAL").orNull == "true") {
+			mavenLocal { content { includeGroupByRegex("io\\.komune(\\..*)?") } }
+		}
 	}
 }
 
